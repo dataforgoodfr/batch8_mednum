@@ -2,10 +2,10 @@ version: "3"
 
 services:
 
-  web:
-    build: ./web/
+  django:
+    build: ./django/
     ports:
       - "8000:8000"
     volumes:
-      - ./web:/code
+      - ./django:/code
     command: python manage.py runserver 0.0.0.0:8000
