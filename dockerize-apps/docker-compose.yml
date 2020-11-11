@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  django:
+    build: ./django/
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./django:/code
+    command: python manage.py runserver 0.0.0.0:8000
+  panel:
+    build: ./panel/
+    ports:
+      - "5006:5006"
+    volumes:
+      - ./panel:/code
+    environment:
+    - PYTHONUNBUFFERED=1
+    stdin_open: true
+    tty: true

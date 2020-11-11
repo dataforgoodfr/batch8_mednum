@@ -1,0 +1,37 @@
+name: fragil_num
+channels:
+  - pyviz
+  - conda-forge
+  - defaults
+  - bokeh
+dependencies:
+  - bokeh=2.2.1
+  - colorcet=2.0.2
+  - dask=2.29.0
+  - dask-core=2.29.0
+  - datashader=0.10.0
+  - geojson=2.5.0
+  - geopandas=0.8.1
+  - geoviews=1.8.2
+  - holoviews=1.13.4
+  - jupyter
+  - jupyterlab
+  - notebook=6.1.4
+  - numba=0.51.2
+  - numpy=1.19.1
+  - pandas=1.1.2
+  #- panel=0.9.7
+  - param=1.9.3
+  - pip
+  - python=3.8.5
+  - pyarrow=1.0.1
+  - requests=2.24.0
+  - shapely=1.7.1
+  - scikit-image=0.17.2
+  - scipy=1.5.2
+  - snappy=1.1.8
+  - tornado=6.0.4
+  - tqdm=4.50.0
+  - nodejs>=10.13.0
+  - pip:
+    - "git+https://github.com/slamer59/panel.git#egg=panel"
