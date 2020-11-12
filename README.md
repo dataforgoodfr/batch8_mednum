@@ -26,5 +26,12 @@ conda activate fragil_num
 Dans le répertoire principal `batch8_mednum` et après avoir activé l'environnement.
 
 ```
-python -m mednum.data.download_geojson
+python -m mednum.data.process all
+```
+pour mettre en place l'ensemble
+
+ou simplement une seule étape
+
+```
+python -m mednum.data.process download_geojson
 ```
