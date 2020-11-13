@@ -1,5 +1,6 @@
 import argparse
 from mednum.data import download_geojson as dgj
+from mednum.data import download_insee as dins
 
 
 if __name__ == "__main__":
@@ -11,6 +12,7 @@ if __name__ == "__main__":
         choices=[
             "all",
             "download_geojson",
+            "download_insee"
         ],
     )
 
@@ -18,5 +20,8 @@ if __name__ == "__main__":
 
     if args.choix == "download_geojson":
         dgj.generer()
+    elif args.choix == "download_insee":
+        dins.generer()
     else:
         dgj.generer()
+        dins.generer()
