@@ -1,9 +1,13 @@
 from pathlib import Path
 
-external_data = Path('./data/external/')
-processed_data = Path('./data/processed/')
-raw_data = Path('./data/raw/')
-interim_data = Path('./data/interim/')
+data_path = Path('./data')
+if not data_path.exists():
+    data_path = Path('../data')
+
+external_data = data_path / 'external/'
+processed_data = data_path / 'processed/'
+raw_data = data_path / 'raw/'
+interim_data = data_path / 'interim/'
 
 # France Geojson
 url_france_geojson_zip = 'https://github.com/gregoiredavid/france-geojson/archive/master.zip'
