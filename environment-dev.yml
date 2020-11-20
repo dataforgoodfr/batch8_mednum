@@ -25,3 +25,5 @@ dependencies:
   - isort
   - notebook
   - python
+  - ptvsd
+  - Django>=3
