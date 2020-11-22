@@ -1,0 +1,284 @@
+import re
+
+import panel as pn
+import param
+import pygal
+import mednum as mind
+from mednum.controlers.overallparameters import OverallParameters
+
+from mednum.tools import css2dict
+from pygal.style import Style
+from pathlib import Path
+
+css_file_gauge = Path(__file__).parent.parent / "css"/ "pygauge.css"
+
+class PyGauge(param.Parameterized):
+    value = param.Integer(85, bounds=(0, 1000))
+    max_value = param.Integer(150)
+    pygal_config = pygal.Config()
+
+    custom_style = param.Dict(
+        default=
+        dict(
+            background="transparent",
+            plot_background="transparent",
+            foreground="#0000ff",#53E89B",
+            foreground_strong="#53A0E8",
+            foreground_subtle="transparent",
+            opacity=".2",
+            opacity_hover=".9",
+            transition="400ms ease-in",
+            colors=("#0000ff", "#ff0000"),
+        )
+    )
+    custom_style_css_path = param.Filename(css_file_gauge)
+
+    css_info_h2 = """
+        margin: auto;
+    """
+    size_w = param.Integer(100)
+    value_font_size = param.Integer()
+    w_name = ''
+    def __init__(self, **params):
+        super(PyGauge, self).__init__(**params)
+        self.set_max()
+        self.value_font_size = len(str(self.value)) * self.size_w
+        self.w_name = self.name
+
+    @pn.depends("value_font_size", "custom_style", watch=True)
+    def set_style(self):
+        if self.custom_style_css_path:
+            self.pygal_config.css.append(self.custom_style_css_path)
+            # with open(self.custom_style_css_path, 'r') as f: css = f.read()
+            # self.custom_style = css2dict(css)
+
+        self.custom_style["value_font_size"] = self.value_font_size           
+        self.param["custom_style"].default = self.custom_style
+        
+
+    @pn.depends("max_value", watch=True)
+    def set_max(self):
+        self.param.value.bounds = (0, self.max_value)
+        self.value = self.max_value if self.value > self.max_value else self.value
+
+    @pn.depends("value", "custom_style", watch=True)
+    def create_gauge(self):
+        gauge = pygal.SolidGauge(
+            inner_radius=0.70,
+            show_legend=False,
+            style=Style(**self.custom_style),
+        )
+        percent_formatter = lambda x: "{:.10g}".format(x)
+        gauge.value_formatter = percent_formatter
+        vals = {"value": self.value, "max_value": self.max_value}
+        gauge.add("", [vals])
+        self.file_name = gauge.render_data_uri()
+        self.HTML_GAUGE = """
+        <h2 style="{css_info_h2}">{name}</h2>
+        <img src="{filepath}" width="{width}px" />
+        
+        """.format(
+            filepath=self.file_name,
+            name=self.w_name,
+            width=self.size_w,
+            css_info_h2=self.css_info_h2,
+        )
+
+    def view(self):
+        self.create_gauge()
+        return pn.pane.HTML(
+            self.HTML_GAUGE,
+            css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__).lower()],
+        )
+
+
+class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
+    indicators = param.List(
+        [
+            dict(name="indic2", main=True, value=50, max_value=100),
+            dict(name="indic2", value=150),
+        ]
+    )
+    show_gauge = False
+    other_indic = []
+    css_info_td = """
+        font-family: Source Sans Pro;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 11px;
+        align-items: center;
+        text-transform: capitalize;
+        color: #989898;
+        border-left: 1px solid #E5E5E5;
+        padding: 8px;
+        line-height: 14px;
+        top: 50%;
+    """
+    css_info_h3 = """
+        margin: auto;
+    """
+
+    def __init__(self, **params) -> None:
+        super(IndicatorsWithGauge, self).__init__(**params)
+        self.set_indicators()
+
+    @pn.depends("indicators", watch=True)
+    def set_indicators(self):
+        
+        for ind in self.indicators:
+            if "main" in ind:
+                self.show_gauge = True
+                self.max_value = ind["max_value"]
+                self.value = ind["value"]
+                self.main_indicators_name = ind["name"]
+        self.other_indic = []
+        for ind in self.indicators:
+            if ind["name"] != self.main_indicators_name:
+                self.other_indic.append(ind)
+        try:
+            c2d = css2dict(self.css_info_td)
+            font_h = int(c2d["font-size"].replace("px", ""))
+            pad = int(c2d["padding"].replace("px", ""))
+        except:
+            font_h = 18
+            pad = 10
+        self.size_w = (((font_h * 2) + (pad * 2)) * len(self.indicators)) * 7 // 10
+        
+
+    def view(self):
+        self.w_name = self.main_indicators_name
+        self.create_gauge()
+        rowspan = len(self.indicators)
+        HTML = """
+        <table class="gauge-cls" style="border-spacing: 1em; width:100%">
+            <tr class="gauge-tr">
+                <td class="gauge-td" rowspan={rowspan} style="{style}">{gauge}</td>
+        """.format(
+            rowspan=rowspan, gauge=self.HTML_GAUGE, style=self.css_info_td
+        )
+
+        HTML_ROWS = [
+            """
+            <td class="gauge-td" style="{style}">
+            <h3 style="{style_h3}">{title}</h3>
+                {value}
+            </td>
+        """.format(
+                title=row["name"],
+                value=row["value"],
+                style=self.css_info_td,
+                style_h3=self.css_info_h3,
+            )
+            for row in self.other_indic
+        ]
+
+        HTML = HTML + "</tr>\n<tr>\n".join(HTML_ROWS) + "\n<tr>\n</table>"
+
+        return pn.Column(
+            pn.pane.HTML(HTML),
+            css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__).lower()],
+        )
+
+
+class TopIndicators(OverallParameters):
+    def __init__(self, **params) -> None:
+        super(TopIndicators, self).__init__(**params)
+        indic_w_g_value_1 = {
+            "name": "indic1_1",
+            "indicators": [
+                dict(name="accès", main=True, value=85, max_value=100),
+                dict(name="information", value=118),
+                dict(name="Interfaces", value=53),
+            ],
+        }
+
+        indic_w_g_value_2 = {
+            "indicators": [
+                dict(name="Compétences", main=True, value=135, max_value=180),
+                dict(name="indic3_2", value=115),
+                dict(name="indic4", value=155),
+            ]
+        }
+
+        self.indicator_w_gauge_1 = IndicatorsWithGauge(**indic_w_g_value_1)
+        self.indicator_w_gauge_2 = IndicatorsWithGauge(**indic_w_g_value_2)
+
+    @pn.depends("score", watch=True)
+    def synthese(self):
+        HTML = """<b>Soit potentiellement : </b><br>
+        Personnes en situation d’illectronisme : 252
+        Personnes n’ayant pas d’équipement : 56 868
+        Personnes avec au moins une incapacité * : 896618<br>
+        """
+
+        return pn.pane.HTML(
+            HTML,
+            css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__+'Synthese').lower()],
+        )
+
+    @pn.depends("score", watch=True)
+    def glob_stats(self):
+        label = "Score Global"
+        score_min, score_max = self.score
+        HTML = """
+        <b>{score_name}</b> | {score_min}->{score_max}<br>
+
+        <b>{pop_name}</b> | {population}
+        """.format(
+            score_name=label,
+            score_min=int(score_min),
+            score_max=int(score_max),
+            pop_name="Population",
+            population=1055000,
+        )
+        return pn.pane.HTML(
+            HTML,
+            css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__+'-Globstats').lower()],
+        )
+
+    @pn.depends("score", "localisation") #,  watch=True)
+    def view(self):
+        HTML = """
+        <h1>{loc}</h1>
+        """.format(
+            loc=self.localisation
+        )
+
+        return pn.Row(
+            pn.Column(HTML, self.glob_stats(), pn.layout.VSpacer()), #background='yellow')),
+            pn.layout.HSpacer(), # background='green'),
+            pn.Column(self.synthese(), pn.layout.VSpacer()), #background='yellow')),
+            pn.layout.HSpacer(),
+            pn.Column(self.indicator_w_gauge_1.view,pn.layout.VSpacer()), #background='yellow')),
+            pn.layout.HSpacer(),
+            self.indicator_w_gauge_2.view,
+            css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__).lower()],
+        )
+
+
+class test_class(param.Parameterized):
+    some_parameter = param.Integer()
+
+    def __init__(self, **params):
+        super(test_class, self).__init__(**params)
+
+    def view(self):
+        return pn.Column(
+            pn.widgets.FloatSlider(name="Number", margin=(10, 5, 5, 10)),
+            pn.widgets.Select(
+                name="Fruit", options=["Apple", "Orange", "Pear"], margin=(0, 5, 5, 10)
+            ),
+            pn.widgets.Button(name="Run", margin=(5, 10, 10, 10)),
+            css_classes=["panel-widget-box"],
+        )
+
+
+def test_function():
+    return pn.Column(
+        pn.widgets.FloatSlider(name="Number", margin=(10, 5, 5, 10)),
+        pn.widgets.Select(
+            name="Fruit", options=["Apple", "Orange", "Pear"], margin=(0, 5, 5, 10)
+        ),
+        pn.widgets.Button(name="Run", margin=(5, 10, 10, 10)),
+        css_classes=["panel-widget-box"],
+    )

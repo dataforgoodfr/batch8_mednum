@@ -20,7 +20,7 @@ dependencies:
   - numba=0.51.2
   - numpy=1.19.1
   - pandas=1.1.2
-  #- panel=0.9.7
+  - panel=0.9.7
   - param=1.9.3
   - pip
   - python=3.8.5
@@ -33,5 +33,6 @@ dependencies:
   - tornado=6.0.4
   - tqdm=4.50.0
   - nodejs>=10.13.0
-  - pip:
-    - "git+https://github.com/slamer59/panel.git#egg=panel"
+  - pip
+  #- pip:
+  #  - "git+https://github.com/slamer59/panel.git#egg=panel"
