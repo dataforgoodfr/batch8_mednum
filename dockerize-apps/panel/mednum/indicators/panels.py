@@ -1,14 +1,13 @@
 import re
+from pathlib import Path
 
 import panel as pn
 import param
 import pygal
-import mednum as mind
-from mednum.controlers.overallparameters import OverallParameters
-
-from mednum.tools import css2dict
 from pygal.style import Style
-from pathlib import Path
+
+from mednum.controlers.overallparameters import OverallParameters
+from mednum.tools import css2dict
 
 css_file_gauge = Path(__file__).parent.parent / "css"/ "pygauge.css"
 

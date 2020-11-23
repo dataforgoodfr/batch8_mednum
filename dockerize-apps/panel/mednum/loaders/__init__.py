@@ -5,15 +5,7 @@ import geopandas as gpd
 import pandas as pd
 
 from mednum.tools import cache_pandas_result, strip_accents
-
-hard_reset = False
-data_path = Path("../data")
-
-if not data_path.exists():
-    data_path = Path("./data")
-
-interim_data = data_path / "interim/"
-cache_dir = interim_data
+from mednum.config import * 
 
 
 @cache_pandas_result(cache_dir, hard_reset=hard_reset, geoformat=True)
@@ -74,3 +66,8 @@ def get_merged_iris_data(cont_iris_df, ifrag_df_pivot):
     )
     return ifrag_cont_df_merged
     
+
+@cache_pandas_result(processed_data, hard_reset=hard_reset, geoformat=False)
+def read_merged_data(merged_path):
+        data_merged = pd.read_csv(merged_path)
+        return data_merged
