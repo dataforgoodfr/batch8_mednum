@@ -9,7 +9,8 @@ from pygal.style import Style
 from mednum.controlers.overallparameters import OverallParameters
 from mednum.tools import css2dict
 
-css_file_gauge = Path(__file__).parent.parent / "css"/ "pygauge.css"
+css_file_gauge = Path(__file__).parent.parent / "css" / "pygauge.css"
+
 
 class PyGauge(param.Parameterized):
     value = param.Integer(85, bounds=(0, 1000))
@@ -72,21 +73,25 @@ class PyGauge(param.Parameterized):
         vals = {"value": self.value, "max_value": self.max_value}
         gauge.add("", [vals])
         self.file_name = gauge.render_data_uri()
-        self.HTML_GAUGE = """
+        self.HTML_GAUGE_HEADER = """
         <h2 style="{css_info_h2}">{name}</h2>
+        """.format(
+            name=self.w_name,
+            css_info_h2=self.css_info_h2,
+        )
+
+        self.HTML_GAUGE_IMG = """
         <img src="{filepath}" width="{width}px" />
         
         """.format(
             filepath=self.file_name,
-            name=self.w_name,
             width=self.size_w,
-            css_info_h2=self.css_info_h2,
         )
 
     def view(self):
         self.create_gauge()
         return pn.pane.HTML(
-            self.HTML_GAUGE,
+            self.HTML_GAUGE_HEADER+self.HTML_GAUGE_IMG,
             css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__).lower()],
         )
 
@@ -147,13 +152,19 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
     def view(self):
         self.w_name = self.main_indicators_name
         self.create_gauge()
-        rowspan = len(self.indicators)
-        HTML = """
-        <table class="gauge-cls" style="border-spacing: 1em; width:100%">
+        rowspan = len(self.indicators)-1
+
+        HTML_MAIN_INDIC = """<table class="gauge-cls" style="border-spacing: 1em; width:100">
             <tr class="gauge-tr">
-                <td class="gauge-td" rowspan={rowspan} style="{style}">{gauge}</td>
+                <td class="gauge-td" style="{style}">{gauge_header}</td>
         """.format(
-            rowspan=rowspan, gauge=self.HTML_GAUGE, style=self.css_info_td
+            rowspan=rowspan, gauge_header=self.HTML_GAUGE_HEADER, gauge_img=self.HTML_GAUGE_IMG, style=self.css_info_td
+        )
+
+        HTML_GAUGE = """
+                <td class="gauge-td" rowspan={rowspan} style="{style}">{gauge_img}</td>
+        """.format(
+            rowspan=rowspan, gauge_header=self.HTML_GAUGE_HEADER, gauge_img=self.HTML_GAUGE_IMG, style=self.css_info_td
         )
 
         HTML_ROWS = [
@@ -162,6 +173,7 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
             <h3 style="{style_h3}">{title}</h3>
                 {value}
             </td>
+            </tr>
         """.format(
                 title=row["name"],
                 value=row["value"],
@@ -170,37 +182,49 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
             )
             for row in self.other_indic
         ]
+        # insert Gauge in second order
+        HTML_ROWS.insert(1, HTML_GAUGE)
 
-        HTML = HTML + "</tr>\n<tr>\n".join(HTML_ROWS) + "\n<tr>\n</table>"
-
+        HTML = HTML_MAIN_INDIC +  "<tr>\n".join(HTML_ROWS) + "\n<tr>\n</table>"
         return pn.Column(
             pn.pane.HTML(HTML),
             css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__).lower()],
         )
 
 
+indic_w_g_value_1 = {
+    "name": "indic1_1",
+    "indicators": [
+        dict(name="accès", main=True, value=85, max_value=100),
+        dict(name="info", value=118),
+        dict(name="Interfaces", value=53),
+    ],
+}
+
+indic_w_g_value_2 = {
+    "indicators": [
+        dict(name="Compétences", main=True, value=135, max_value=180),
+        dict(name="indic3_2", value=115),
+        dict(name="indic4", value=155),
+    ]
+}
+
+
 class TopIndicators(OverallParameters):
+    indicators_value_1 = param.Dict(default=indic_w_g_value_1)
+    indicators_value_2 = param.Dict(default=indic_w_g_value_2)
+
     def __init__(self, **params) -> None:
         super(TopIndicators, self).__init__(**params)
-        indic_w_g_value_1 = {
-            "name": "indic1_1",
-            "indicators": [
-                dict(name="accès", main=True, value=85, max_value=100),
-                dict(name="information", value=118),
-                dict(name="Interfaces", value=53),
-            ],
-        }
+        self.indicators_value_1 = params.get("indicators_value_1", indic_w_g_value_1)
+        self.indicators_value_2 = params.get("indicators_value_2", indic_w_g_value_2)
 
-        indic_w_g_value_2 = {
-            "indicators": [
-                dict(name="Compétences", main=True, value=135, max_value=180),
-                dict(name="indic3_2", value=115),
-                dict(name="indic4", value=155),
-            ]
-        }
+        self.score = params.get("score", (0, 250))
+        self.localisation = params.get("localisation", "Toulouse")
 
-        self.indicator_w_gauge_1 = IndicatorsWithGauge(**indic_w_g_value_1)
-        self.indicator_w_gauge_2 = IndicatorsWithGauge(**indic_w_g_value_2)
+        # self.indicator_w_gauge_1 = IndicatorsWithGauge(**indic_w_g_value_1)
+        self.indicator_w_gauge_1 = IndicatorsWithGauge(**self.indicators_value_1)
+        self.indicator_w_gauge_2 = IndicatorsWithGauge(**self.indicators_value_2)
 
     @pn.depends("score", watch=True)
     def synthese(self):
@@ -212,7 +236,11 @@ class TopIndicators(OverallParameters):
 
         return pn.pane.HTML(
             HTML,
-            css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__+'Synthese').lower()],
+            css_classes=[
+                re.sub(
+                    r"(?<!^)(?=[A-Z])", "-", type(self).__name__ + "Synthese"
+                ).lower()
+            ],
         )
 
     @pn.depends("score", watch=True)
@@ -232,23 +260,34 @@ class TopIndicators(OverallParameters):
         )
         return pn.pane.HTML(
             HTML,
-            css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__+'-Globstats').lower()],
+            css_classes=[
+                re.sub(
+                    r"(?<!^)(?=[A-Z])", "-", type(self).__name__ + "-Globstats"
+                ).lower()
+            ],
         )
 
-    @pn.depends("score", "localisation") #,  watch=True)
+
+    # def _update_indicators(self):
+        
+
+    @pn.depends("score", "localisation")
     def view(self):
         HTML = """
         <h1>{loc}</h1>
         """.format(
             loc=self.localisation
         )
-
         return pn.Row(
-            pn.Column(HTML, self.glob_stats(), pn.layout.VSpacer()), #background='yellow')),
-            pn.layout.HSpacer(), # background='green'),
-            pn.Column(self.synthese(), pn.layout.VSpacer()), #background='yellow')),
+            pn.Column(
+                HTML, self.glob_stats(), pn.layout.VSpacer()
+            ),  # background='yellow')),
+            pn.layout.HSpacer(),  # background='green'),
+            pn.Column(self.synthese(), pn.layout.VSpacer()),  # background='yellow')),
             pn.layout.HSpacer(),
-            pn.Column(self.indicator_w_gauge_1.view,pn.layout.VSpacer()), #background='yellow')),
+            pn.Column(
+                self.indicator_w_gauge_1.view, pn.layout.VSpacer()
+            ),  # background='yellow')),
             pn.layout.HSpacer(),
             self.indicator_w_gauge_2.view,
             css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__).lower()],
