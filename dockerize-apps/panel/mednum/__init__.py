@@ -15,50 +15,27 @@ from mednum.config import *
 from mednum.controlers.overallparameters import OverallParameters
 from mednum.indicators.panels import TopIndicators
 from mednum.widgets import TreeViewCheckBox
+import param
 
 
 class MedNumApp(OverallParameters):
     score_widget = pn.widgets.IntRangeSlider
     _layout = pn.Column()
+    top_params = param.Dict(default={})
 
     def __init__(self, **params):
         super().__init__(**params)
         self.load_data()
 
-        self.param.interfaces_num.objects = OPTIONS_INT_NUM
-        self.param.infos_num.objects = OPTIONS_X_INFOS
+        # self.param.interfaces_num.objects = OPTIONS_INT_NUM
+        # self.param.infos_num.objects = OPTIONS_X_INFOS
 
-        self.param.comp_admin.objects = OPTIONS_X_COMP_ADMIN
-        self.param.comp_usage_num.objects = OPTIONS_X_COMP_USAGE
-
-        # indic_w_g_value_1 = {
-        #     "name": "indic1_1",
-        #     "indicators": [
-        #         dict(name="accès", main=True, value=85, max_value=100),
-        #         dict(name="information", value=118),
-        #         dict(name="Interfaces", value=53),
-        #     ],
-        # }
-
-        # indic_w_g_value_2 = {
-        #     "indicators": [
-        #         dict(name="Compétences", main=True, value=135, max_value=180),
-        #         dict(name="indic3_2", value=115),
-        #         dict(name="indic4", value=155),
-        #     ]
-        # }
+        # self.param.comp_admin.objects = OPTIONS_X_COMP_ADMIN
+        # self.param.comp_usage_num.objects = OPTIONS_X_COMP_USAGE
 
         self.top_panel = TopIndicators()
-        # self._layout = pn.Row(
-        #     self.lat_widgets(),
-        #     pn.layout.HSpacer(width=10),
-        #     pn.Column(
-        #         self.top_panel.view(),
-        #         pn.Spacer(height=80),
-        #         pn.Spacer()
-        #     ),
-        # )
 
+    @pn.depends("localisation", "score", "score_widget.value_throttled", watch=True)
     def update_params(self):
         d = dict(self.get_param_values())
         d.pop("name")
@@ -67,6 +44,12 @@ class MedNumApp(OverallParameters):
                 self.top_panel.set_param(**{k: v})
             except Exception as e:
                 pass
+
+    def set_params(self):
+        self.top_params = {
+            "score": self.score,
+            "localisation": self.localisation,
+        }
 
     def lat_widgets(self):
         self.score_controls = pn.Param(
@@ -81,10 +64,7 @@ class MedNumApp(OverallParameters):
         point_ref_panel = pn.Column(
             "# Point de reference",
             pn.Param(
-                self.param.point_ref,
-                widgets={
-                    "point_ref": pn.widgets.RadioBoxGroup,
-                },
+                self.param.point_ref, widgets={"point_ref": pn.widgets.RadioBoxGroup,},
             ),
         )
         export_panel = pn.Column(
@@ -92,16 +72,42 @@ class MedNumApp(OverallParameters):
         )
 
         localisation_panel = pn.Column("# Localisation", self.param.localisation)
-        spec_interfaces = {k: TreeViewCheckBox for k,v in TREEVIEW_CHECK_BOX.items()
-            # "interfaces_num": TreeViewCheckBox(tree_categories=),
-            # "infos_num": TreeViewCheckBox,
-            # "comp_admin": TreeViewCheckBox,
-            # "comp_usage_num": TreeViewCheckBox,
-        }
-        
-        g_params = [
-            pn.Param(self.param[p], widgets={p: w}) for p, w in spec_interfaces.items()
-        ]
+        spec_interfaces = {k: TreeViewCheckBox for k, v in TREEVIEW_CHECK_BOX.items()}
+        g_params = []
+        for k, widget_opts in TREEVIEW_CHECK_BOX.items():
+            # widget_opts = TREEVIEW_CHECK_BOX[k]
+            # widget_opts["type"] = TreeViewCheckBox
+
+            # select_options = [opt for opt in widget_opts.keys() if opt not in ["nom", "desc"]]
+
+            # Voir si description ne peut être passée
+            select_options = [
+                val["nom"]
+                for opt, val in widget_opts.items()
+                if opt not in ["nom", "desc"]
+            ]
+            descriptions = [
+                val["desc"]
+                for opt, val in widget_opts.items()
+                if opt not in ["nom", "desc"]
+            ]
+            g_params.append(
+                pn.Param(
+                    self.param[k],
+                    widgets={
+                        k: {
+                            "type": TreeViewCheckBox,
+                            "select_options": select_options,
+                            "select_all": widget_opts["nom"],
+                            "desc": descriptions,
+                        }
+                    },
+                )
+            )
+
+        # g_params = [
+        #     pn.Param(self.param[p], widgets={p: w}) for p, w in spec_interfaces.items()
+        # ]
 
         indicateurs = pn.Column("# Indicateurs", *g_params)
 
@@ -113,7 +119,7 @@ class MedNumApp(OverallParameters):
             export_panel,
             width=400,
         )
-
+        self.set_params()
         return ordered_panel
 
     # @pn.depends("localisation", "score_widget.value_throttled")
@@ -123,13 +129,12 @@ class MedNumApp(OverallParameters):
             nom_com=self.localisation, vdims=self.map_vdims
         )
 
-
         # indices_list = list(self.ifrag_cont_df_merged)
         # indices_list.remove("geometry")
         # self.map_vdims = ["code_iris", "nom_com", "nom_iris"] + indices_list
         # self.iris_map = gv.Polygons(self.ifrag_cont_df_merged, vdims=self.map_vdims)
 
-        vdims=self.map_vdims
+        vdims = self.map_vdims
 
         # commune_plot = self.iris_map.select(
         #     nom_com=self.localisation, vdims=self.map_vdims
@@ -141,13 +146,12 @@ class MedNumApp(OverallParameters):
 
         # # minx, miny, maxx, maxy = df_filtered.dissolve(by='nom_com').geometry.bounds.values[0]
 
-
         # commune_plot = gv.Polygons(df_filtered, vdims=vdims)
         # .redim.range(
         #     Latitude=(miny, maxy),
         #     Longitude=(minx, maxx),
         # )
-        
+
         # self.iris_map.select(
         #     nom_com=self.localisation, vdims=self.map_vdims
         # )
@@ -156,25 +160,18 @@ class MedNumApp(OverallParameters):
 
     def _update_plots(self):
         import datetime
+
         self._layout[-1][0] = self.top_panel.view()
         # self._layout[-1][-1] = self.plot()
 
-    #@pn.depends("localisation", "score_widget.value_throttled")
     def view(self) -> pn.viewable.Viewable:
         self.update_params()
         # self._update_plots()
         return pn.Row(
             self.lat_widgets(),
             pn.layout.HSpacer(width=10),
-            pn.Column(
-                self.top_panel.view(),
-                pn.Spacer(height=80),
-                pn.Spacer()
-            ),
+            pn.Column(self.top_panel.view(), pn.Spacer(height=80), pn.Spacer()),
         )
 
     def panel(self):
-        return pn.Row(
-            self.lat_widgets(),
-            self.view,
-        )
+        return pn.Row(self.lat_widgets(), self.view,)

@@ -9,12 +9,12 @@ from mednum.config import *
 from mednum.loaders import read_merged_data
 
 # from mednum.controlers.autocomplete import AutocompleteInput
-from mednum.indicators.panels import TopIndicators
+from mednum.indicators.panels import TopIndicators, IndicatorsWithGauge
 from pathlib import Path
 import mednum
 
 css_mednum = [str(Path(__file__).parent / "statics" / "css" / "mednum.css")]
-print((Path(__file__).parent / "statics" / "css" / "mednum.css").exists())
+
 css = [
     "https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css",
     css_mednum[0],
@@ -47,14 +47,14 @@ template = """
 <div class="container">
 <div class="row">
     <div class="col-sm-4">
-      {{ embed(roots.sidebar) }}
+          {{ embed(roots.sidebar) | indent(8) }}
     </div>
     <div class="col-sm-8">
       <div class="row">
-          {{ embed(roots.top) }}
+      {{ embed(roots.top) | indent(8) }}
       </div>
       <div class="row">
-        {{ embed(roots.main) }}
+          {{ embed(roots.main) | indent(8) }}
       </div>
     </div>
     
@@ -62,10 +62,12 @@ template = """
 </div>
 {% endblock %}
 """
-
+# {{ embed(roots.top) | indent(8) }}
 merged_path = interim_data / "data_merge_V2.csv"
 
 df = read_merged_data(merged_path)
+
+print(df.columns)
 
 tmpl = pn.Template(template)
 tmpl.add_variable("app_title", "<h1>Custom Template App</h1>")
@@ -77,9 +79,9 @@ freq = pn.widgets.FloatSlider(name="Frequency", start=0, end=10, value=2)
 phase = pn.widgets.FloatSlider(name="Phase", start=0, end=np.pi)
 
 
-# Sidebar
-class AutoComplete(param.Parameterized):
-    nom_commune = param.String()
+# # Sidebar
+# class AutoComplete(param.Parameterized):
+#     nom_commune = param.String()
 
 
 mednumapp = mednum.MedNumApp(name="Sélection")
@@ -93,21 +95,54 @@ mednumapp = mednum.MedNumApp(name="Sélection")
 sidebar = pn.Column(mednumapp.lat_widgets())
 
 # Top indicator
-top_panel = TopIndicators()
+indic_w_g_value_1 = {
+    "name": "indic1_1",
+    "indicators": [
+        dict(name="accès", main=True, value=85, max_value=100),
+        dict(name="info", value=118),
+        dict(name="Interfaces", value=53),
+    ],
+}
 
 
-def update_top_params(self):
-    d = dict(self.get_param_values())
-    d.pop("name")
-    for k, v in d.items():
-        try:
-            self.top_panel.set_param(**{k: v})
-        except Exception as e:
-            pass
+# map_vars = dict(name=mednumapp.param.localisation, score=mednumapp.param.score)
 
+
+# @pn.depends(score=mednumapp.param.score)
+# def indic(score):
+#   indic_w_g_value_1 = {
+#     "name": "indic1_1",
+#     "indicators": [
+#         dict(name="accès", main=True, value=score[0], max_value=100),
+#         dict(name="info", value=118),
+#         dict(name="Interfaces", value=53),
+#     ],
+# }
+#   return IndicatorsWithGauge(**indic_w_g_value_1).view()
+# @pn.depends(**map_vars)
+# def top_panel(name, score):
+#   params = {
+#     "indicators_value_1": indic_w_g_value_1,
+#      "localisation": name,
+#      "score": score,
+#     }
+
+
+#   return TopIndicators(**params).view()
+# top_panel = TopIndicators()
+
+# @pn.depends(**map_vars)
+# def update_params():
+#     d = dict(mednumapp.get_param_values())
+#     d.pop("name")
+#     for k, v in d.items():
+#         try:
+#             top_panel.set_param(**{k: v})
+#         except Exception as e:
+#             pass
 
 tmpl.add_panel("sidebar", mednumapp.lat_widgets())
-tmpl.add_panel("top", mednumapp.top_panel.view())
-tmpl.add_panel("main", hv.Curve([1, 2, 3]))
+tmpl.add_panel("top", mednumapp.top_panel.view)
+tmpl.add_panel("main", mednumapp.plot) # mednumapp.top_panel.view()) #hv.Curve([1, 2, 3]))
 
 tmpl.servable()

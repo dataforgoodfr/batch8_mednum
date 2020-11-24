@@ -25,24 +25,31 @@ class TreeViewCheckBox(CompositeWidget, MultiSelect):
     box_size = param.Number(default=100)
     select_all = param.String()
     select_options = param.List()
+    option_descriptions = param.List()    
 
     def __init__(self, **params):
         super(TreeViewCheckBox, self).__init__(**params)
-        options = list(params.get('options', {}).keys())
 
-        try:
-            self.select_all= options.pop(0)
-        except NameError as n:
-            raise NameError("Define a dict containing the name of **select_all**")
-        except:
-            raise Exception
+        # options = list(params.get('options', {}).keys())
+        self.select_all = params.get('select_all', "") #options.pop(0))
+        self.select_options = params.get('select_options', "") #options)
         
-        try:
-            self.select_options= options
-        except NameError as n:
-            raise NameError("Define a dict containing a list of options in **select_options**")
-        except:
-            raise Exception
+        self.option_descriptions = params.get('description', [])
+
+        # try:
+        #     self.select_all= options.pop(0)
+        # except NameError as n:
+        #     raise NameError("Define a dict containing the name of **select_all**")
+        # except:
+        #     raise Exception
+        
+        # try:
+        #     self.select_options = options
+        # except NameError as n:
+        #     raise NameError("Define a dict containing a list of options in **select_options**")
+        # except:
+        #     raise Exception
+
         TreeViewCheckBox.box_size = max([len(word) for word in self.select_options]+ [len(self.select_all), TreeViewCheckBox.box_size]) * 10
         
         self.all_selector = Checkbox(name=self.select_all)
