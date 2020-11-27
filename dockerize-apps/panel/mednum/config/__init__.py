@@ -70,11 +70,17 @@ CATEGORIES_X_COMP_USAGE = {
     },
     "TX_NSCOL15P": {
         "nom": "Part des personnes pas/peu diplômés de 15 ans et plus",
-        "desc": "Proportion des personnes sans diplôme ou avec des diplôme de niveau inférieur au baccalauréat parmi la population du territoire âgée de plus de 15 ans"
+        "desc": "Proportion des personnes sans diplôme ou avec des diplôme de niveau inférieur au baccalauréat parmi la population du territoire âgée de plus de 15 ans",
     },
 }
 
+TOUT = {
+    "nom": "Tous",
+    "desc": "Sélections de l'ensemble des indicateurs",
+}
+
 TREEVIEW_CHECK_BOX = {
+    "tout_axes": TOUT,
     "interfaces_num": CATEGORIES_INT_NUM,
     "infos_num": CATEGORIES_X_INFOS,
     "comp_admin": CATEGORIES_X_COMP_ADMIN,

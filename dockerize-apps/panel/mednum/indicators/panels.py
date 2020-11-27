@@ -222,7 +222,6 @@ class TopIndicators(OverallParameters):
         self.score = params.get("score", (0, 250))
         self.localisation = params.get("localisation", "Toulouse")
 
-        # self.indicator_w_gauge_1 = IndicatorsWithGauge(**indic_w_g_value_1)
         self.indicator_w_gauge_1 = IndicatorsWithGauge(**self.indicators_value_1)
         self.indicator_w_gauge_2 = IndicatorsWithGauge(**self.indicators_value_2)
 

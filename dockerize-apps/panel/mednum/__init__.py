@@ -1,6 +1,6 @@
-
 import panel as pn
 import geoviews as gv
+from panel.widgets import Checkbox
 from mednum.config import *
 from mednum.controlers.overallparameters import OverallParameters
 from mednum.indicators.panels import TopIndicators
@@ -25,7 +25,7 @@ class MedNumApp(OverallParameters):
 
         self.top_panel = TopIndicators()
 
-    @pn.depends("localisation", "score", watch=True) # .value_throttled"
+    @pn.depends("localisation", "score", watch=True)  # .value_throttled"
     def update_params(self):
         d = dict(self.get_param_values())
         d.pop("name")
@@ -47,12 +47,11 @@ class MedNumApp(OverallParameters):
             widgets={
                 "score": {
                     "type": pn.widgets.IntRangeSlider,
-                     "bar_color": "#000000",
-                     "throttled": True
+                    "bar_color": "#000000",
+                    "throttled": True,
                 },
             },
         )
-        # self.score_widget = self.score_controls[0]
 
         score_panel = pn.Column("# Score", self.score_controls)
         point_ref_panel = pn.Column(
@@ -66,33 +65,40 @@ class MedNumApp(OverallParameters):
         )
 
         localisation_panel = pn.Column("# Localisation", self.param.localisation)
-        spec_interfaces = {k: TreeViewCheckBox for k, v in TREEVIEW_CHECK_BOX.items()}
+        # spec_interfaces = {k: TreeViewCheckBox for k, v in TREEVIEW_CHECK_BOX.items()}
+
         self.g_params = []
         for k, widget_opts in TREEVIEW_CHECK_BOX.items():
             # Voir si description ne peut être passée
-            select_options = [
-                val["nom"]
-                for opt, val in widget_opts.items()
-                if opt not in ["nom", "desc"]
-            ]
-            descriptions = [
-                val["desc"]
-                for opt, val in widget_opts.items()
-                if opt not in ["nom", "desc"]
-            ]
-            self.g_params.append(
-                pn.Param(
-                    self.param[k],
-                    widgets={
-                        k: {
-                            "type": TreeViewCheckBox,
-                            "select_options": select_options,
-                            "select_all": widget_opts["nom"],
-                            "desc": descriptions,
-                        }
-                    },
-                )
-            )
+            if len(widget_opts.items()) > 3:
+                select_options = [
+                    val["nom"]
+                    for opt, val in widget_opts.items()
+                    if opt not in ["nom", "desc"]
+                ]
+                descriptions = [
+                    val["desc"]
+                    for opt, val in widget_opts.items()
+                    if opt not in ["nom", "desc"]
+                ]
+                widget_type = TreeViewCheckBox
+                widgets_params = {
+                    "type": widget_type,
+                    "select_options": select_options,
+                    "select_all": widget_opts["nom"],
+                    "desc": descriptions,
+                }
+            else:
+                descriptions = widget_opts["desc"]
+                widget_type = Checkbox
+                widgets_params = {
+                    "name": widget_opts["nom"],
+                    "type": widget_type,
+                    "value": True,
+                    "desc": descriptions,
+                }
+
+            self.g_params.append(pn.Param(self.param[k], widgets={k: widgets_params},))
 
         indicateurs = pn.Column("# Indicateurs", *self.g_params)
 
@@ -102,7 +108,6 @@ class MedNumApp(OverallParameters):
             indicateurs,
             point_ref_panel,
             export_panel,
-            width=400,
         )
         self.set_params()
         return ordered_panel
@@ -118,7 +123,6 @@ class MedNumApp(OverallParameters):
         df_filtered = df_filtered[df_filtered.nom_com == self.localisation]
 
         self.maps = maps.select(name=self.localisation)
-
 
         return self.maps.opts(
             tools=["hover"],

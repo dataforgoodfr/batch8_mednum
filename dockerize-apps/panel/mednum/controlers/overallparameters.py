@@ -32,13 +32,11 @@ opts.defaults(
 
 class OverallParameters(param.Parameterized):
     localisation = param.String(default="Toulouse", label="")
-    score = param.Range(
-        default=(0, 250),
-        bounds=(0, 250),
-    )
+    score = param.Range(default=(0, 250), bounds=(0, 250),)
+
+    tout_axes = param.Boolean(default=False, label="")
     interfaces_num = param.ListSelector(label="")
     infos_num = param.ListSelector(label="")
-
     comp_admin = param.ListSelector(label="")
     comp_usage_num = param.ListSelector(label="")
 
@@ -64,14 +62,13 @@ class OverallParameters(param.Parameterized):
 
     def load_data(self):
 
-        # cwd = Path(os.getcwd())
         data_path = Path("../data")
 
         if not data_path.exists():
             data_path = Path("./data")
-        
+
         raw_data = data_path / "raw/"
-        
+
         external_data = data_path / "external/"
 
         interim_data = data_path / "interim/"
@@ -88,8 +85,7 @@ class OverallParameters(param.Parameterized):
             self.ifrag_cont_df_merged = gpd.read_parquet(output_data_path)
         else:
             self.ifrag_cont_df_merged = get_merged_iris_data(
-                iris_df(cont_iris),
-                get_indice_frag_pivot(get_indice_frag(indice_frag)),
+                iris_df(cont_iris), get_indice_frag_pivot(get_indice_frag(indice_frag)),
             )
 
         indices_list = list(self.ifrag_cont_df_merged)
