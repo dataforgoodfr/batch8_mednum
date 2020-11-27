@@ -9,12 +9,16 @@ services:
       - ./django:/code
     command: python manage.py runserver 0.0.0.0:8000
   panel:
-    build: ./panel/
+    build:
+         context: ./panel 
+         dockerfile: ./Dockerfile
     ports:
       - "5006:5006"
     volumes:
       - ./panel:/code
+      - ../data:/data
     environment:
     - PYTHONUNBUFFERED=1
+    - PANEL_APP=./notebooks/*.ipynb
     stdin_open: true
     tty: true
