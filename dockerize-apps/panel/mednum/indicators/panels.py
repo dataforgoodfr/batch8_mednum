@@ -18,11 +18,10 @@ class PyGauge(param.Parameterized):
     pygal_config = pygal.Config()
 
     custom_style = param.Dict(
-        default=
-        dict(
+        default=dict(
             background="transparent",
             plot_background="transparent",
-            foreground="#0000ff",#53E89B",
+            foreground="#0000ff",  # 53E89B",
             foreground_strong="#53A0E8",
             foreground_subtle="transparent",
             opacity=".2",
@@ -38,7 +37,8 @@ class PyGauge(param.Parameterized):
     """
     size_w = param.Integer(100)
     value_font_size = param.Integer()
-    w_name = ''
+    w_name = ""
+
     def __init__(self, **params):
         super(PyGauge, self).__init__(**params)
         self.set_max()
@@ -52,9 +52,8 @@ class PyGauge(param.Parameterized):
             # with open(self.custom_style_css_path, 'r') as f: css = f.read()
             # self.custom_style = css2dict(css)
 
-        self.custom_style["value_font_size"] = self.value_font_size           
+        self.custom_style["value_font_size"] = self.value_font_size
         self.param["custom_style"].default = self.custom_style
-        
 
     @pn.depends("max_value", watch=True)
     def set_max(self):
@@ -64,9 +63,7 @@ class PyGauge(param.Parameterized):
     @pn.depends("value", "custom_style", watch=True)
     def create_gauge(self):
         gauge = pygal.SolidGauge(
-            inner_radius=0.70,
-            show_legend=False,
-            style=Style(**self.custom_style),
+            inner_radius=0.70, show_legend=False, style=Style(**self.custom_style),
         )
         percent_formatter = lambda x: "{:.10g}".format(x)
         gauge.value_formatter = percent_formatter
@@ -76,22 +73,20 @@ class PyGauge(param.Parameterized):
         self.HTML_GAUGE_HEADER = """
         <h2 style="{css_info_h2}">{name}</h2>
         """.format(
-            name=self.w_name,
-            css_info_h2=self.css_info_h2,
+            name=self.w_name, css_info_h2=self.css_info_h2,
         )
 
         self.HTML_GAUGE_IMG = """
         <img src="{filepath}" width="{width}px" />
         
         """.format(
-            filepath=self.file_name,
-            width=self.size_w,
+            filepath=self.file_name, width=self.size_w,
         )
 
     def view(self):
         self.create_gauge()
         return pn.pane.HTML(
-            self.HTML_GAUGE_HEADER+self.HTML_GAUGE_IMG,
+            self.HTML_GAUGE_HEADER + self.HTML_GAUGE_IMG,
             css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__).lower()],
         )
 
@@ -116,7 +111,6 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
         border-left: 1px solid #E5E5E5;
         padding: 8px;
         line-height: 14px;
-        top: 50%;
     """
     css_info_h3 = """
         margin: auto;
@@ -128,7 +122,7 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
 
     @pn.depends("indicators", watch=True)
     def set_indicators(self):
-        
+
         for ind in self.indicators:
             if "main" in ind:
                 self.show_gauge = True
@@ -147,24 +141,29 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
             font_h = 18
             pad = 10
         self.size_w = (((font_h * 2) + (pad * 2)) * len(self.indicators)) * 7 // 10
-        
 
     def view(self):
         self.w_name = self.main_indicators_name
         self.create_gauge()
-        rowspan = len(self.indicators)-1
+        rowspan = len(self.indicators) - 1
 
-        HTML_MAIN_INDIC = """<table class="gauge-cls" style="border-spacing: 1em; width:100">
+        HTML_MAIN_INDIC = """<table class="gauge-cls" style="border-spacing: 1em">
             <tr class="gauge-tr">
                 <td class="gauge-td" style="{style}">{gauge_header}</td>
         """.format(
-            rowspan=rowspan, gauge_header=self.HTML_GAUGE_HEADER, gauge_img=self.HTML_GAUGE_IMG, style=self.css_info_td
+            rowspan=rowspan,
+            gauge_header=self.HTML_GAUGE_HEADER,
+            gauge_img=self.HTML_GAUGE_IMG,
+            style=self.css_info_td,
         )
 
         HTML_GAUGE = """
                 <td class="gauge-td" rowspan={rowspan} style="{style}">{gauge_img}</td>
         """.format(
-            rowspan=rowspan, gauge_header=self.HTML_GAUGE_HEADER, gauge_img=self.HTML_GAUGE_IMG, style=self.css_info_td
+            rowspan=rowspan,
+            gauge_header=self.HTML_GAUGE_HEADER,
+            gauge_img=self.HTML_GAUGE_IMG,
+            style=self.css_info_td,
         )
 
         HTML_ROWS = [
@@ -185,9 +184,10 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
         # insert Gauge in second order
         HTML_ROWS.insert(1, HTML_GAUGE)
 
-        HTML = HTML_MAIN_INDIC +  "<tr>\n".join(HTML_ROWS) + "\n<tr>\n</table>"
-        return pn.Column(
+        HTML = HTML_MAIN_INDIC + "<tr>\n".join(HTML_ROWS) + "\n<tr>\n</table>"
+        return pn.panel(
             pn.pane.HTML(HTML),
+            sizing_mode="stretch_both",
             css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__).lower()],
         )
 
@@ -267,9 +267,21 @@ class TopIndicators(OverallParameters):
             ],
         )
 
-
-    # def _update_indicators(self):
-        
+    @pn.depends("score", "localisation")
+    def layout(self):
+        HTML = """
+        <h1>{loc}</h1>
+        """.format(
+            loc=self.localisation
+        )
+        return pn.Row(
+            pn.Column(HTML, self.glob_stats()),  # sizing_mode="stretch_height"),
+            pn.Column(self.synthese()),  # sizing_mode="stretch_height"),
+            pn.Column(self.indicator_w_gauge_1.view),  # sizing_mode="stretch_height"),
+            pn.Column(self.indicator_w_gauge_2.view),  # sizing_mode="stretch_height"),
+            css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__).lower()],
+            min_height=200,
+        )
 
     @pn.depends("score", "localisation")
     def view(self):
@@ -279,15 +291,11 @@ class TopIndicators(OverallParameters):
             loc=self.localisation
         )
         return pn.Row(
-            pn.Column(
-                HTML, self.glob_stats(), pn.layout.VSpacer()
-            ),  # background='yellow')),
-            pn.layout.HSpacer(),  # background='green'),
-            pn.Column(self.synthese(), pn.layout.VSpacer()),  # background='yellow')),
+            pn.Column(HTML, self.glob_stats(), pn.layout.VSpacer()),
             pn.layout.HSpacer(),
-            pn.Column(
-                self.indicator_w_gauge_1.view, pn.layout.VSpacer()
-            ),  # background='yellow')),
+            pn.Column(self.synthese(), pn.layout.VSpacer()),
+            pn.layout.HSpacer(),
+            pn.Column(self.indicator_w_gauge_1.view, pn.layout.VSpacer()),
             pn.layout.HSpacer(),
             self.indicator_w_gauge_2.view,
             css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__).lower()],
