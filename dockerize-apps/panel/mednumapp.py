@@ -67,8 +67,6 @@ merged_path = interim_data / "data_merge_V2.csv"
 
 df = read_merged_data(merged_path)
 
-print(df.columns)
-
 tmpl = pn.Template(template)
 tmpl.add_variable("app_title", "<h1>Custom Template App</h1>")
 
@@ -143,6 +141,6 @@ indic_w_g_value_1 = {
 
 tmpl.add_panel("sidebar", mednumapp.lat_widgets())
 tmpl.add_panel("top", mednumapp.top_panel.view)
-tmpl.add_panel("main", mednumapp.plot) # mednumapp.top_panel.view()) #hv.Curve([1, 2, 3]))
+tmpl.add_panel("main", mednumapp.map_view) # mednumapp.top_panel.view()) #hv.Curve([1, 2, 3]))
 
 tmpl.servable()

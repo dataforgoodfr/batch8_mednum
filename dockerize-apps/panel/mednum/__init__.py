@@ -1,13 +1,3 @@
-# from .widgets import *
-# from .tools import *
-# from .loaders import *
-# from .indicators import *
-# from .controlers import *
-# from . import controlers # noqa
-# from . import indicators # noqa
-# # from . import tools # noqa
-# from . import loaders
-# from . import config # noqa
 
 import panel as pn
 import geoviews as gv
@@ -35,7 +25,7 @@ class MedNumApp(OverallParameters):
 
         self.top_panel = TopIndicators()
 
-    @pn.depends("localisation", "score", "score_widget.value_throttled", watch=True)
+    @pn.depends("localisation", "score", watch=True) # .value_throttled"
     def update_params(self):
         d = dict(self.get_param_values())
         d.pop("name")
@@ -55,10 +45,14 @@ class MedNumApp(OverallParameters):
         self.score_controls = pn.Param(
             self.param.score,
             widgets={
-                "score": {"type": pn.widgets.IntRangeSlider, "bar_color": "#000000"},
+                "score": {
+                    "type": pn.widgets.IntRangeSlider,
+                     "bar_color": "#000000",
+                     "throttled": True
+                },
             },
         )
-        self.score_widget = self.score_controls[0]
+        # self.score_widget = self.score_controls[0]
 
         score_panel = pn.Column("# Score", self.score_controls)
         point_ref_panel = pn.Column(
@@ -73,13 +67,8 @@ class MedNumApp(OverallParameters):
 
         localisation_panel = pn.Column("# Localisation", self.param.localisation)
         spec_interfaces = {k: TreeViewCheckBox for k, v in TREEVIEW_CHECK_BOX.items()}
-        g_params = []
+        self.g_params = []
         for k, widget_opts in TREEVIEW_CHECK_BOX.items():
-            # widget_opts = TREEVIEW_CHECK_BOX[k]
-            # widget_opts["type"] = TreeViewCheckBox
-
-            # select_options = [opt for opt in widget_opts.keys() if opt not in ["nom", "desc"]]
-
             # Voir si description ne peut être passée
             select_options = [
                 val["nom"]
@@ -91,7 +80,7 @@ class MedNumApp(OverallParameters):
                 for opt, val in widget_opts.items()
                 if opt not in ["nom", "desc"]
             ]
-            g_params.append(
+            self.g_params.append(
                 pn.Param(
                     self.param[k],
                     widgets={
@@ -105,11 +94,7 @@ class MedNumApp(OverallParameters):
                 )
             )
 
-        # g_params = [
-        #     pn.Param(self.param[p], widgets={p: w}) for p, w in spec_interfaces.items()
-        # ]
-
-        indicateurs = pn.Column("# Indicateurs", *g_params)
+        indicateurs = pn.Column("# Indicateurs", *self.g_params)
 
         ordered_panel = pn.Column(
             localisation_panel,
@@ -122,56 +107,40 @@ class MedNumApp(OverallParameters):
         self.set_params()
         return ordered_panel
 
-    # @pn.depends("localisation", "score_widget.value_throttled")
-    def plot(self):
+    @pn.depends("score", watch=True)
+    def update_map_values(self):
+        vdims = self.map_vdims[:2]
 
-        commune_plot = self.iris_map.select(
-            nom_com=self.localisation, vdims=self.map_vdims
+        maps = self.iris_map.select(nom_com=self.localisation, vdims=vdims)
+
+        minx, miny, maxx, maxy = maps.geom().bounds
+        df_filtered = self.ifrag_cont_df_merged
+        df_filtered = df_filtered[df_filtered.nom_com == self.localisation]
+
+        self.maps = maps.select(name=self.localisation)
+
+
+        return self.maps.opts(
+            tools=["hover"],
+            color=vdims[0],
+            colorbar=True,
+            toolbar="above",
+            xaxis=None,
+            yaxis=None,
+            fill_alpha=0.5,
         )
 
-        # indices_list = list(self.ifrag_cont_df_merged)
-        # indices_list.remove("geometry")
-        # self.map_vdims = ["code_iris", "nom_com", "nom_iris"] + indices_list
-        # self.iris_map = gv.Polygons(self.ifrag_cont_df_merged, vdims=self.map_vdims)
-
-        vdims = self.map_vdims
-
-        # commune_plot = self.iris_map.select(
-        #     nom_com=self.localisation, vdims=self.map_vdims
-        # )
-
-        # minx, miny, maxx, maxy = commune_plot.geom().bounds
-        # df_filtered = self.ifrag_cont_df_merged
-        # df_filtered = df_filtered[df_filtered.nom_com == self.localisation]
-
-        # # minx, miny, maxx, maxy = df_filtered.dissolve(by='nom_com').geometry.bounds.values[0]
-
-        # commune_plot = gv.Polygons(df_filtered, vdims=vdims)
-        # .redim.range(
-        #     Latitude=(miny, maxy),
-        #     Longitude=(minx, maxx),
-        # )
-
-        # self.iris_map.select(
-        #     nom_com=self.localisation, vdims=self.map_vdims
-        # )
-        # Cartes
-        return commune_plot.opts(color=INDICE, fill_alpha=0.5)
-
-    def _update_plots(self):
-        import datetime
-
-        self._layout[-1][0] = self.top_panel.view()
-        # self._layout[-1][-1] = self.plot()
-
-    def view(self) -> pn.viewable.Viewable:
-        self.update_params()
-        # self._update_plots()
-        return pn.Row(
-            self.lat_widgets(),
-            pn.layout.HSpacer(width=10),
-            pn.Column(self.top_panel.view(), pn.Spacer(height=80), pn.Spacer()),
+    @pn.depends("localisation", watch=True)
+    def update_map_coords(self):
+        if not hasattr(self, "maps"):
+            self.update_map_values()
+        minx, miny, maxx, maxy = self.maps.geom().bounds
+        self.tiles.redim.range(
+            Latitude=(miny, maxy), Longitude=(minx, maxx),
         )
+        return self.tiles
 
-    def panel(self):
-        return pn.Row(self.lat_widgets(), self.view,)
+    def map_view(self):
+        return gv.DynamicMap(self.update_map_coords) * gv.DynamicMap(
+            self.update_map_values
+        )

@@ -78,8 +78,6 @@ class OverallParameters(param.Parameterized):
 
         cont_iris = external_data / "france-geojson" / "contours-iris.geojson"
 
-        cont_iris = external_data / "france-geojson" / "contours-iris.geojson"
-
         indice_frag = raw_data / "Tableau_data.csv"
 
         # Merged
@@ -100,8 +98,3 @@ class OverallParameters(param.Parameterized):
 
         # Cartes
         self.iris_map = gv.Polygons(self.ifrag_cont_df_merged, vdims=self.map_vdims)
-
-
-
-
-#if __name__ == "__main__":
