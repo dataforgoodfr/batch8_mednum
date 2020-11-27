@@ -12,6 +12,17 @@ cache_dir = interim_data
 
 INDICE = "GLOBAL COMPETENCES"
 
+MAP_COL_WIDGETS = {
+    "localisation": "nom_com",
+    "point_ref": {
+        "Pays": "",
+        "Région": "insee_reg",
+        "Département": "insee_dep",
+        "Intercommune": "",
+        "Commune": "insee_com",
+    },
+}
+
 
 CATEGORIES_INT_NUM = {
     "TX_POVERTY": {
@@ -31,6 +42,14 @@ CATEGORIES_INT_NUM = {
 }
 
 
+def reverse_key_val(d):
+    d_rev = {}
+    for opt, val in d.items():
+        if opt not in ["nom", "desc"]:
+            d_rev[val["nom"]] = opt
+    return d_rev
+
+
 CATEGORIES_X_INFOS = {
     "nom": "Accès à l'information",
     "desc": "Identification des populations parmi lesquelles s’observent des difficultés à accomplir des démarches administratives",
@@ -43,6 +62,7 @@ CATEGORIES_X_INFOS = {
         "desc": "Propoartion des personnes vivant seules avec enfants parmi l'ensemble des ménages",
     },
 }
+
 
 CATEGORIES_X_COMP_ADMIN = {
     "TX_TOT_0A24": {
@@ -61,6 +81,7 @@ CATEGORIES_X_COMP_ADMIN = {
     "desc": "Identification des populations parmi lesquelles s’observent des difficultés à accomplir des démarches administratives",
 }
 
+
 CATEGORIES_X_COMP_USAGE = {
     "nom": "Compétences usages numériques",
     "desc": "Identification des populations parmi lesquelles s’observe une fréquence d’illectronisme ou difficulté à utiliser internet",
@@ -77,6 +98,18 @@ CATEGORIES_X_COMP_USAGE = {
 TOUT = {
     "nom": "Tous",
     "desc": "Sélections de l'ensemble des indicateurs",
+}
+
+
+CATEGORIES_INT_NUM_REV = reverse_key_val(CATEGORIES_INT_NUM)
+CATEGORIES_X_INFOS_REV = reverse_key_val(CATEGORIES_X_INFOS)
+CATEGORIES_X_COMP_ADMIN_REV = reverse_key_val(CATEGORIES_X_COMP_ADMIN)
+CATEGORIES_X_COMP_USAGE_REV = reverse_key_val(CATEGORIES_X_COMP_USAGE)
+CATEGORIES_INDICES_REV = {
+    **CATEGORIES_INT_NUM_REV,
+    **CATEGORIES_X_INFOS_REV,
+    **CATEGORIES_X_COMP_ADMIN_REV,
+    **CATEGORIES_X_COMP_USAGE_REV,
 }
 
 TREEVIEW_CHECK_BOX = {
