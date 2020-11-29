@@ -43,7 +43,7 @@ class OverallParameters(param.Parameterized):
     comp_usage_num = param.ListSelector(label="")
 
     point_ref = param.Selector(
-        objects=list(MAP_COL_WIDGETS["point_ref"].keys()), label="Point de référence",
+        objects=list(MAP_COL_WIDGETS["level_1"].keys()), label="Point de référence",
     )
 
     donnees_infra = param.Action(
@@ -61,34 +61,45 @@ class OverallParameters(param.Parameterized):
     )
     tiles = gv.tile_sources.StamenTerrain
 
-    df_merge = param.DataFrame()
+    df_merged = param.DataFrame()
     # indices_list = param.ListSelector(label="")
-    filtered_list = param.ListSelector(label="")
-    df_filtered = param.DataFrame()
+    # filtered_list = param.ListSelector(label="")
+    # df_filtered = param.DataFrame()
 
     def __init__(self, **params):
         super(OverallParameters, self).__init__(**params)
         interim_data, cont_iris, indice_frag = self.define_paths()
-
-        self.define_indices_params()
 
         # Merged
         output_data_path = interim_data / "get_merged_iris_data.trc.pqt"
         if output_data_path.exists():
             import geopandas as gpd
 
-            self.df_merge = gpd.read_parquet(output_data_path)
+            self.df_merged = gpd.read_parquet(output_data_path)
         else:
-            self.df_merge = get_merged_iris_data(
+            self.df_merged = get_merged_iris_data(
                 iris_df(cont_iris), get_indice_frag_pivot(get_indice_frag(indice_frag)),
             )
+        # Create multindex
+        self.set_dataframes_indexes()
+        self.set_dataframes_level()
+        
+        # Create widgets for indicators
+        self.define_indices_params()
 
-        self.indices_list = list(self.df_merge)
-        self.indices_list.remove("geometry")
-        self.map_vdims = ["code_iris", "nom_com", "nom_iris"] + self.indices_list
+        # Define what is level 0 and level 1 to consider
+        self.set_entity_levels()
+
+        # What is selected in each level
+        self.get_selected_indice_by_level()
+
+
+        # self.indices_list = list(self.df_merged)
+        # self.indices_list.remove("geometry")
+        # self.map_vdims = ["code_iris", "nom_com", "nom_iris"] + self.indices_list
 
         # Cartes
-        self.iris_map = gv.Polygons(self.df_merge, vdims=self.map_vdims)
+        self.iris_map = gv.Polygons(self.df_merged) #, vdims=self.map_vdims)
 
     def define_paths(self):
         data_path = Path("../data")
@@ -108,6 +119,9 @@ class OverallParameters(param.Parameterized):
         return interim_data, cont_iris, indice_frag
 
     def define_indices_params(self):
+        """ 
+        Create all indices parameters -> Will become a TreeCheckBox
+        """
         self.g_params = []
         for k, widget_opts in TREEVIEW_CHECK_BOX.items():
             # Voir si description ne peut être passée
@@ -118,48 +132,81 @@ class OverallParameters(param.Parameterized):
     def get_params(self):
         paramater_names = [par[0] for par in self.get_param_values()]
         return pn.Param(
-            self.param, parameters=[par for par in paramater_names if par != "df_merge"]
+            self.param, parameters=[par for par in paramater_names if par != "df_merged"]
         )
+    def set_dataframes_level(self):
+        real_name_level = []
+        for col in self.df_merged.columns:
+            if col in CATEGORIES_INDICES.keys():
+                real_name_level.append((col, CATEGORIES_INDICES[col]))
+            else:
+                real_name_level.append((col, col))
+        
+        self.df_merged.columns = pd.MultiIndex.from_tuples(real_name_level, names=['variable', 'nom'])
+        
+    def set_dataframes_indexes(self):
+        indexes = [MAP_COL_WIDGETS['level_0']] + list(MAP_COL_WIDGETS['level_1'].values())
+        self.df_merged.set_index(indexes)
+        
+    @pn.depends("localisation", "point_ref", watch=True)
+    def set_entity_levels(self):
+        """Set the entity levels and point values for this entity .
+        """
+        self.level_0_column, self.level_1_column = (
+            MAP_COL_WIDGETS["level_0"],
+            MAP_COL_WIDGETS["level_1"][self.point_ref],
+        )
+        self.level_0_value = self.localisation
+        # self.level_1_value = self.point_ref
 
-    def filtered_parameters(self, with_geom=False):
-        # self.filtered_list = self.indices_list.copy()
-        # self.filtered_view_list = self.indices_list.copy()
+        # if self.level_1_column != "":
+        # self.level_1_values = self.df_merged.loc[
+        #     self.df_merged[self.level_0_column] == self.level_0_value,
+        #     self.level_1_column,
+        # ]
+        # print('ok')
+        # else:
+        #     self.level_1_values = None
+
+    @pn.depends("tout_axes",  "interfaces_num", "infos_num", "comp_admin", "comp_usage_num", watch=True)
+    def get_selected_indice_by_level(self):
+        """get the indices of the selected column
+
+        Args:
+            self ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         param_values = {k: v for k, v in self.param.get_param_values()}
-
-        ref_column = MAP_COL_WIDGETS["point_ref"][param_values["point_ref"]]
-        selected_col = [ref_column]
+        selected_col = []
         for axe, indices in param_values.items():
-            # try:
-            if (
-                axe in TREEVIEW_CHECK_BOX.keys() and indices
-            ):  # isinstance(indices, list):
+            if axe in TREEVIEW_CHECK_BOX.keys() and indices:
                 for indice in indices:
                     try:
                         selected_col += [CATEGORIES_INDICES_REV[indice]]
                     except:
                         pass
-            # except:
-            #     pass
 
-        self.filtered_list = list(set(selected_col))
+        self.selected_indices_level_0 = list(set(selected_col)) # + [self.level_0_column]))
+        self.selected_indices_level_1 = list(set(selected_col)) # + [self.level_1_column]))
 
-        if with_geom:
-            return self.filtered_list + [
-                "geometry"
-            ]  # elf.df_merge[self.indices_list + ["geometry"]]
-        else:
-            return self.filtered_list  # self.df_merge[self.indices_list]
-
-    def filter_data(self):
-        # return pn.pane.DataFrame(
-        return self.filtered_parameters()
-        #     max_rows=20,
-        #     max_cols=5,
-        #     col_space="100px",
-        #     show_dimensions=True,
-        # )  # .select(age=self.age)
+        # if with_geom:
+        #     return self.filtered_list + [
+        #         "geometry"
+        #     ]  # elf.df_merged[self.indices_list + ["geometry"]]
+        # else:
+        return self.selected_indices_level_0, self.selected_indices_level_1
 
     def create_checkbox_type_widget_params(self, widget_opts):
+        """Create dict of widget type and checkbox params .
+
+        Args:
+            widget_opts ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         if len(widget_opts.items()) > 3:
             select_options = [
                 val["nom"]
@@ -188,3 +235,24 @@ class OverallParameters(param.Parameterized):
                 "desc": descriptions,
             }
         return widgets_params
+
+    def set_real_name(df):
+        real_name_level = []
+        for col in df.columns:
+            if col in CATEGORIES_INDICES.keys():
+                real_name_level.append((col, CATEGORIES_INDICES[col]))
+            else:
+                real_name_level.append((col, col))
+            
+        return real_name_level
+
+    def score_calculation(self):
+    #     selected = ['TX_POVERTY', 'TX_NSCOL15P', 'TX_MENSEUL', 'TX_FAMMONO', 'TX_65ETPLUS',
+    #    'TX_25ETMOINS', 'TX_DEMANDEUR_EMPLOIS', 'COUVERTURE_HD_THD',
+    #    'TX_BENEF_MINIMAS_SOC']
+    #     mean_by_level_1 = geodf[selected].groupby(level='DEP').mean()
+        selected = self.selected_indices_level_0
+        selected_score = [name+"_SCORE" for name in selected]
+
+        mean_by_level_1 = self.df_merged[selected].groupby(level=self.level_1_column).mean()
+        self.df_merged[selected_score] = self.df_merged[selected].sub(mean_by_level_1).div(mean_by_level_1) * 100 +100 

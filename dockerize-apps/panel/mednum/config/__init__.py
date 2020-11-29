@@ -13,12 +13,12 @@ cache_dir = interim_data
 INDICE = "GLOBAL COMPETENCES"
 
 MAP_COL_WIDGETS = {
-    "localisation": "nom_com",
-    "point_ref": {
-        "Pays": "",
+    "level_0": "nom_com",
+    "level_1": {
+        # "Pays": "",
         "Région": "insee_reg",
         "Département": "insee_dep",
-        "Intercommune": "",
+#        "Intercommune": "",
         "Commune": "insee_com",
     },
 }
@@ -111,6 +111,8 @@ CATEGORIES_INDICES_REV = {
     **CATEGORIES_X_COMP_ADMIN_REV,
     **CATEGORIES_X_COMP_USAGE_REV,
 }
+
+CATEGORIES_INDICES = {v:k for k,v in CATEGORIES_INDICES_REV.items()}
 
 TREEVIEW_CHECK_BOX = {
     "tout_axes": TOUT,

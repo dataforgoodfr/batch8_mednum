@@ -118,5 +118,5 @@ class MedNumApp(OverallParameters):
                 widg.param.select_all = self.tout_axes
 
     def table_view(self):
-        return self.filtered_parameters # pn.pane.DataFrame()
+        return pn.pane.DataFrame(self.df_merged[self.selected_indices_level_0], max_rows=20) # self.score_calculation
 
