@@ -65,9 +65,7 @@ template = """
 {% endblock %}
 """
 # {{ embed(roots.top) | indent(8) }}
-merged_path = interim_data / "data_merge_V2.csv"
 
-df = read_merged_data(merged_path)
 
 tmpl = pn.Template(template)
 tmpl.add_variable("app_title", "<h1>Custom Template App</h1>")

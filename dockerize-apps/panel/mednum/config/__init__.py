@@ -18,7 +18,7 @@ MAP_COL_WIDGETS = {
         # "Pays": "",
         "Région": "insee_reg",
         "Département": "insee_dep",
-#        "Intercommune": "",
+        #        "Intercommune": "",
         "Commune": "insee_com",
     },
 }
@@ -33,10 +33,10 @@ CATEGORIES_INT_NUM = {
         "nom": "Couverture mobile",
         "desc": """Proportion du territoire d'où l'on peut accéder à un réseau de téléphonie mobile""",
     },
-    "COUVERTURE_HD_THD": {
-        "nom": "Taux de couverture HD / THD",
-        "desc": """Proportion des bâtiments reliés à internet Haut Débit ou Très Haut Débit""",
-    },
+    # "COUVERTURE_HD_THD": {
+    #     "nom": "Taux de couverture HD / THD",
+    #     "desc": """Proportion des bâtiments reliés à internet Haut Débit ou Très Haut Débit""",
+    # },
     "nom": "Accès aux interfaces numériques",
     "desc": "Identification des territoires mal couverts par les réseaux ou dans lesquels des populations auront des difficultésfinancières à y accéder ou à s'équiper en terminaux numériques",
 }
@@ -61,11 +61,15 @@ CATEGORIES_X_INFOS = {
         "nom": "Part des ménages monoparentaux",
         "desc": "Propoartion des personnes vivant seules avec enfants parmi l'ensemble des ménages",
     },
+    "ACCES_SERVICE_PUBLIC": {
+        "nom": "Accès à un point physique de service public",
+        "desc": "Nombre de lieux d'accueil et d'information de services publics ou parapublics pour 1000 habitants (liste des mediathèques)",
+    },
 }
 
 
 CATEGORIES_X_COMP_ADMIN = {
-    "TX_TOT_0A24": {
+    "TX_25ETMOINS": {
         "nom": "Part des moins de 25 ans",
         "desc": """Proportion de jeunes de moins de 25 ans dans la population du territoire""",
     },
@@ -73,7 +77,7 @@ CATEGORIES_X_COMP_ADMIN = {
         "nom": "Part des bénéficiaires de minimas sociaux",
         "desc": "Proportion des personnes qui percoivent des aides sociales (RSA, AAH, ASPA,...) parmi la population du territoire",
     },
-    "TX_DEMANDEURS_EMPLOI": {
+    "TX_DEMANDEUR_EMPLOIS": {
         "nom": "Part des chômeurs (15-64 ans)",
         "desc": "Proportion de personnes en recherche d'emploi et n'ayant pas travaillé récemment parmi la population en âge de travailler du territoire",
     },
@@ -112,7 +116,7 @@ CATEGORIES_INDICES_REV = {
     **CATEGORIES_X_COMP_USAGE_REV,
 }
 
-CATEGORIES_INDICES = {v:k for k,v in CATEGORIES_INDICES_REV.items()}
+CATEGORIES_INDICES = {v: k for k, v in CATEGORIES_INDICES_REV.items()}
 
 TREEVIEW_CHECK_BOX = {
     "tout_axes": TOUT,

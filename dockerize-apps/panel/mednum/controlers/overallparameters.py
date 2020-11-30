@@ -71,15 +71,19 @@ class OverallParameters(param.Parameterized):
         interim_data, cont_iris, indice_frag = self.define_paths()
 
         # Merged
-        output_data_path = interim_data / "get_merged_iris_data.trc.pqt"
+        output_data_path = processed_data / "add_geom_data_to_merged_data.trc.pqt"
         if output_data_path.exists():
             import geopandas as gpd
 
             self.df_merged = gpd.read_parquet(output_data_path)
         else:
-            self.df_merged = get_merged_iris_data(
-                iris_df(cont_iris), get_indice_frag_pivot(get_indice_frag(indice_frag)),
+            # self.df_merged = get_merged_iris_data(
+            #     iris_df(cont_iris), get_indice_frag_pivot(get_indice_frag(indice_frag)),
+            # )
+            self.df_merged = add_geom_data_to_merged_data(
+                iris_df(cont_iris), read_merged_data(indice_frag)
             )
+
         # Create multindex
         self.set_dataframes_indexes()
         self.set_dataframes_level()
@@ -114,7 +118,7 @@ class OverallParameters(param.Parameterized):
 
         cont_iris = external_data / "france-geojson" / "contours-iris.geojson"
 
-        indice_frag = raw_data / "Tableau_data.csv"
+        indice_frag = processed_data / "MERGE_data_clean.csv"
         return interim_data, cont_iris, indice_frag
 
     def define_indices_params(self):
@@ -264,19 +268,9 @@ class OverallParameters(param.Parameterized):
 
     @pn.depends("localisation", "point_ref", watch=True)
     def score_calculation(self):
-        df = self.df_merged.copy().droplevel('variable', axis=1)
-        selected = self.selected_indices_level_0
-        selected = [col for col in df.columns if col != "geometry" and col in df.columns]
-        selected_score = [name + "_SCORE" for name in selected]
+        df = self.df_merged.copy().droplevel("nom", axis=1)
 
-        mean_by_level_1 = (
-            df[selected].groupby(level=self.level_1_column).mean()
-        )
-        self.df_score = (
-            df[selected].sub(mean_by_level_1).div(mean_by_level_1) * 100
-            + 100
-        )
-
+        selected = []
         real_name_level = []
         for kAxe, vAxe in TREEVIEW_CHECK_BOX.items():
             n = 0
@@ -285,31 +279,12 @@ class OverallParameters(param.Parameterized):
                 if kIndic not in ["nom", "desc"]:
                     # exclusion de nom et desc donne le nombre d'indice
                     real_name_level.append((kAxe, kIndic))
-                   
+                    selected.append(kIndic)
 
-        # for col in self.df_merged.columns:
-            # if col in CATEGORIES_INDICES.keys():
-            #     real_name_level.append((col, CATEGORIES_INDICES[col]))
-            # else:
-            #     real_name_level.append((col, col))
-
-      
-
-
-        # # Score aggloméré
-        # for kAxe, vAxe in TREEVIEW_CHECK_BOX.items():
-        #     n = 0
-        #     for kIndic, vIndic in vAxe.items():
-        #         # Exclusion du cas complet
-        #         partial_score = 0
-        #         if kIndic not in ["nom", "desc"]:
-        #             # exclusion de nom et desc donne le nombre d'indice
-        #             partial_score += (
-        #                 self.df_merged[kIndic + "_SCORE"].sum()
-        #                 / (len(vAxe) - 2)
-        #                 / len(self.df_merged[kIndic + "_SCORE"])
-        #             )
-        #         self.df_score.assign(vIndic["nom"], partial_score)
+        mean_by_level_1 = df[selected].groupby(level=self.level_1_column).mean()
+        self.df_score = (
+            df[selected].sub(mean_by_level_1).div(mean_by_level_1) * 100 + 100
+        )
 
         self.df_score.columns = pd.MultiIndex.from_tuples(
             real_name_level, names=["axe", "indicateur"]

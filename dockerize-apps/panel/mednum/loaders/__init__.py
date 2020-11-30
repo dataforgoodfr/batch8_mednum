@@ -65,7 +65,13 @@ def get_merged_iris_data(cont_iris_df, ifrag_df_pivot):
         cont_iris_df, ifrag_df_pivot, on=["code_iris", "nom_com", "nom_iris"]
     )
     return ifrag_cont_df_merged
-    
+
+@cache_pandas_result(cache_dir, hard_reset=hard_reset, geoformat=True)
+def add_geom_data_to_merged_data(cont_iris_df, ifrag_df_pivot):
+    ifrag_cont_df_merged = pd.merge(
+        cont_iris_df, ifrag_df_pivot, left_on=["insee_com", "nom_com"], right_on=["CODE_INSEE", "LIBCOM"]
+    )
+    return ifrag_cont_df_merged
 
 @cache_pandas_result(processed_data, hard_reset=hard_reset, geoformat=False)
 def read_merged_data(merged_path):
