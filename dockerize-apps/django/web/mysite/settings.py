@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'landing',
-    'channels',
-    'bokeh.server.django',
+    'bokehApp.apps.BockerAppConfig',
+    
 ]
 
 MIDDLEWARE = [
