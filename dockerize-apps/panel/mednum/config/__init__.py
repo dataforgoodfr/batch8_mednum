@@ -37,7 +37,7 @@ CATEGORIES_INT_NUM = {
     #     "nom": "Taux de couverture HD / THD",
     #     "desc": """Proportion des bâtiments reliés à internet Haut Débit ou Très Haut Débit""",
     # },
-    "nom": "Accès aux interfaces numériques",
+    "nom": "Accès interfaces numériques",
     "desc": "Identification des territoires mal couverts par les réseaux ou dans lesquels des populations auront des difficultésfinancières à y accéder ou à s'équiper en terminaux numériques",
 }
 
@@ -51,7 +51,7 @@ def reverse_key_val(d):
 
 
 CATEGORIES_X_INFOS = {
-    "nom": "Accès à l'information",
+    "nom": "Accès information",
     "desc": "Identification des populations parmi lesquelles s’observent des difficultés à accomplir des démarches administratives",
     "TX_MENSEUL": {
         "nom": "Part des ménages d'une personne",

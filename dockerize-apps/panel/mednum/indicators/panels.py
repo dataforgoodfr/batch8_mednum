@@ -115,6 +115,7 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
     """
     css_info_h3 = """
         margin: auto;
+        font-size: 1rem;
     """
 
     def __init__(self, **params) -> None:
@@ -214,7 +215,7 @@ indic_w_g_value_2 = {
 class TopIndicators(OverallParameters):
     indicators_value_1 = param.Dict(default=indic_w_g_value_1)
     indicators_value_2 = param.Dict(default=indic_w_g_value_2)
-    
+
     def get_name(self):
         return self.__class__.__name__
 
@@ -242,9 +243,7 @@ class TopIndicators(OverallParameters):
         return pn.pane.HTML(
             HTML,
             css_classes=[
-                re.sub(
-                    r"(?<!^)(?=[A-Z])", "-", self.get_name() + "Synthese"
-                ).lower()
+                re.sub(r"(?<!^)(?=[A-Z])", "-", self.get_name() + "Synthese").lower()
             ],
         )
 
@@ -266,13 +265,33 @@ class TopIndicators(OverallParameters):
         return pn.pane.HTML(
             HTML,
             css_classes=[
-                re.sub(
-                    r"(?<!^)(?=[A-Z])", "-", self.get_name()+ "-Globstats"
-                ).lower()
+                re.sub(r"(?<!^)(?=[A-Z])", "-", self.get_name() + "-Globstats").lower()
             ],
         )
 
-    @pn.depends("score", "localisation","point_ref")
+    def score_par_axe(self, name):
+        indicator = []
+        score_axe_total = 0
+        for key, axis_categories in TREEVIEW_CHECK_BOX.items():
+            axis_name = axis_categories["nom"]
+            score_axe = 0
+            if name in axis_name:
+                for kIndic, vIndic in axis_categories.items():
+                    if kIndic not in ["nom", "desc"]:
+                        sel_df = self.df_score.loc[self.level_0_value].xs(kIndic, level="indicateur", axis=1)
+                        score_axe += (
+                            sel_df.sum()[0]
+                            / len(sel_df)
+                            / (len(axis_categories.items()) - 2)
+                        )
+                indicator.append(dict(name=axis_name.replace(name+" ", ""), value=int(score_axe), max_value=250))
+            score_axe_total += score_axe / (len(TREEVIEW_CHECK_BOX.items())-1)
+        indicator.append(
+            dict(name=name, main=True, value=int(score_axe_total), max_value=250)
+        )
+        return indicator
+
+    @pn.depends("score", "localisation", "point_ref")
     def top_panel(self):
         HTML = """
         <h1>{loc}</h1>
@@ -280,32 +299,20 @@ class TopIndicators(OverallParameters):
             loc=self.localisation
         )
 
-        indicator_1 = []
-        score_axe = 0
-        for key, axe in TREEVIEW_CHECK_BOX.items():
-            if key == "nom" and "Accès" in axe:
-                indicator_1.append(dict(name=key, value=self.df_merged[key], max_value=200))
-                score_axe += self.df_merged[key]
-        indicator_1.append(dict(name="Accès",main=True,  value=score_axe, max_value=200))
-
-        indicator_2 = []
-        score_axe = 0
-        for key, axe in TREEVIEW_CHECK_BOX.items():
-            if key == "nom" and "Compétences" in axe:
-                indicator_2.append(dict(name=key, value=self.df_merged[key], max_value=200))
-                score_axe += self.df_merged[key]
-        indicator_2.append(dict(name="Compétences", main=True, value=score_axe, max_value=200))
+        indicator_1 = self.score_par_axe(name="Accès")
+        indicator_2 = self.score_par_axe(name="Compétences")
 
         self.indicator_w_gauge_1.indicators = indicator_1
         self.indicator_w_gauge_2.indicators = indicator_2
-        
 
         return pn.Row(
             pn.Column(HTML, self.glob_stats()),  # sizing_mode="stretch_height"),
             pn.Column(self.synthese()),  # sizing_mode="stretch_height"),
             pn.Column(self.indicator_w_gauge_1.view),  # sizing_mode="stretch_height"),
             pn.Column(self.indicator_w_gauge_2.view),  # sizing_mode="stretch_height"),
-            css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", self.get_name()+"TopPanel").lower()],
+            css_classes=[
+                re.sub(r"(?<!^)(?=[A-Z])", "-", self.get_name() + "TopPanel").lower()
+            ],
             min_height=200,
         )
 

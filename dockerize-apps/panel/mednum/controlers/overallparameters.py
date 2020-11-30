@@ -96,7 +96,7 @@ class OverallParameters(param.Parameterized):
 
         # What is selected in each level
         self.get_selected_indice_by_level()
-
+        self.score_calculation()
         # self.indices_list = list(self.df_merged)
         # self.indices_list.remove("geometry")
         # self.map_vdims = ["code_iris", "nom_com", "nom_iris"] + self.indices_list
@@ -269,7 +269,7 @@ class OverallParameters(param.Parameterized):
     @pn.depends("localisation", "point_ref", watch=True)
     def score_calculation(self):
         df = self.df_merged.copy().droplevel("nom", axis=1)
-
+        print(df.columns)
         selected = []
         real_name_level = []
         for kAxe, vAxe in TREEVIEW_CHECK_BOX.items():
@@ -280,7 +280,6 @@ class OverallParameters(param.Parameterized):
                     # exclusion de nom et desc donne le nombre d'indice
                     real_name_level.append((kAxe, kIndic))
                     selected.append(kIndic)
-
         mean_by_level_1 = df[selected].groupby(level=self.level_1_column).mean()
         self.df_score = (
             df[selected].sub(mean_by_level_1).div(mean_by_level_1) * 100 + 100
