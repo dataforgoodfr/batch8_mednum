@@ -6,7 +6,7 @@ from mednum.indicators.panels import TopIndicators
 import param
 
 
-class MedNumApp(OverallParameters):
+class MedNumApp(TopIndicators):
     score_widget = pn.widgets.IntRangeSlider
     _layout = pn.Column()
     top_params = param.Dict(default={})
@@ -20,17 +20,17 @@ class MedNumApp(OverallParameters):
         # self.param.comp_admin.objects = OPTIONS_X_COMP_ADMIN
         # self.param.comp_usage_num.objects = OPTIONS_X_COMP_USAGE
 
-        self.top_panel = TopIndicators()
+    #     self.top_panel = TopIndicators()
 
-    @pn.depends("localisation", "score", watch=True)  # .value_throttled"
-    def update_params(self):
-        d = dict(self.get_param_values())
-        d.pop("name")
-        for k, v in d.items():
-            try:
-                self.top_panel.set_param(**{k: v})
-            except Exception as e:
-                pass
+    # @pn.depends("localisation", "score", watch=True)  # .value_throttled"
+    # def update_params(self):
+    #     d = dict(self.get_param_values())
+    #     d.pop("name")
+    #     for k, v in d.items():
+    #         try:
+    #             self.top_panel.set_param(**{k: v})
+    #         except Exception as e:
+    #             pass
 
     # def set_params(self):
     #     self.top_params = {
