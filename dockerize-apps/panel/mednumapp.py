@@ -90,7 +90,7 @@ mednumapp = mednum.MedNumApp(name="Sélection")
 
 # Top indicator
 tmpl.add_panel("sidebar", mednumapp.lat_widgets())
-tmpl.add_panel("top", pn.panel(mednumapp.layout, height=200)),
+tmpl.add_panel("top", pn.panel(mednumapp.top_panel, height=200)),
 tmpl.add_panel("main", mednumapp.map_view) 
 # tmpl.add_panel("main", mednumapp.table_view) 
 

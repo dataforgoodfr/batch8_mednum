@@ -214,6 +214,9 @@ indic_w_g_value_2 = {
 class TopIndicators(OverallParameters):
     indicators_value_1 = param.Dict(default=indic_w_g_value_1)
     indicators_value_2 = param.Dict(default=indic_w_g_value_2)
+    
+    def get_name(self):
+        return self.__class__.__name__
 
     def __init__(self, **params) -> None:
         super(TopIndicators, self).__init__(**params)
@@ -240,7 +243,7 @@ class TopIndicators(OverallParameters):
             HTML,
             css_classes=[
                 re.sub(
-                    r"(?<!^)(?=[A-Z])", "-", type(self).__name__ + "Synthese"
+                    r"(?<!^)(?=[A-Z])", "-", self.get_name() + "Synthese"
                 ).lower()
             ],
         )
@@ -264,13 +267,13 @@ class TopIndicators(OverallParameters):
             HTML,
             css_classes=[
                 re.sub(
-                    r"(?<!^)(?=[A-Z])", "-", type(self).__name__ + "-Globstats"
+                    r"(?<!^)(?=[A-Z])", "-", self.get_name()+ "-Globstats"
                 ).lower()
             ],
         )
 
     @pn.depends("score", "localisation","point_ref")
-    def layout(self):
+    def top_panel(self):
         HTML = """
         <h1>{loc}</h1>
         """.format(
@@ -302,7 +305,7 @@ class TopIndicators(OverallParameters):
             pn.Column(self.synthese()),  # sizing_mode="stretch_height"),
             pn.Column(self.indicator_w_gauge_1.view),  # sizing_mode="stretch_height"),
             pn.Column(self.indicator_w_gauge_2.view),  # sizing_mode="stretch_height"),
-            css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", type(self).__name__).lower()],
+            css_classes=[re.sub(r"(?<!^)(?=[A-Z])", "-", self.get_name()+"TopPanel").lower()],
             min_height=200,
         )
 

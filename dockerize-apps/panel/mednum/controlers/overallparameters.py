@@ -71,7 +71,7 @@ class OverallParameters(param.Parameterized):
         interim_data, cont_iris, indice_frag = self.define_paths()
 
         # Merged
-        output_data_path = processed_data / "add_geom_data_to_merged_data.trc.pqt"
+        output_data_path = interim_data / "add_geom_data_to_merged_data.trc.pqt"
         if output_data_path.exists():
             import geopandas as gpd
 
