@@ -12,7 +12,7 @@ class MedNumApp(OverallParameters):
     top_params = param.Dict(default={})
 
     def __init__(self, **params):
-        super(MedNumApp, self).__init__(**params)        # self.load_data()
+        super(MedNumApp, self).__init__(**params)  # self.load_data()
 
         # self.param.interfaces_num.objects = OPTIONS_INT_NUM
         # self.param.infos_num.objects = OPTIONS_X_INFOS
@@ -74,25 +74,34 @@ class MedNumApp(OverallParameters):
 
     @pn.depends("score", watch=True)
     def update_map_values(self):
-        vdims = self.map_vdims[:2]
+        vdims = self.selected_indices_level_0
+        try:
+            df = self.df_merged.xs(
+                self.level_0_value, level=self.level_0_column
+            ).droplevel("variable", axis=1)
+            # df.to_parquet("debug.pqt")
+            #   self.iris_map.select(nom_com=self.localisation, vdims=vdims)
+            # if len(vdims) == 0:
+            vdims = [col for col in df.columns if col != "geometry"]
+            maps = gv.Polygons(df, vdims=vdims)
+            # minx, miny, maxx, maxy = maps.geom().bounds
+            # df_filtered = self.df_merge
+            # df_filtered = df_filtered[df_filtered.nom_com == self.localisation]
 
-        maps = self.iris_map.select(nom_com=self.localisation, vdims=vdims)
+            self.maps = maps.select(name=self.localisation)
 
-        minx, miny, maxx, maxy = maps.geom().bounds
-        # df_filtered = self.df_merge
-        # df_filtered = df_filtered[df_filtered.nom_com == self.localisation]
-
-        self.maps = maps.select(name=self.localisation)
-
-        return self.maps.opts(
-            tools=["hover"],
-            color=vdims[0],
-            colorbar=True,
-            toolbar="above",
-            xaxis=None,
-            yaxis=None,
-            fill_alpha=0.5,
-        )
+            return self.maps.opts(
+                tools=["hover"],
+                color=vdims[0],
+                colorbar=True,
+                toolbar="above",
+                xaxis=None,
+                yaxis=None,
+                fill_alpha=0.5,
+            )
+        except Exception as e:
+            print(e)
+            pass
 
     @pn.depends("localisation", watch=True)
     def update_map_coords(self):
@@ -118,5 +127,8 @@ class MedNumApp(OverallParameters):
                 widg.param.select_all = self.tout_axes
 
     def table_view(self):
-        return pn.pane.DataFrame(self.df_merged[self.selected_indices_level_0], max_rows=20) # self.score_calculation
+        return pn.pane.DataFrame(
+            self.df_merged[self.selected_indices_level_0].droplevel("variable", axis=1),
+            max_rows=20,
+        )  # self.score_calculation
 

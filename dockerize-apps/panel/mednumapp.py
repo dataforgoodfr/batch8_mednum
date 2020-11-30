@@ -91,18 +91,9 @@ mednumapp = mednum.MedNumApp(name="Sélection")
 #sidebar = pn.Column(mednumapp.lat_widgets())
 
 # Top indicator
-indic_w_g_value_1 = {
-    "name": "indic1_1",
-    "indicators": [
-        dict(name="accès", main=True, value=85, max_value=100),
-        dict(name="info", value=118),
-        dict(name="Interfaces", value=53),
-    ],
-}
-
 tmpl.add_panel("sidebar", mednumapp.lat_widgets())
 tmpl.add_panel("top", pn.panel(mednumapp.top_panel.layout, height=200)),
-# tmpl.add_panel("main", mednumapp.map_view) 
-tmpl.add_panel("main", mednumapp.table_view) 
+tmpl.add_panel("main", mednumapp.map_view) 
+# tmpl.add_panel("main", mednumapp.table_view) 
 
 tmpl.servable()

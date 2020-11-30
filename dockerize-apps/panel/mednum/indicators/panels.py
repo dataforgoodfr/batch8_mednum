@@ -8,6 +8,7 @@ from pygal.style import Style
 
 from mednum.controlers.overallparameters import OverallParameters
 from mednum.tools import css2dict
+from mednum.config import TREEVIEW_CHECK_BOX
 
 css_file_gauge = Path(__file__).parent.parent / "css" / "pygauge.css"
 
@@ -228,10 +229,12 @@ class TopIndicators(OverallParameters):
     @pn.depends("score", watch=True)
     def synthese(self):
         HTML = """<b>Soit potentiellement : </b><br>
-        Personnes en situation d’illectronisme : 252
-        Personnes n’ayant pas d’équipement : 56 868
-        Personnes avec au moins une incapacité * : 896618<br>
-        """
+        Personnes en situation d’illectronisme : {illectronisme}
+        Personnes n’ayant pas d’équipement : {pas_equipement}
+        Personnes avec au moins une incapacité * : {incapcite}<br>
+        """.format(
+            illectronisme="50", pas_equipement="50", incapcite="50"
+        )
 
         return pn.pane.HTML(
             HTML,
@@ -266,13 +269,34 @@ class TopIndicators(OverallParameters):
             ],
         )
 
-    @pn.depends("score", "localisation")
+    @pn.depends("score", "localisation","point_ref")
     def layout(self):
         HTML = """
         <h1>{loc}</h1>
         """.format(
             loc=self.localisation
         )
+
+        indicator_1 = []
+        score_axe = 0
+        for key, axe in TREEVIEW_CHECK_BOX.items():
+            if key == "nom" and "Accès" in axe:
+                indicator_1.append(dict(name=key, value=self.df_merged[key], max_value=200))
+                score_axe += self.df_merged[key]
+        indicator_1.append(dict(name="Accès",main=True,  value=score_axe, max_value=200))
+
+        indicator_2 = []
+        score_axe = 0
+        for key, axe in TREEVIEW_CHECK_BOX.items():
+            if key == "nom" and "Compétences" in axe:
+                indicator_2.append(dict(name=key, value=self.df_merged[key], max_value=200))
+                score_axe += self.df_merged[key]
+        indicator_2.append(dict(name="Compétences", main=True, value=score_axe, max_value=200))
+
+        self.indicator_w_gauge_1.indicators = indicator_1
+        self.indicator_w_gauge_2.indicators = indicator_2
+        
+
         return pn.Row(
             pn.Column(HTML, self.glob_stats()),  # sizing_mode="stretch_height"),
             pn.Column(self.synthese()),  # sizing_mode="stretch_height"),
@@ -289,6 +313,7 @@ class TopIndicators(OverallParameters):
         """.format(
             loc=self.localisation
         )
+
         return pn.Row(
             pn.Column(HTML, self.glob_stats(), pn.layout.VSpacer()),
             pn.layout.HSpacer(),

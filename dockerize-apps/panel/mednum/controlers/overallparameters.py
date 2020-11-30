@@ -83,7 +83,7 @@ class OverallParameters(param.Parameterized):
         # Create multindex
         self.set_dataframes_indexes()
         self.set_dataframes_level()
-        
+
         # Create widgets for indicators
         self.define_indices_params()
 
@@ -93,13 +93,12 @@ class OverallParameters(param.Parameterized):
         # What is selected in each level
         self.get_selected_indice_by_level()
 
-
         # self.indices_list = list(self.df_merged)
         # self.indices_list.remove("geometry")
         # self.map_vdims = ["code_iris", "nom_com", "nom_iris"] + self.indices_list
 
         # Cartes
-        self.iris_map = gv.Polygons(self.df_merged) #, vdims=self.map_vdims)
+        # self.iris_map = gv.Polygons(self.df_merged) #, vdims=self.map_vdims)
 
     def define_paths(self):
         data_path = Path("../data")
@@ -132,8 +131,10 @@ class OverallParameters(param.Parameterized):
     def get_params(self):
         paramater_names = [par[0] for par in self.get_param_values()]
         return pn.Param(
-            self.param, parameters=[par for par in paramater_names if par != "df_merged"]
+            self.param,
+            parameters=[par for par in paramater_names if par != "df_merged"],
         )
+
     def set_dataframes_level(self):
         real_name_level = []
         for col in self.df_merged.columns:
@@ -141,13 +142,17 @@ class OverallParameters(param.Parameterized):
                 real_name_level.append((col, CATEGORIES_INDICES[col]))
             else:
                 real_name_level.append((col, col))
-        
-        self.df_merged.columns = pd.MultiIndex.from_tuples(real_name_level, names=['variable', 'nom'])
-        
+
+        self.df_merged.columns = pd.MultiIndex.from_tuples(
+            real_name_level, names=["variable", "nom"]
+        )
+
     def set_dataframes_indexes(self):
-        indexes = [MAP_COL_WIDGETS['level_0']] + list(MAP_COL_WIDGETS['level_1'].values())
-        self.df_merged.set_index(indexes)
-        
+        indexes = [MAP_COL_WIDGETS["level_0"]] + list(
+            MAP_COL_WIDGETS["level_1"].values()
+        )
+        self.df_merged.set_index(indexes, inplace=True)
+
     @pn.depends("localisation", "point_ref", watch=True)
     def set_entity_levels(self):
         """Set the entity levels and point values for this entity .
@@ -168,7 +173,14 @@ class OverallParameters(param.Parameterized):
         # else:
         #     self.level_1_values = None
 
-    @pn.depends("tout_axes",  "interfaces_num", "infos_num", "comp_admin", "comp_usage_num", watch=True)
+    @pn.depends(
+        "tout_axes",
+        "interfaces_num",
+        "infos_num",
+        "comp_admin",
+        "comp_usage_num",
+        watch=True,
+    )
     def get_selected_indice_by_level(self):
         """get the indices of the selected column
 
@@ -188,8 +200,12 @@ class OverallParameters(param.Parameterized):
                     except:
                         pass
 
-        self.selected_indices_level_0 = list(set(selected_col)) # + [self.level_0_column]))
-        self.selected_indices_level_1 = list(set(selected_col)) # + [self.level_1_column]))
+        self.selected_indices_level_0 = list(
+            set(selected_col)
+        )  #  + [self.level_0_column]))
+        self.selected_indices_level_1 = list(
+            set(selected_col)
+        )  # + [self.level_1_column]))
 
         # if with_geom:
         #     return self.filtered_list + [
@@ -243,16 +259,59 @@ class OverallParameters(param.Parameterized):
                 real_name_level.append((col, CATEGORIES_INDICES[col]))
             else:
                 real_name_level.append((col, col))
-            
+
         return real_name_level
 
+    @pn.depends("localisation", "point_ref", watch=True)
     def score_calculation(self):
-    #     selected = ['TX_POVERTY', 'TX_NSCOL15P', 'TX_MENSEUL', 'TX_FAMMONO', 'TX_65ETPLUS',
-    #    'TX_25ETMOINS', 'TX_DEMANDEUR_EMPLOIS', 'COUVERTURE_HD_THD',
-    #    'TX_BENEF_MINIMAS_SOC']
-    #     mean_by_level_1 = geodf[selected].groupby(level='DEP').mean()
+        df = self.df_merged.copy().droplevel('variable', axis=1)
         selected = self.selected_indices_level_0
-        selected_score = [name+"_SCORE" for name in selected]
+        selected = [col for col in df.columns if col != "geometry" and col in df.columns]
+        selected_score = [name + "_SCORE" for name in selected]
 
-        mean_by_level_1 = self.df_merged[selected].groupby(level=self.level_1_column).mean()
-        self.df_merged[selected_score] = self.df_merged[selected].sub(mean_by_level_1).div(mean_by_level_1) * 100 +100 
+        mean_by_level_1 = (
+            df[selected].groupby(level=self.level_1_column).mean()
+        )
+        self.df_score = (
+            df[selected].sub(mean_by_level_1).div(mean_by_level_1) * 100
+            + 100
+        )
+
+        real_name_level = []
+        for kAxe, vAxe in TREEVIEW_CHECK_BOX.items():
+            n = 0
+            for kIndic, vIndic in vAxe.items():
+                # Exclusion du cas complet
+                if kIndic not in ["nom", "desc"]:
+                    # exclusion de nom et desc donne le nombre d'indice
+                    real_name_level.append((kAxe, kIndic))
+                   
+
+        # for col in self.df_merged.columns:
+            # if col in CATEGORIES_INDICES.keys():
+            #     real_name_level.append((col, CATEGORIES_INDICES[col]))
+            # else:
+            #     real_name_level.append((col, col))
+
+      
+
+
+        # # Score aggloméré
+        # for kAxe, vAxe in TREEVIEW_CHECK_BOX.items():
+        #     n = 0
+        #     for kIndic, vIndic in vAxe.items():
+        #         # Exclusion du cas complet
+        #         partial_score = 0
+        #         if kIndic not in ["nom", "desc"]:
+        #             # exclusion de nom et desc donne le nombre d'indice
+        #             partial_score += (
+        #                 self.df_merged[kIndic + "_SCORE"].sum()
+        #                 / (len(vAxe) - 2)
+        #                 / len(self.df_merged[kIndic + "_SCORE"])
+        #             )
+        #         self.df_score.assign(vIndic["nom"], partial_score)
+
+        self.df_score.columns = pd.MultiIndex.from_tuples(
+            real_name_level, names=["axe", "indicateur"]
+        )
+
