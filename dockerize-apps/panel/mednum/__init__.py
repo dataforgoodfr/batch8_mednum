@@ -74,23 +74,35 @@ class MedNumApp(TopIndicators):
 
     @pn.depends("score", watch=True)
     def update_map_values(self):
-        vdims = self.selected_indices_level_0 + ["nom_iris"]
+
         try:
             # Selection par localisation
             df = self.df_merged.xs(
                 self.level_0_value, level=self.level_0_column
             ).droplevel("variable", axis=1)[["nom_iris", "geometry"]]
-            
+
+            # Change from variable name to real name to display
             variables = dict(self.df_merged.columns.tolist())
             import pandas as pd
+
             noms = []
             for name in self.df_score.columns.levels[1]:
                 noms.append(variables[name])
             df_score = self.df_score.copy()
             df_score.columns = noms
             df_score = df_score.loc[self.level_0_value]
+
+            # Merge geometry informations with scores
+            displayed_names = ["Nom Iris"]
+            for name in self.selected_indices_level_0:
+                displayed_names.append(variables[name])
+
             df_view = pd.concat([df, df_score], axis=1)
-            vdims = [col for col in df_view.columns if col != "geometry"]
+            df_view.rename(columns={"nom_iris": "Nom Iris"}, inplace=True)
+
+            # Select variables of interests
+            vdims = [col for col in df_view.columns if col in displayed_names]
+
             self.maps = gv.Polygons(df_view, vdims=vdims)
 
             return self.maps.opts(
@@ -118,9 +130,7 @@ class MedNumApp(TopIndicators):
 
     def map_view(self):
         # return gv.DynamicMap(self.update_map_coords) * gv.DynamicMap(
-        return self.tiles * gv.DynamicMap(
-            self.update_map_values
-        )
+        return self.tiles * gv.DynamicMap(self.update_map_values)
 
     @pn.depends("tout_axes", watch=True)
     def selection_indicateurs(self):
