@@ -166,16 +166,6 @@ class OverallParameters(param.Parameterized):
             MAP_COL_WIDGETS["level_1"][self.point_ref],
         )
         self.level_0_value = self.localisation
-        # self.level_1_value = self.point_ref
-
-        # if self.level_1_column != "":
-        # self.level_1_values = self.df_merged.loc[
-        #     self.df_merged[self.level_0_column] == self.level_0_value,
-        #     self.level_1_column,
-        # ]
-        # print('ok')
-        # else:
-        #     self.level_1_values = None
 
     @pn.depends(
         "tout_axes",

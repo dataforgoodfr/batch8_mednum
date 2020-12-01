@@ -232,13 +232,10 @@ class TopIndicators(OverallParameters):
 
     @pn.depends("score", watch=True)
     def synthese(self):
-        HTML = """<b>Soit potentiellement : </b><br>
-        Personnes en situation d’illectronisme : {illectronisme}
-        Personnes n’ayant pas d’équipement : {pas_equipement}
-        Personnes avec au moins une incapacité * : {incapcite}<br>
-        """.format(
-            illectronisme="50", pas_equipement="50", incapcite="50"
-        )
+        HTML = """
+        <b>Scores par axe de fragilité</b>
+        Un score de 100 correspond à la moyenne de référence pour un territoire sur un axe de fragilité.
+        """
 
         return pn.pane.HTML(
             HTML,
