@@ -50,24 +50,45 @@ class MedNumApp(TopIndicators):
             },
         )
 
-        score_panel = pn.Column("# Score", self.score_controls)
+        score_panel = pn.Column("## Score", self.score_controls)
         point_ref_panel = pn.Column(
-            "# Point de reference",
+            "## Point de reference",
             pn.Param(
                 self.param.point_ref, widgets={"point_ref": pn.widgets.RadioBoxGroup},
             ),
         )
-        export_panel = pn.Column(
-            "# Aller plus loin", self.param.export_data, self.param.edit_report
+        niveau_observation_panel = pn.Column(
+            "## " + self.param.niveau_observation.label,
+            pn.Param(
+                self.param.niveau_observation,
+                widgets={"niveau_observation": pn.widgets.RadioBoxGroup},
+            ),
+        )
+        niveau_details_panel = pn.Column(
+            "## " + self.param.niveau_details.label,
+            pn.Param(
+                self.param.niveau_details,
+                widgets={"niveau_details": pn.widgets.RadioBoxGroup},
+            ),
         )
 
-        localisation_panel = pn.Column("# Localisation", self.param.localisation)
+        export_panel = pn.Column(
+            "## Aller plus loin", self.param.export_data, self.param.edit_report
+        )
+
+        localisation_panel = pn.Column("## Localisation", self.param.localisation)
         # spec_interfaces = {k: TreeViewCheckBox for k, v in TREEVIEW_CHECK_BOX.items()}
 
-        indicateurs = pn.Column("# Indicateurs", *self.g_params)
+        indicateurs = pn.Column("## Indicateurs", *self.g_params)
 
         ordered_panel = pn.Column(
-            localisation_panel, score_panel, indicateurs, point_ref_panel, export_panel,
+            localisation_panel,
+            score_panel,
+            indicateurs,
+            point_ref_panel,
+            niveau_observation_panel,
+            niveau_details_panel,
+            export_panel,
         )
         # self.set_params()
         return ordered_panel
@@ -77,43 +98,47 @@ class MedNumApp(TopIndicators):
 
         try:
             # Selection par localisation
-            df = self.df_merged.xs(
-                self.level_0_value, level=self.level_0_column
-            ).droplevel("variable", axis=1)[["nom_iris", "geometry"]]
 
-            # Change from variable name to real name to display
-            variables = dict(self.df_merged.columns.tolist())
-            import pandas as pd
+            association = {}
+            indexes = self.df_merged.loc[self.level_0_value].index
+            for k, v in zip(
+                indexes.names,
+                indexes.unique()[0],
+            ):
+                association[k] = v
 
-            noms = []
-            for name in self.df_score.columns.levels[1]:
-                noms.append(variables[name])
-            df_score = self.df_score.copy()
-            df_score.columns = noms
-            df_score = df_score.loc[self.level_0_value]
+            df_merged_by = self.df_merged.droplevel("variable", axis=1)
+            df_merged_by = df_merged_by.xs(
+                association[self.level_1_column], level=self.level_1_column,  drop_level=False
+            )
 
-            # Merge geometry informations with scores
-            displayed_names = ["Nom Iris"]
-            for name in self.selected_indices_level_0:
-                displayed_names.append(variables[name])
+            df_merged_by = df_merged_by.dissolve(
+                by=[
+                    MAP_COL_WIDGETS["level_1"][self.niveau_details],
+                    self.level_0_column,
+                ],
+                aggfunc="mean",
+            )
 
-            df_view = pd.concat([df, df_score], axis=1)
-            df_view.rename(columns={"nom_iris": "Nom Iris"}, inplace=True)
+            vdims_by = [
+                c[0] if isinstance(c, tuple) else c for c in df_merged_by.columns
+            ]
+            df_merged_by.columns = vdims_by
+            vdims_by = [c for c in vdims_by if c != "geometry"]
+            import random
 
-            # Select variables of interests
-            vdims = [col for col in df_view.columns if col in displayed_names]
-
-            self.maps = gv.Polygons(df_view, vdims=vdims)
-
+            random.shuffle(vdims_by)
+            self.maps = gv.Polygons(df_merged_by, vdims=vdims_by + ["nom_com"])
             return self.maps.opts(
                 tools=["hover"],
-                color=vdims[0],
+                color="score",
                 colorbar=True,
                 toolbar="above",
                 xaxis=None,
                 yaxis=None,
                 fill_alpha=0.5,
             )
+
         except Exception as e:
             print(e)
             pass

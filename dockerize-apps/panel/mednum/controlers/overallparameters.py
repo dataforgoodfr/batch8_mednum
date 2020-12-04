@@ -43,7 +43,15 @@ class OverallParameters(param.Parameterized):
     comp_usage_num = param.ListSelector(label="")
 
     point_ref = param.Selector(
-        objects=list(MAP_COL_WIDGETS["level_1"].keys()), label="Point de référence",
+        default=SELECT[1], objects=SELECT, label="Point de référence",
+    )
+
+    niveau_observation = param.Selector(
+        default=SELECT[2], objects=SELECT, label="Niveau d'observation",
+    )
+
+    niveau_details = param.Selector(
+        default=SELECT[2], objects=SELECT, label="Niveau de détail",
     )
 
     donnees_infra = param.Action(
@@ -62,9 +70,6 @@ class OverallParameters(param.Parameterized):
     tiles = gv.tile_sources.StamenTerrain
 
     df_merged = param.DataFrame()
-    # indices_list = param.ListSelector(label="")
-    # filtered_list = param.ListSelector(label="")
-    # df_filtered = param.DataFrame()
 
     def __init__(self, **params):
         super(OverallParameters, self).__init__(**params)
@@ -77,9 +82,6 @@ class OverallParameters(param.Parameterized):
 
             self.df_merged = gpd.read_parquet(output_data_path)
         else:
-            # self.df_merged = get_merged_iris_data(
-            #     iris_df(cont_iris), get_indice_frag_pivot(get_indice_frag(indice_frag)),
-            # )
             self.df_merged = add_geom_data_to_merged_data(
                 iris_df(cont_iris), read_merged_data(indice_frag)
             )
@@ -97,12 +99,6 @@ class OverallParameters(param.Parameterized):
         # What is selected in each level
         self.get_selected_indice_by_level()
         self.score_calculation()
-        # self.indices_list = list(self.df_merged)
-        # self.indices_list.remove("geometry")
-        # self.map_vdims = ["code_iris", "nom_com", "nom_iris"] + self.indices_list
-
-        # Cartes
-        # self.iris_map = gv.Polygons(self.df_merged) #, vdims=self.map_vdims)
 
     def define_paths(self):
         data_path = Path("../data")
@@ -256,10 +252,18 @@ class OverallParameters(param.Parameterized):
 
         return real_name_level
 
+    def score_axis(df, axe):
+        # points = pd.concat([df.groupby('DEP')[col].transform(lambda x : x / x.mean()) for col in axe],axis=1) #tx in '%', commune/mean_departement
+        points = pd.concat(
+            [df[col].transform(lambda x: x / x.mean()) for col in axe], axis=1
+        )  # tx in '%', commune/mean_reference(dep, region, nation)
+        return (
+            points.sum(axis=1).div(len(axe)) * 100
+        )  # sum variables in the axis and multiply by 100
+
     @pn.depends("localisation", "point_ref", watch=True)
     def score_calculation(self):
         df = self.df_merged.copy().droplevel("nom", axis=1)
-        print(df.columns)
         selected = []
         real_name_level = []
         for kAxe, vAxe in TREEVIEW_CHECK_BOX.items():
@@ -270,6 +274,8 @@ class OverallParameters(param.Parameterized):
                     # exclusion de nom et desc donne le nombre d'indice
                     real_name_level.append((kAxe, kIndic))
                     selected.append(kIndic)
+
+        # self.score = pd.concat([score_axis(df,axe) for axe in[axe1,axe2,axe3,axe4]],axis=1) #calcule l'axis
         mean_by_level_1 = df[selected].groupby(level=self.level_1_column).mean()
         self.df_score = (
             df[selected].sub(mean_by_level_1).div(mean_by_level_1) * 100 + 100
