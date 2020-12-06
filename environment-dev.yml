@@ -1,0 +1,27 @@
+channels:
+  - defaults
+  - conda-forge
+  - bokeh
+dependencies:
+  - pandas
+  - geojson
+  - jupyterlab
+  - jupyter
+  - panel
+  - geoviews
+  - iris
+  - pyarrow
+  - conda-tree
+  - jupyter_contrib_nbextensions
+  - nbdime
+  - dagster
+  - dagit
+  - black
+  - xlrd
+  - pygal
+  - cairosvg
+  - hvplot
+  - autoflake
+  - isort
+  - notebook
+  - python
