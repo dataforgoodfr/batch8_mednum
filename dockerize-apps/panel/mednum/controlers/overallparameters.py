@@ -33,7 +33,7 @@ opts.defaults(
 
 
 class OverallParameters(param.Parameterized):
-    localisation = param.String(default="Toulouse", label="")
+    localisation = param.String(default="Jegun", label="")
     score = param.Range(default=(0, 250), bounds=(0, 250),)
 
     tout_axes = param.Boolean(False, label="")
@@ -43,7 +43,7 @@ class OverallParameters(param.Parameterized):
     comp_usage_num = param.ListSelector(label="")
 
     point_ref = param.Selector(
-        default=SELECT[1], objects=SELECT, label="Point de référence",
+        default=SELECT[2], objects=SELECT, label="Point de référence",
     )
 
     niveau_observation = param.Selector(
@@ -99,6 +99,7 @@ class OverallParameters(param.Parameterized):
 
         # What is selected in each level
         self.get_selected_indice_by_level()
+        
         self.score_calculation()
 
     def define_paths(self):
@@ -120,7 +121,7 @@ class OverallParameters(param.Parameterized):
 
     def define_indices_params(self):
         """ 
-        Create all indices parameters -> Will become a TreeCheckBox
+        Create all indices parameters -> Will become a TreeCheckBox or Checkbox
         """
         self.g_params = []
         for k, widget_opts in TREEVIEW_CHECK_BOX.items():
@@ -159,7 +160,7 @@ class OverallParameters(param.Parameterized):
 
     @pn.depends("localisation", "point_ref", watch=True)
     def set_entity_levels(self):
-        """Set the entity levels and point values for this entity .
+        """Set the entity levels and point values for this entity.
         """
         self.level_0_column, self.level_1_column = (
             MAP_COL_WIDGETS["level_0"]["index"],
@@ -224,7 +225,7 @@ class OverallParameters(param.Parameterized):
                 "type": widget_type,
                 "select_options": select_options,
                 "select_all": widget_opts["nom"],
-                "desc": descriptions,
+                "desc": descriptions
             }
         else:
             descriptions = widget_opts["desc"]

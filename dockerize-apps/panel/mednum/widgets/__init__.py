@@ -31,9 +31,8 @@ class TreeViewCheckBox(CompositeWidget, MultiSelect):
     def __init__(self, **params):
         super(TreeViewCheckBox, self).__init__(**params)
 
-        # options = list(params.get('options', {}).keys())
-        self.select_all = params.get('select_all', "") #options.pop(0))
-        self.select_options = params.get('select_options', "") #options)
+        self.select_all = params.get('select_all', "") 
+        self.select_options = params.get('select_options', "") 
         
         self.option_descriptions = params.get('description', [])
 

@@ -18,7 +18,7 @@ MAP_COL_WIDGETS = {
         # "Pays": "",
         "Région": "insee_reg",
         "Département": "insee_dep",
-        #        "Intercommune": "",
+        "Intercommune": "EPCI",
         "Commune": "insee_com",
         "Iris": "code_iris",
     },
@@ -136,5 +136,6 @@ AXES_INDICES = {
     "comp_admin": CATEGORIES_X_COMP_ADMIN,
     "comp_usage_num": CATEGORIES_X_COMP_USAGE,
 }
-TREEVIEW_CHECK_BOX = {"tout_axes": TOUT, **AXES_INDICES}
+# TREEVIEW_CHECK_BOX = {"tout_axes": TOUT, **AXES_INDICES}
+TREEVIEW_CHECK_BOX = {**AXES_INDICES}
 

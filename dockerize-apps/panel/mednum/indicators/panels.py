@@ -227,7 +227,7 @@ class TopIndicators(OverallParameters):
         self.indicators_value_2 = params.get("indicators_value_2", indic_w_g_value_2)
 
         self.score = params.get("score", (0, 250))
-        self.localisation = params.get("localisation", "Toulouse")
+        self.localisation = params.get("localisation", "Jegun")
 
         self.indicator_w_gauge_1 = IndicatorsWithGauge(**self.indicators_value_1)
         self.indicator_w_gauge_2 = IndicatorsWithGauge(**self.indicators_value_2)
@@ -325,10 +325,10 @@ class TopIndicators(OverallParameters):
         self.indicator_w_gauge_2.indicators = indicator_2
 
         return pn.Row(
-            pn.Column(HTML, self.glob_stats()),  # sizing_mode="stretch_height"),
-            pn.Column(self.synthese()),  # sizing_mode="stretch_height"),
-            pn.Column(self.indicator_w_gauge_1.view),  # sizing_mode="stretch_height"),
-            pn.Column(self.indicator_w_gauge_2.view),  # sizing_mode="stretch_height"),
+            pn.Column(HTML, self.glob_stats()), 
+            pn.Column(self.synthese()),  
+            pn.Column(self.indicator_w_gauge_1.view), 
+            pn.Column(self.indicator_w_gauge_2.view), 
             css_classes=[
                 re.sub(r"(?<!^)(?=[A-Z])", "-", self.get_name() + "TopPanel").lower()
             ],
