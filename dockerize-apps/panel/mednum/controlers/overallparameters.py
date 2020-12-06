@@ -99,7 +99,7 @@ class OverallParameters(param.Parameterized):
 
         # What is selected in each level
         self.get_selected_indice_by_level()
-        
+
         self.score_calculation()
 
     def define_paths(self):
@@ -225,7 +225,7 @@ class OverallParameters(param.Parameterized):
                 "type": widget_type,
                 "select_options": select_options,
                 "select_all": widget_opts["nom"],
-                "desc": descriptions
+                "desc": descriptions,
             }
         else:
             descriptions = widget_opts["desc"]
@@ -281,7 +281,6 @@ class OverallParameters(param.Parameterized):
         watch=True,
     )
     def score_calculation(self):
-        print('ok_calc')
         indices_properties = self.get_indices_properties()
         selected_indices = self.selected_indices_level_0
         df = self.df_merged.copy().droplevel("nom", axis=1)
@@ -337,17 +336,21 @@ class OverallParameters(param.Parameterized):
             ).drop_duplicates()  # Drop duplicate pour supprimer les doublons (zone homogène)
 
             # Calcul des scores sur chaque axes et au total
+            number_axes = 0
             for axe, indices in AXES_INDICES.items():
                 selected_in_axes = [
                     k + "_SCORE" for k in indices.keys() if k in selected_indices
                 ]
                 if selected_in_axes != []:
                     scores.loc[:, axe] = scores[selected_in_axes].mean(axis=1)
+                    number_axes += 1
                 else:
                     scores.loc[:, axe] = 0
 
             # Score total
-            scores.loc[:, "tout_axes"] = scores[list(AXES_INDICES.keys())].mean(axis=1)
+            scores.loc[:, "tout_axes"] = scores[list(AXES_INDICES.keys())].sum(axis=1)
+            if number_axes != 0:
+                scores.loc[:, "tout_axes"] /= number_axes
 
             #
             self.df_score = df.merge(

@@ -4,6 +4,7 @@ from mednum.config import *
 from mednum.controlers.overallparameters import OverallParameters
 from mednum.indicators.panels import TopIndicators
 import param
+from cartopy import crs
 
 
 class MedNumApp(TopIndicators):
@@ -67,15 +68,13 @@ class MedNumApp(TopIndicators):
         )
         return ordered_panel
 
-    # @pn.depends(
-    #     "score",
-    #     "df_score",
-    #     watch=True,
-    # )
+    @pn.depends(
+        "score", "df_score", watch=True,
+    )
     def update_map_values(self):
         try:
             # Selection par localisation
-            # http://holoviews.org/user_guide/Plotting_with_Bokeh.html
+            #  http://holoviews.org/user_guide/Plotting_with_Bokeh.html
             # https://docs.bokeh.org/en/latest/docs/user_guide/tools.html#custom-tooltip
             map_info = ["tout_axes", "nom_com"]
             vdims = (
@@ -83,31 +82,41 @@ class MedNumApp(TopIndicators):
                 + [k + "_SCORE" for k in self.selected_indices_level_0]
                 + list(AXES_INDICES.keys())
             )
-            
-            self.maps = gv.Polygons(self.df_score, vdims=vdims)
-            return self.maps.opts(
-                tools=["hover"],
-                color="score",
-                colorbar=True,
-                toolbar="above",
-                xaxis=None,
-                yaxis=None,
-                fill_alpha=0.5,
+
+            self.maps = gv.Polygons(
+                self.df_score, vdims=vdims
+            )  # , crs=crs.GOOGLE_MERCATOR)
+            minx, miny, maxx, maxy = self.maps.geom().bounds
+
+            print(minx, miny, maxx, maxy)
+            return (
+                self.maps.opts(
+                    tools=["hover"],
+                    color="score",
+                    colorbar=True,
+                    toolbar="above",
+                    # xaxis=None,
+                    # yaxis=None,
+                    fill_alpha=0.5,
+                )
+                # .redim.range(Longitude=(minx, maxx))
+                # .redim.range(Latitude=(miny, maxy))
             )
 
         except Exception as e:
             print(e)
             pass
 
-    # @pn.depends("localisation", watch=True)
-    # def update_map_coords(self):
-    #     if not hasattr(self, "maps"):
-    #         self.update_map_values()
-    #     minx, miny, maxx, maxy = self.maps.geom().bounds
-    #     self.tiles.redim.range(
-    #         Latitude=(miny, maxy), Longitude=(minx, maxx),
-    #     )
-    #     return self.tiles
+    @pn.depends("localisation", watch=True)
+    def update_map_coords(self):
+        if not hasattr(self, "maps"):
+            self.update_map_values()
+        minx, miny, maxx, maxy = self.maps.geom().bounds
+        # self.tiles
+
+        return self.tiles.redim.range(Latitude=(miny, maxy)).redim.range(
+            Longitude=(minx, maxx)
+        )
 
     def map_view(self):
         # return gv.DynamicMap(self.update_map_coords) * gv.DynamicMap(self.update_map_values)
@@ -134,8 +143,14 @@ class MedNumApp(TopIndicators):
         </script>
         """
         df = self.df_score[self.selected_indices_level_0]
-        df.index.names = [MAP_COL_WIDGETS_REV[name] if name in MAP_COL_WIDGETS_REV else name for name in df.index.names]
-        df.columns = [CATEGORIES_INDICES[name] if name in CATEGORIES_INDICES else name for name in df.columns]
-        html = df.to_html(classes=['mednum-df', 'panel-df'])
-        return pn.pane.HTML(html+script, sizing_mode='stretch_width')
+        df.index.names = [
+            MAP_COL_WIDGETS_REV[name] if name in MAP_COL_WIDGETS_REV else name
+            for name in df.index.names
+        ]
+        df.columns = [
+            CATEGORIES_INDICES[name] if name in CATEGORIES_INDICES else name
+            for name in df.columns
+        ]
+        html = df.to_html(classes=["mednum-df", "panel-df"])
+        return pn.pane.HTML(html + script, sizing_mode="stretch_width")
 

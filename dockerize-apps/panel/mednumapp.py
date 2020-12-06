@@ -86,12 +86,13 @@ mednumapp = mednum.MedNumApp(name="Sélection")
 # auto_complete = pn.Param(auto_complete_param, widgets={"string_value": {"type": pn.widgets.AutocompleteInput, "options": NOM_COMMUNES}})
 # score_widget = pn.widgets.IntRangeSlider()
 # sidebar = pn.Column(auto_complete, score_widget)
-#sidebar = pn.Column(mednumapp.lat_widgets())
+# sidebar = pn.Column(mednumapp.lat_widgets())
 
 # Top indicator
+import geoviews as gv
 tmpl.add_panel("sidebar", mednumapp.lat_widgets)
 tmpl.add_panel("top", pn.panel(mednumapp.top_panel, height=200)),
-tmpl.add_panel("main", mednumapp.map_view) 
-# tmpl.add_panel("main", mednumapp.table_view) 
+tmpl.add_panel("main", gv.DynamicMap(mednumapp.update_map_coords) * gv.DynamicMap(mednumapp.update_map_values))
+# tmpl.add_panel("main", mednumapp.table_view)
 
 tmpl.servable()
