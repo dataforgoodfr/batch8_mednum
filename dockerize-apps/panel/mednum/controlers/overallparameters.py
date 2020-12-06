@@ -70,6 +70,7 @@ class OverallParameters(param.Parameterized):
     tiles = gv.tile_sources.StamenTerrain
 
     df_merged = param.DataFrame()
+    df_score = param.DataFrame()
 
     def __init__(self, **params):
         super(OverallParameters, self).__init__(**params)
@@ -148,8 +149,11 @@ class OverallParameters(param.Parameterized):
         )
 
     def set_dataframes_indexes(self):
-        indexes = [MAP_COL_WIDGETS["level_0"]] + list(
-            MAP_COL_WIDGETS["level_1"].values()
+        indexes = list(
+            set(
+                list(MAP_COL_WIDGETS["level_0"].values())
+                + list(MAP_COL_WIDGETS["level_1"].values())
+            )
         )
         self.df_merged.set_index(indexes, inplace=True)
 
@@ -158,9 +162,10 @@ class OverallParameters(param.Parameterized):
         """Set the entity levels and point values for this entity .
         """
         self.level_0_column, self.level_1_column = (
-            MAP_COL_WIDGETS["level_0"],
+            MAP_COL_WIDGETS["level_0"]["index"],
             MAP_COL_WIDGETS["level_1"][self.point_ref],
         )
+        self.level_0_column_names = MAP_COL_WIDGETS["level_0"]["names"]
         self.level_0_value = self.localisation
 
     @pn.depends(
@@ -252,36 +257,115 @@ class OverallParameters(param.Parameterized):
 
         return real_name_level
 
-    def score_axis(df, axe):
-        # points = pd.concat([df.groupby('DEP')[col].transform(lambda x : x / x.mean()) for col in axe],axis=1) #tx in '%', commune/mean_departement
-        points = pd.concat(
-            [df[col].transform(lambda x: x / x.mean()) for col in axe], axis=1
-        )  # tx in '%', commune/mean_reference(dep, region, nation)
-        return (
-            points.sum(axis=1).div(len(axe)) * 100
-        )  # sum variables in the axis and multiply by 100
+    def info_localisation(self):
+        info_loc = {}
+        index = self.df_merged.xs(
+            self.localisation, level=self.level_0_column_names, drop_level=False
+        ).index
+        ids = index.unique().to_numpy()[0]
+        names = index.names
+        for k, v in zip(names, ids):
+            info_loc[k] = v
+        return info_loc
 
-    @pn.depends("localisation", "point_ref", watch=True)
+    def get_indices_properties(self):
+        indices_properties = {}
+        import copy
+        tree = copy.deepcopy(TREEVIEW_CHECK_BOX)
+        for indic_dict in tree.values():
+            indic_dict.pop("nom", None)
+            indic_dict.pop("desc", None)
+            indices_properties.update(indic_dict)
+        return indices_properties
+
+    @pn.depends("localisation", "point_ref",         "tout_axes",
+        "interfaces_num",
+        "infos_num",
+        "comp_admin",
+        "comp_usage_num",
+        watch=True)
     def score_calculation(self):
+        indices_properties = self.get_indices_properties()
+        selected_indices = self.selected_indices_level_0
         df = self.df_merged.copy().droplevel("nom", axis=1)
-        selected = []
-        real_name_level = []
-        for kAxe, vAxe in TREEVIEW_CHECK_BOX.items():
-            n = 0
-            for kIndic, vIndic in vAxe.items():
-                # Exclusion du cas complet
-                if kIndic not in ["nom", "desc"]:
-                    # exclusion de nom et desc donne le nombre d'indice
-                    real_name_level.append((kAxe, kIndic))
-                    selected.append(kIndic)
+        info_loc = self.info_localisation()
+        if selected_indices != []:
+            selected_indices_aggfunc = {
+                k: indices_properties[k]["aggfunc"] for k in selected_indices
+            }
 
-        # self.score = pd.concat([score_axis(df,axe) for axe in[axe1,axe2,axe3,axe4]],axis=1) #calcule l'axis
-        mean_by_level_1 = df[selected].groupby(level=self.level_1_column).mean()
-        self.df_score = (
-            df[selected].sub(mean_by_level_1).div(mean_by_level_1) * 100 + 100
-        )
+            #
+            map_info = [self.level_0_column_names]
+            vdims = map_info + selected_indices
 
-        self.df_score.columns = pd.MultiIndex.from_tuples(
-            real_name_level, names=["axe", "indicateur"]
-        )
 
+            # Aggregation selon la fonction specifié (mean, median)
+            # au niveau level_1_column sur les indice selectionne selected_indices_aggfunc
+            
+            score_agg_niveau = (
+                df.xs(
+                    info_loc[self.level_1_column],
+                    level=self.level_1_column,
+                    drop_level=False,
+                )
+                .groupby(self.level_1_column)
+                .agg(selected_indices_aggfunc)
+            )
+
+            # Division par l'aggregation sur la zone level_1_column (pondération)
+            score_niveau = (
+                df.xs(
+                    info_loc[self.level_1_column],
+                    level=self.level_1_column,
+                    drop_level=False,
+                )[selected_indices].div(score_agg_niveau)
+                * 100
+            )
+
+            # Dissolution (i.e. agregation geographique) au niveau de découpage souhaité level_0_column
+            df = df.xs(
+                info_loc[self.level_1_column], level=self.level_1_column, drop_level=False
+            ).dissolve(
+                by=[self.level_0_column, self.level_0_column_names],
+                aggfunc=selected_indices_aggfunc,
+            )
+            # Score sur les indices merge sur l'index pour récupérer la geometry.
+            # _BRUT : initial
+            # _SCORE : Score de l'indice sur le découpage level_0_column divisé par la fonction d'aggragation au level_1_column
+            scores = df.merge(
+                score_niveau,
+                on=[self.level_0_column , self.level_0_column_names],
+                suffixes=("_BRUT", "_SCORE"),
+            ).drop_duplicates()  # Drop duplicate pour supprimer les doublons (zone homogène)
+
+            # Calcul des scores sur chaque axes et au total
+            for axe, indices in AXES_INDICES.items():
+                selected_in_axes = [
+                    k + "_SCORE" for k in indices.keys() if k in selected_indices
+                ]
+                if selected_in_axes != []:
+                    scores.loc[:, axe] = scores[selected_in_axes].mean(axis=1)
+                else:
+                    scores.loc[:, axe] = 0
+
+            # Score total
+            scores.loc[:, "tout_axes"] = scores[list(AXES_INDICES.keys())].mean(axis=1)
+
+            #
+            self.df_score = df.merge(
+                scores, on=[self.level_0_column, self.level_0_column_names, "geometry"]
+            ).drop_duplicates()  # Suppression des doublons sur les communes découpées en IRIS
+
+        else:
+            df = df.xs(
+                info_loc[self.level_1_column], level=self.level_1_column, drop_level=False
+            ).dissolve(
+                by=[self.level_0_column, self.level_0_column_names],
+                # aggfunc='first',
+            )
+
+            for axe, indices in AXES_INDICES.items():
+                df.loc[:, axe] = 0
+            df.loc[:, "tout_axes"] = 0
+            self.df_score = df
+            

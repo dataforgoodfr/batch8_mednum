@@ -13,7 +13,7 @@ cache_dir = interim_data
 INDICE = "GLOBAL COMPETENCES"
 
 MAP_COL_WIDGETS = {
-    "level_0": "nom_com",
+    "level_0": {"index": "insee_com", "names": "nom_com"},
     "level_1": {
         # "Pays": "",
         "Région": "insee_reg",
@@ -39,11 +39,10 @@ CATEGORIES_INT_NUM = {
     "TAUX_COUVERTURE_THD": {
         "nom": "Taux de couverture HD / THD",
         "desc": """Proportion des bâtiments reliés à internet Haut Débit ou Très Haut Débit""",
-       "aggfunc": "mean",
+        "aggfunc": "mean",
     },
     "nom": "Accès interfaces numériques",
     "desc": "Identification des territoires mal couverts par les réseaux ou dans lesquels des populations auront des difficultésfinancières à y accéder ou à s'équiper en terminaux numériques",
-
 }
 
 
@@ -131,13 +130,11 @@ CATEGORIES_INDICES_REV = {
 
 CATEGORIES_INDICES = {v: k for k, v in CATEGORIES_INDICES_REV.items()}
 
-AXES_INDICES =     {"interfaces_num": CATEGORIES_INT_NUM,
+AXES_INDICES = {
+    "interfaces_num": CATEGORIES_INT_NUM,
     "infos_num": CATEGORIES_X_INFOS,
     "comp_admin": CATEGORIES_X_COMP_ADMIN,
-    "comp_usage_num": CATEGORIES_X_COMP_USAGE}
-
-TREEVIEW_CHECK_BOX = {
-    "tout_axes": TOUT,
-    **AXES_INDICES
-
+    "comp_usage_num": CATEGORIES_X_COMP_USAGE,
 }
+TREEVIEW_CHECK_BOX = {"tout_axes": TOUT, **AXES_INDICES}
+

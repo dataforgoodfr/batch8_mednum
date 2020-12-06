@@ -8,7 +8,7 @@ from pygal.style import Style
 
 from mednum.controlers.overallparameters import OverallParameters
 from mednum.tools import css2dict
-from mednum.config import TREEVIEW_CHECK_BOX
+from mednum.config import *
 
 css_file_gauge = Path(__file__).parent.parent / "css" / "pygauge.css"
 
@@ -59,6 +59,8 @@ class PyGauge(param.Parameterized):
     @pn.depends("max_value", watch=True)
     def set_max(self):
         self.param.value.bounds = (0, self.max_value)
+        if self.max_value == 0:
+            self.max_value = int(1e5)
         self.value = self.max_value if self.value > self.max_value else self.value
 
     @pn.depends("value", "custom_style", watch=True)
@@ -269,26 +271,46 @@ class TopIndicators(OverallParameters):
     def score_par_axe(self, name):
         indicator = []
         score_axe_total = 0
-        for key, axis_categories in TREEVIEW_CHECK_BOX.items():
-            axis_name = axis_categories["nom"]
-            score_axe = 0
-            if name in axis_name:
-                for kIndic, vIndic in axis_categories.items():
-                    if kIndic not in ["nom", "desc"]:
-                        sel_df = self.df_score.loc[self.level_0_value].xs(kIndic, level="indicateur", axis=1)
-                        score_axe += (
-                            sel_df.sum()[0]
-                            / len(sel_df)
-                            / (len(axis_categories.items()) - 2)
+
+        info_loc = self.info_localisation()
+
+        global_score = self.df_score
+
+        local_score = self.df_score.xs(
+            self.level_0_value, level=self.level_0_column_names
+        )
+        max_value_total = 0
+        score_axe_total = 0
+        n = 0
+        for axis_key, axis_categories in TREEVIEW_CHECK_BOX.items():
+            if axis_categories != {}:
+                axis_name = axis_categories["nom"]
+                if name in axis_name:
+                    # for kIndic, vIndic in axis_categories.items():
+                    score_axe = int(local_score[axis_key])
+                    max_value = int(global_score[axis_key].max())
+                    score_axe_total += score_axe
+                    max_value_total += max_value
+                    indicator.append(
+                        dict(
+                            name=axis_name.replace(name + " ", ""),
+                            value=score_axe,
+                            max_value=max_value,
                         )
-                indicator.append(dict(name=axis_name.replace(name+" ", ""), value=int(score_axe), max_value=250))
-            score_axe_total += score_axe / (len(TREEVIEW_CHECK_BOX.items())-1)
+                    )
+                    n += 1
+
         indicator.append(
-            dict(name=name, main=True, value=int(score_axe_total), max_value=250)
+            dict(
+                name=name,
+                main=True,
+                value=score_axe_total // n,
+                max_value=max_value_total // n,
+            )
         )
         return indicator
 
-    @pn.depends("score", "localisation", "point_ref")
+    @pn.depends("score", "localisation", "point_ref", "df_score")
     def top_panel(self):
         HTML = """
         <h1>{loc}</h1>
