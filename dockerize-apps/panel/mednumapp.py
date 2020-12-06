@@ -13,6 +13,9 @@ from mednum.indicators.panels import TopIndicators, IndicatorsWithGauge
 from pathlib import Path
 import mednum
 
+# import flamegraph
+# flamegraph.start_profile_thread(fd=open("./perf.log", "w"))
+
 css_mednum = [str(Path(__file__).parent / "statics" / "css" / "mednum.css")]
 
 css = [
@@ -80,8 +83,6 @@ tmpl.add_variable("app_title", "<h1>Custom Template App</h1>")
 
 mednumapp = mednum.MedNumApp(name="Sélection")
 
-# NOM_COMMUNES = list(df.LIBCOM.unique())
-
 # auto_complete_param = AutoComplete()
 # auto_complete = pn.Param(auto_complete_param, widgets={"string_value": {"type": pn.widgets.AutocompleteInput, "options": NOM_COMMUNES}})
 # score_widget = pn.widgets.IntRangeSlider()
@@ -89,7 +90,7 @@ mednumapp = mednum.MedNumApp(name="Sélection")
 #sidebar = pn.Column(mednumapp.lat_widgets())
 
 # Top indicator
-tmpl.add_panel("sidebar", mednumapp.lat_widgets())
+tmpl.add_panel("sidebar", mednumapp.lat_widgets)
 tmpl.add_panel("top", pn.panel(mednumapp.top_panel, height=200)),
 tmpl.add_panel("main", mednumapp.map_view) 
 # tmpl.add_panel("main", mednumapp.table_view) 

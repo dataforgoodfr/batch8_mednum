@@ -195,18 +195,8 @@ class OverallParameters(param.Parameterized):
                     except:
                         pass
 
-        self.selected_indices_level_0 = list(
-            set(selected_col)
-        )  #  + [self.level_0_column]))
-        self.selected_indices_level_1 = list(
-            set(selected_col)
-        )  # + [self.level_1_column]))
-
-        # if with_geom:
-        #     return self.filtered_list + [
-        #         "geometry"
-        #     ]  # elf.df_merged[self.indices_list + ["geometry"]]
-        # else:
+        self.selected_indices_level_0 = list(set(selected_col))
+        self.selected_indices_level_1 = list(set(selected_col))
         return self.selected_indices_level_0, self.selected_indices_level_1
 
     def create_checkbox_type_widget_params(self, widget_opts):
@@ -271,6 +261,7 @@ class OverallParameters(param.Parameterized):
     def get_indices_properties(self):
         indices_properties = {}
         import copy
+
         tree = copy.deepcopy(TREEVIEW_CHECK_BOX)
         for indic_dict in tree.values():
             indic_dict.pop("nom", None)
@@ -278,12 +269,16 @@ class OverallParameters(param.Parameterized):
             indices_properties.update(indic_dict)
         return indices_properties
 
-    @pn.depends("localisation", "point_ref",         "tout_axes",
+    @pn.depends(
+        "localisation",
+        "point_ref",
+        "tout_axes",
         "interfaces_num",
         "infos_num",
         "comp_admin",
         "comp_usage_num",
-        watch=True)
+        watch=True,
+    )
     def score_calculation(self):
         indices_properties = self.get_indices_properties()
         selected_indices = self.selected_indices_level_0
@@ -298,10 +293,9 @@ class OverallParameters(param.Parameterized):
             map_info = [self.level_0_column_names]
             vdims = map_info + selected_indices
 
-
             # Aggregation selon la fonction specifié (mean, median)
             # au niveau level_1_column sur les indice selectionne selected_indices_aggfunc
-            
+
             score_agg_niveau = (
                 df.xs(
                     info_loc[self.level_1_column],
@@ -324,7 +318,9 @@ class OverallParameters(param.Parameterized):
 
             # Dissolution (i.e. agregation geographique) au niveau de découpage souhaité level_0_column
             df = df.xs(
-                info_loc[self.level_1_column], level=self.level_1_column, drop_level=False
+                info_loc[self.level_1_column],
+                level=self.level_1_column,
+                drop_level=False,
             ).dissolve(
                 by=[self.level_0_column, self.level_0_column_names],
                 aggfunc=selected_indices_aggfunc,
@@ -334,7 +330,7 @@ class OverallParameters(param.Parameterized):
             # _SCORE : Score de l'indice sur le découpage level_0_column divisé par la fonction d'aggragation au level_1_column
             scores = df.merge(
                 score_niveau,
-                on=[self.level_0_column , self.level_0_column_names],
+                on=[self.level_0_column, self.level_0_column_names],
                 suffixes=("_BRUT", "_SCORE"),
             ).drop_duplicates()  # Drop duplicate pour supprimer les doublons (zone homogène)
 
@@ -358,7 +354,9 @@ class OverallParameters(param.Parameterized):
 
         else:
             df = df.xs(
-                info_loc[self.level_1_column], level=self.level_1_column, drop_level=False
+                info_loc[self.level_1_column],
+                level=self.level_1_column,
+                drop_level=False,
             ).dissolve(
                 by=[self.level_0_column, self.level_0_column_names],
                 # aggfunc='first',
@@ -368,4 +366,4 @@ class OverallParameters(param.Parameterized):
                 df.loc[:, axe] = 0
             df.loc[:, "tout_axes"] = 0
             self.df_score = df
-            
+

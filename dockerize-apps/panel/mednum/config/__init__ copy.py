@@ -97,9 +97,9 @@ CATEGORIES_X_COMP_USAGE = {
     "select_options": OPTIONS_X_COMP_USAGE,
 }
 
-TREEVIEW_CHECK_BOX = {
-    "interfaces_num": CATEGORIES_INT_NUM,
-    "infos_num": CATEGORIES_X_INFOS,
-    "comp_admin": CATEGORIES_X_COMP_ADMIN,
-    "comp_usage_num": CATEGORIES_X_COMP_USAGE,
-}
+# TREEVIEW_CHECK_BOX = {
+#     "interfaces_num": CATEGORIES_INT_NUM,
+#     "infos_num": CATEGORIES_X_INFOS,
+#     "comp_admin": CATEGORIES_X_COMP_ADMIN,
+#     "comp_usage_num": CATEGORIES_X_COMP_USAGE,
+# }

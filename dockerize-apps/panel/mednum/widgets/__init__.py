@@ -37,20 +37,6 @@ class TreeViewCheckBox(CompositeWidget, MultiSelect):
         
         self.option_descriptions = params.get('description', [])
 
-        # try:
-        #     self.select_all= options.pop(0)
-        # except NameError as n:
-        #     raise NameError("Define a dict containing the name of **select_all**")
-        # except:
-        #     raise Exception
-        
-        # try:
-        #     self.select_options = options
-        # except NameError as n:
-        #     raise NameError("Define a dict containing a list of options in **select_options**")
-        # except:
-        #     raise Exception
-
         TreeViewCheckBox.box_size = max([len(word) for word in self.select_options]+ [len(self.select_all), TreeViewCheckBox.box_size]) * 10
         
         self.all_selector = Checkbox(name=self.select_all)
@@ -103,85 +89,3 @@ class TreeViewCheckBox(CompositeWidget, MultiSelect):
     def _get_model(self, doc, root=None, parent=None, comm=None):
         return self._composite._get_model(doc, root, parent, comm)
 
-
-class Export(param.Parameterized):
-    export_data = param.Action(
-        lambda x: x.timestamps.append(dt.datetime.utcnow()),
-        doc="""Exporter les résultats""",
-        precedence=0.7,
-    )
-    edit_report = param.Action(
-        lambda x: x.timestamps.append(dt.datetime.utcnow()),
-        doc="""Editer un rapport""",
-        precedence=0.7,
-    )
-
-
-class Score(param.Parameterized):
-    score = param.Range(default=(0, 250), bounds=(0, 250))
-
-
-class Localisation(param.Parameterized):
-    localisation = param.String(default="Marseille", label="", doc="A string")
-
-
-class Reference(param.Parameterized):
-    point_ref = param.ListSelector(
-        objects=["Pays", "Région", "Département", "Intercommune", "Commune"],
-        label="Point de référence",
-    )
-
-    donnees_infra = param.Action(
-        lambda x: x, doc="""Données Infra-Communales""", precedence=0.7
-    )
-
-
-# class TreeViewCheckBoxCompo(param.Parameterized):
-#     OPTIONS_INT_NUM = [
-#         "Taux de pauvreté",
-#         "Equipement des ménages",
-#         "Couverture mobile",
-#         "Taux de couverture HD / THD",
-#     ]
-#     CATEGORIES_INT_NUM = {
-#         "select_all": "Accès aux interfaces numériques",
-#         "select_options": OPTIONS_INT_NUM,
-#     }
-
-#     OPTIONS_X_INFOS = ["Oui", "Non"]
-#     CATEGORIES_X_INFOS = {
-#         "select_all": "Accès à l'info",
-#         "select_options": OPTIONS_X_INFOS,
-#     }
-
-#     OPTIONS_X_COMP_ADMIN = ["Oui", "Non"]
-#     CATEGORIES_X_COMP_ADMIN = {
-#         "select_all": "Compétences adminitratives",
-#         "select_options": OPTIONS_X_COMP_ADMIN,
-#     }
-
-#     OPTIONS_X_COMP_USAGE = ["Oui", "Non"]
-#     CATEGORIES_X_COMP_USAGE = {
-#         "select_all": "Compétences usages numériques",
-#         "select_options": OPTIONS_X_COMP_USAGE,
-#     }
-
-#     ind_x_interfaces_num = TreeViewCheckBox(tree_categories=CATEGORIES_INT_NUM)
-#     ind_x_infos_num = TreeViewCheckBox(tree_categories=CATEGORIES_X_INFOS)
-#     ind_x_comp_admi = TreeViewCheckBox(tree_categories=CATEGORIES_X_COMP_ADMIN)
-#     ind_x_comp_uasge_num = TreeViewCheckBox(tree_categories=CATEGORIES_X_COMP_USAGE)
-
-#     indicateurs = pn.Column(
-#         pn.pane.Markdown("\n**Indicateurs**"),
-#         ind_x_interfaces_num.panel,
-#         ind_x_infos_num.panel,
-#         ind_x_comp_admi.panel,
-#         ind_x_comp_uasge_num.panel,
-#     )
-
-#     def __init__(self, **params):
-#         super().__init__(**params)
-#         print(self.ind_x_interfaces_num.param)
-
-#     def panel(self):
-#         return self.indicateurs

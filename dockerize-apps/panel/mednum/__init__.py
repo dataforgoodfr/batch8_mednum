@@ -67,11 +67,11 @@ class MedNumApp(TopIndicators):
         )
         return ordered_panel
 
-    @pn.depends(
-        "score",
-        "df_score",
-        watch=True,
-    )
+    # @pn.depends(
+    #     "score",
+    #     "df_score",
+    #     watch=True,
+    # )
     def update_map_values(self):
         try:
             # Selection par localisation
@@ -83,7 +83,6 @@ class MedNumApp(TopIndicators):
                 + [k + "_SCORE" for k in self.selected_indices_level_0]
                 + list(AXES_INDICES.keys())
             )
-            print(self.df_score.columns)
             self.maps = gv.Polygons(self.df_score, vdims=vdims)
             return self.maps.opts(
                 tools=["hover"],
@@ -99,18 +98,18 @@ class MedNumApp(TopIndicators):
             print(e)
             pass
 
-    @pn.depends("localisation", watch=True)
-    def update_map_coords(self):
-        if not hasattr(self, "maps"):
-            self.update_map_values()
-        minx, miny, maxx, maxy = self.maps.geom().bounds
-        self.tiles.redim.range(
-            Latitude=(miny, maxy), Longitude=(minx, maxx),
-        )
-        return self.tiles
+    # @pn.depends("localisation", watch=True)
+    # def update_map_coords(self):
+    #     if not hasattr(self, "maps"):
+    #         self.update_map_values()
+    #     minx, miny, maxx, maxy = self.maps.geom().bounds
+    #     self.tiles.redim.range(
+    #         Latitude=(miny, maxy), Longitude=(minx, maxx),
+    #     )
+    #     return self.tiles
 
     def map_view(self):
-        # return gv.DynamicMap(self.update_map_coords) * gv.DynamicMap(
+        # return gv.DynamicMap(self.update_map_coords) * gv.DynamicMap(self.update_map_values)
         return self.tiles * gv.DynamicMap(self.update_map_values)
 
     @pn.depends("tout_axes", watch=True)
@@ -129,5 +128,5 @@ class MedNumApp(TopIndicators):
                 ),
                 max_rows=20,
             )
-        )  # self.score_calculation
+        ) 
 
