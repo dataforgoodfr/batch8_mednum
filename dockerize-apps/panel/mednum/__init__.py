@@ -121,12 +121,19 @@ class MedNumApp(TopIndicators):
                 widg.param.select_all = self.tout_axes
 
     def table_view(self):
-        return pn.Row(
-            pn.pane.DataFrame(
-                self.df_merged[self.selected_indices_level_0].droplevel(
+        script = """
+        <script>
+        if (document.readyState === "complete") {
+        $('.example').DataTable();
+        } else {
+        $(document).ready(function () {
+            $('.example').DataTable();
+        })
+        }
+        </script>
+        """
+        html = self.df_merged[self.selected_indices_level_0].droplevel(
                     "variable", axis=1
-                ),
-                max_rows=20,
-            )
-        ) 
+                ).head(20).to_html(classes=['panel-df'])
+        return pn.pane.HTML(html+script, sizing_mode='stretch_width')
 
