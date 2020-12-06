@@ -1,3 +1,4 @@
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/slamer59/batch8_mednum.git/master?urlpath=/proxy/5006/mednumapp)
 # batch8_mednum
 Développement d'un outil de localisation des zones d'exclusion numérique du territoire national grâce à l'indice de fragilité numérique.
 Outil à destination des collectivités et des élus locaux.
@@ -37,5 +38,6 @@ python -m mednum.data.process download_geojson
 ```
 
 # Lancement panel Bokeh
+```
 panel serve dockerize-apps/panel/mednumapp.py
-
+```
