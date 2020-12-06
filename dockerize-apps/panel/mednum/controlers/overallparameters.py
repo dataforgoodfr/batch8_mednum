@@ -281,6 +281,7 @@ class OverallParameters(param.Parameterized):
         watch=True,
     )
     def score_calculation(self):
+        print('ok_calc')
         indices_properties = self.get_indices_properties()
         selected_indices = self.selected_indices_level_0
         df = self.df_merged.copy().droplevel("nom", axis=1)

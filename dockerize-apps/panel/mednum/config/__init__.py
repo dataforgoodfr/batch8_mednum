@@ -23,6 +23,8 @@ MAP_COL_WIDGETS = {
         "Iris": "code_iris",
     },
 }
+
+MAP_COL_WIDGETS_REV = {v: k for k, v in MAP_COL_WIDGETS["level_1"].items()}
 SELECT = list(MAP_COL_WIDGETS["level_1"].keys())
 
 CATEGORIES_INT_NUM = {
@@ -136,5 +138,5 @@ AXES_INDICES = {
     "comp_admin": CATEGORIES_X_COMP_ADMIN,
     "comp_usage_num": CATEGORIES_X_COMP_USAGE,
 }
-# TREEVIEW_CHECK_BOX = {"tout_axes": TOUT, **AXES_INDICES}
+#  TREEVIEW_CHECK_BOX = {"tout_axes": TOUT, **AXES_INDICES}
 TREEVIEW_CHECK_BOX = {**AXES_INDICES}

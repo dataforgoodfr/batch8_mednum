@@ -33,20 +33,20 @@ class MedNumApp(TopIndicators):
                 self.param.point_ref, widgets={"point_ref": pn.widgets.RadioBoxGroup},
             ),
         )
-        niveau_observation_panel = pn.Column(
-            "## " + self.param.niveau_observation.label,
-            pn.Param(
-                self.param.niveau_observation,
-                widgets={"niveau_observation": pn.widgets.RadioBoxGroup},
-            ),
-        )
-        niveau_details_panel = pn.Column(
-            "## " + self.param.niveau_details.label,
-            pn.Param(
-                self.param.niveau_details,
-                widgets={"niveau_details": pn.widgets.RadioBoxGroup},
-            ),
-        )
+        # niveau_observation_panel = pn.Column(
+        #     "## " + self.param.niveau_observation.label,
+        #     pn.Param(
+        #         self.param.niveau_observation,
+        #         widgets={"niveau_observation": pn.widgets.RadioBoxGroup},
+        #     ),
+        # )
+        # niveau_details_panel = pn.Column(
+        #     "## " + self.param.niveau_details.label,
+        #     pn.Param(
+        #         self.param.niveau_details,
+        #         widgets={"niveau_details": pn.widgets.RadioBoxGroup},
+        #     ),
+        # )
 
         export_panel = pn.Column(
             "## Aller plus loin", self.param.export_data, self.param.edit_report
@@ -61,8 +61,8 @@ class MedNumApp(TopIndicators):
             score_panel,
             indicateurs,
             point_ref_panel,
-            niveau_observation_panel,
-            niveau_details_panel,
+            # niveau_observation_panel,
+            # niveau_details_panel,
             export_panel,
         )
         return ordered_panel
@@ -83,6 +83,7 @@ class MedNumApp(TopIndicators):
                 + [k + "_SCORE" for k in self.selected_indices_level_0]
                 + list(AXES_INDICES.keys())
             )
+            
             self.maps = gv.Polygons(self.df_score, vdims=vdims)
             return self.maps.opts(
                 tools=["hover"],
@@ -124,16 +125,17 @@ class MedNumApp(TopIndicators):
         script = """
         <script>
         if (document.readyState === "complete") {
-        $('.example').DataTable();
+        $('.mednum-df').DataTable();
         } else {
         $(document).ready(function () {
-            $('.example').DataTable();
+            $('.mednum-df').DataTable();
         })
         }
         </script>
         """
-        html = self.df_merged[self.selected_indices_level_0].droplevel(
-                    "variable", axis=1
-                ).head(20).to_html(classes=['panel-df'])
+        df = self.df_score[self.selected_indices_level_0]
+        df.index.names = [MAP_COL_WIDGETS_REV[name] if name in MAP_COL_WIDGETS_REV else name for name in df.index.names]
+        df.columns = [CATEGORIES_INDICES[name] if name in CATEGORIES_INDICES else name for name in df.columns]
+        html = df.to_html(classes=['mednum-df', 'panel-df'])
         return pn.pane.HTML(html+script, sizing_mode='stretch_width')
 
