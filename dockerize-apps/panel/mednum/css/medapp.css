@@ -1,0 +1,119 @@
+.btn-custom>.bk-btn-group>.bk-btn {
+    width: 125px;
+    font-size: 14pt;
+    font-weight: bold;
+    font-family: "FontAwesome";
+    content: "\f0da";
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.btn-custom>.bk-btn-group>.bk-btn-default:after {
+    content: "\0025B2";
+    /*font-family: FontAwesome;*/
+    display: inline-block;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    /*    color: #459ce7;*/
+    font-size: 18px;
+}
+
+.btn-custom div.bk.bk-input-group {
+    width: 125px;
+}
+
+.chck-custom>.bk>.bk>input {
+    -webkit-appearance: none;
+    background-color: #fff;
+    border: 0px solid #cacece;
+    /*ox-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);*/
+    padding: 0px;
+    border-radius: 0px;
+    display: inline-block;
+    position: relative;
+    opacity: 5;
+}
+
+.chck-custom>.bk>.bk>input:active,
+.chck-custom>.bk>.bk>input:checked:active {
+    outline: none;
+    text-decoration: none;
+}
+
+.chck-custom>.bk>.bk>input:checked {
+    /*background-color: #e9ecee;*/
+    background-color: #fff;
+    border: 0;
+    /*px solid #000;*/
+    /*box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);*/
+    color: #99a1a7;
+}
+
+
+/*https://unicode-table.com/fr/sets/arrow-symbols/*/
+
+.chck-custom>.bk>.bk>input:checked:after {
+    content: "\203A";
+    font-family: "Font Awesome 5 Free";
+    display: inline-block;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    color: #000;
+    /*459ce7;/*/
+    font-size: 18px;
+    position: relative;
+    top: -10px;
+    left: 0px;
+    transform: rotate(90deg);
+    /*	  pointer-events: center;*/
+}
+
+.chck-custom>.bk>.bk>input:not(:checked):after {
+    content: "\203A";
+    font-family: FontAwesome;
+    display: inline-block;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    color: #000;
+    /*459ce7;/*/
+    font-size: 18px;
+    position: relative;
+    top: -10px;
+    /*	  pointer-events: center;*/
+}
+
+.bk-root .bk-input {
+    border-radius: 15px;
+}
+
+.med-num-app-top-panel {
+    background: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    box-sizing: border-box;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.07);
+    border-radius: 11px;
+    width: inherit;
+    height: inherit;
+}
+
+.list>ul>li {
+    background: #ccc;
+}
+
+.med-num-app-synthese {
+    background: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    box-sizing: border-box;
+    /* box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.07);
+    border-radius: 11px; */
+}
+
+
+/* 
+h1 {font-size: 18px;}
+table {  border-spacing: 15px;}
+.bk>  .gauge-cls > .gauge-tr > tbody >tr.gauge-td {border: 10px solid #ccc; border-width: 0 0 0px 1px;} */
