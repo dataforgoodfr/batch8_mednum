@@ -8,13 +8,10 @@ import param
 from mednum.config import *
 from mednum.loaders import read_merged_data
 
-# from mednum.controlers.autocomplete import AutocompleteInput
+# from mednum.controlers.autocomplete import AppAuto
 from mednum.indicators.panels import TopIndicators, IndicatorsWithGauge
 from pathlib import Path
 import mednum
-
-# import flamegraph
-# flamegraph.start_profile_thread(fd=open("./perf.log", "w"))
 
 css_mednum = [str(Path(__file__).parent / "statics" / "css" / "mednum.css")]
 
@@ -52,7 +49,8 @@ template = """
     <div class="col-sm-2">
           {{ embed(roots.sidebar) | indent(8) }}
     </div>
-    <div class="col-sm-8 ml-auto">
+    
+        <div class="col-sm-8 ml-auto">
       <div class="row">
       {{ embed(roots.top) | indent(8) }}
       </div>
@@ -60,39 +58,39 @@ template = """
           {{ embed(roots.main) | indent(8) }}
       </div>
     </div>
-    
   </div>
 </div>
 
 
 {% endblock %}
 """
-# {{ embed(roots.top) | indent(8) }}
-
 
 tmpl = pn.Template(template)
 tmpl.add_variable("app_title", "<h1>Custom Template App</h1>")
 
-# pn.config.sizing_mode = "stretch_width"
+# Sidebar
+class AutoComplete(param.Parameterized):
+    nom_commune = param.String()
 
-
-# # Sidebar
-# class AutoComplete(param.Parameterized):
-#     nom_commune = param.String()
 
 mednumapp = mednum.MedNumApp(name="Sélection")
 
 # auto_complete_param = AutoComplete()
-# auto_complete = pn.Param(auto_complete_param, widgets={"string_value": {"type": pn.widgets.AutocompleteInput, "options": NOM_COMMUNES}})
-# score_widget = pn.widgets.IntRangeSlider()
-# sidebar = pn.Column(auto_complete, score_widget)
-# sidebar = pn.Column(mednumapp.lat_widgets())
+# auto_complete = pn.Param(
+#     auto_complete_param,
+#     widgets={
+#         "string_value": {
+#             "type": AutocompleteInput,
+#             "options": ["Lille", "Toulouse"],
+#         }
+#     },
+# )
 
 # Top indicator
-import geoviews as gv
+
 tmpl.add_panel("sidebar", mednumapp.lat_widgets)
 tmpl.add_panel("top", pn.panel(mednumapp.top_panel, height=200)),
-tmpl.add_panel("main", gv.DynamicMap(mednumapp.update_map_coords) * gv.DynamicMap(mednumapp.update_map_values))
+tmpl.add_panel("main", mednumapp.map_view)
 # tmpl.add_panel("main", mednumapp.table_view)
 
 tmpl.servable()

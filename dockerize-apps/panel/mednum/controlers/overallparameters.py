@@ -100,6 +100,9 @@ class OverallParameters(param.Parameterized):
         # What is selected in each level
         self.get_selected_indice_by_level()
 
+        # Define define_searchable_element
+        self.define_searchable_element()
+
         self.score_calculation()
 
     def define_paths(self):
@@ -118,6 +121,11 @@ class OverallParameters(param.Parameterized):
 
         indice_frag = processed_data / "MERGE_data_clean.csv"
         return interim_data, cont_iris, indice_frag
+
+    def define_searchable_element(self):
+        self.seachable_localisation = list(
+            self.df_merged.index.get_level_values(self.level_0_column_names).unique()
+        )
 
     def define_indices_params(self):
         """ 

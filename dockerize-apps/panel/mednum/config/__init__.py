@@ -2,8 +2,10 @@ from pathlib import Path
 
 hard_reset = False
 data_path = Path("../data")
+import os
 
 if not data_path.exists():
+
     data_path = Path("./data")
 
 interim_data = data_path / "interim/"

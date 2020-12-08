@@ -17,7 +17,7 @@ class AppAuto(param.Parameterized):
             widgets={
                 "string_value": {
                     "type": pn.widgets.AutocompleteInput,
-                    # "options": OBJECTS,
+                    "options": OBJECTS,
                     "case_sensitive":False
                 }
             },

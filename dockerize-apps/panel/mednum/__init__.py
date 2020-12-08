@@ -53,7 +53,20 @@ class MedNumApp(TopIndicators):
             "## Aller plus loin", self.param.export_data, self.param.edit_report
         )
 
-        localisation_panel = pn.Column("## Localisation", self.param.localisation)
+        localisation_panel = pn.Column(
+            "## Localisation",
+            pn.Param(
+                self.param.localisation,
+                widgets={
+                    "localisation": {
+                        "type": pn.widgets.AutocompleteInput,
+                        "options": self.seachable_localisation,
+                        "value": self.localisation,
+                        "case_sensitive": False
+                    }
+                },
+            ),
+        )
 
         indicateurs = pn.Column("## Indicateurs", *self.g_params)
 
@@ -83,12 +96,9 @@ class MedNumApp(TopIndicators):
                 + list(AXES_INDICES.keys())
             )
 
-            self.maps = gv.Polygons(
-                self.df_score, vdims=vdims
-            )  # , crs=crs.GOOGLE_MERCATOR)
+            self.maps = gv.Polygons(self.df_score, vdims=vdims)
             minx, miny, maxx, maxy = self.maps.geom().bounds
 
-            print(minx, miny, maxx, maxy)
             return (
                 self.maps.opts(
                     tools=["hover"],
@@ -112,15 +122,16 @@ class MedNumApp(TopIndicators):
         if not hasattr(self, "maps"):
             self.update_map_values()
         minx, miny, maxx, maxy = self.maps.geom().bounds
-        # self.tiles
+        self.tiles
+        return self.tiles * gv.DynamicMap(self.update_map_values)
 
-        return self.tiles.redim.range(Latitude=(miny, maxy)).redim.range(
-            Longitude=(minx, maxx)
-        )
+        # return self.tiles.redim.range(Latitude=(miny, maxy)).redim.range(
+        #     Longitude=(minx, maxx)
+        # )
 
     def map_view(self):
-        # return gv.DynamicMap(self.update_map_coords) * gv.DynamicMap(self.update_map_values)
-        return self.tiles * gv.DynamicMap(self.update_map_values)
+        # return self.tiles * gv.DynamicMap(self.update_map_values)
+        return self.update_map_coords
 
     @pn.depends("tout_axes", watch=True)
     def selection_indicateurs(self):
