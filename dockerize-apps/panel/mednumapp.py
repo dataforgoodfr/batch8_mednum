@@ -75,19 +75,7 @@ class AutoComplete(param.Parameterized):
 
 mednumapp = mednum.MedNumApp(name="Sélection")
 
-# auto_complete_param = AutoComplete()
-# auto_complete = pn.Param(
-#     auto_complete_param,
-#     widgets={
-#         "string_value": {
-#             "type": AutocompleteInput,
-#             "options": ["Lille", "Toulouse"],
-#         }
-#     },
-# )
-
 # Top indicator
-
 tmpl.add_panel("sidebar", mednumapp.lat_widgets)
 tmpl.add_panel("top", pn.panel(mednumapp.top_panel, height=200)),
 tmpl.add_panel("main", mednumapp.map_view)

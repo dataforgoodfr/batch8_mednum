@@ -62,7 +62,7 @@ class MedNumApp(TopIndicators):
                         "type": pn.widgets.AutocompleteInput,
                         "options": self.seachable_localisation,
                         "value": self.localisation,
-                        "case_sensitive": False
+                        "case_sensitive": False,
                     }
                 },
             ),
@@ -82,7 +82,7 @@ class MedNumApp(TopIndicators):
         return ordered_panel
 
     @pn.depends(
-        "score", "df_score", watch=True,
+        "localisation", "score", "df_score", watch=True,
     )
     def update_map_values(self):
         try:
@@ -90,48 +90,34 @@ class MedNumApp(TopIndicators):
             #  http://holoviews.org/user_guide/Plotting_with_Bokeh.html
             # https://docs.bokeh.org/en/latest/docs/user_guide/tools.html#custom-tooltip
             map_info = ["tout_axes", "nom_com"]
+            map_info = []  # "tout_axes", "nom_com"]
             vdims = (
                 map_info
                 + [k + "_SCORE" for k in self.selected_indices_level_0]
                 + list(AXES_INDICES.keys())
             )
-
+            print(vdims)
+            print(self.df_score[vdims])
+            print([v in self.df_score.columns for v in vdims])
             self.maps = gv.Polygons(self.df_score, vdims=vdims)
-            minx, miny, maxx, maxy = self.maps.geom().bounds
 
-            return (
-                self.maps.opts(
-                    tools=["hover"],
-                    color="score",
-                    colorbar=True,
-                    toolbar="above",
-                    # xaxis=None,
-                    # yaxis=None,
-                    fill_alpha=0.5,
-                )
-                # .redim.range(Longitude=(minx, maxx))
-                # .redim.range(Latitude=(miny, maxy))
+            return self.maps.opts(
+                tools=["hover"],
+                color="score",
+                colorbar=True,
+                toolbar="above",
+                # xaxis=None,
+                # yaxis=None,
+                fill_alpha=0.5,
             )
 
         except Exception as e:
             print(e)
             pass
 
-    @pn.depends("localisation", watch=True)
-    def update_map_coords(self):
-        if not hasattr(self, "maps"):
-            self.update_map_values()
-        minx, miny, maxx, maxy = self.maps.geom().bounds
-        self.tiles
-        return self.tiles * gv.DynamicMap(self.update_map_values)
-
-        # return self.tiles.redim.range(Latitude=(miny, maxy)).redim.range(
-        #     Longitude=(minx, maxx)
-        # )
-
+    @pn.depends("localisation") #, watch=True)
     def map_view(self):
-        # return self.tiles * gv.DynamicMap(self.update_map_values)
-        return self.update_map_coords
+        return self.tiles * self.update_map_values()
 
     @pn.depends("tout_axes", watch=True)
     def selection_indicateurs(self):

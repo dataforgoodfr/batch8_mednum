@@ -5,8 +5,10 @@ data_path = Path("../data")
 import os
 
 if not data_path.exists():
-
     data_path = Path("./data")
+
+if not data_path.exists():
+    data_path = Path("../../data")
 
 interim_data = data_path / "interim/"
 processed_data = data_path / "processed/"
