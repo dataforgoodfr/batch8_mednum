@@ -131,14 +131,22 @@ class MedNumApp(TopIndicators):
                 + list(AXES_INDICES.keys())
             )
 
-            tooltips =[]
+            tooltips =[("Nom ", "@nom_com")]
             for k, v in CATEGORIES_INDICES.items():
                 vdim_name = k +'_SCORE'
                 if vdim_name in vdims:
                     tooltips.append((v, "@"+vdim_name))
                 else:
-                    tooltips.append((v, "-"))
-            # CATEGORIES_INDICES
+                    tooltips.append((v, " - "))
+
+            for k, v in AXES_INDICES.items():
+                display_name = v['nom']
+                vdim_name = k
+                if vdim_name in vdims:
+                    tooltips.append((display_name, "@"+vdim_name))
+                else:
+                    tooltips.append((display_name, " - "))
+            
             hover_custom = HoverTool(tooltips=tooltips)
 
             self.maps = gv.Polygons(self.df_score, vdims=vdims)
