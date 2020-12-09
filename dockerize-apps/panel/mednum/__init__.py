@@ -14,6 +14,49 @@ class MedNumApp(TopIndicators):
 
     def __init__(self, **params):
         super(MedNumApp, self).__init__(**params)
+        self.catch_request()
+        # try:
+        #     self.localisation = str(
+        #         pn.state.session_args.get("localisation")[0].decode()
+        #     )
+        # except Exception as e:
+        #     print(e)
+        #     try:
+        #         self.localisation = "Auch"
+        #     except Exception as e:
+        #         print(e)
+
+    def catch_request(self):
+        try:
+            self.localisation = str(
+                pn.state.session_args.get("localisation")[0].decode()
+            )
+        except Exception as e:
+            self.localisation = "Auch"
+
+
+        try:
+            self.level_1_column = str(
+                pn.state.session_args.get("level_1_column")[0].decode()
+            )
+        except Exception:
+            self.level_1_column = "insee_dep"
+
+        try:
+            self.level_0_column = str(
+                pn.state.session_args.get("level_0_column")[0].decode()
+            )
+        except Exception:
+            self.level_0_column = "insee_com"
+            pass
+
+        try:
+            self.level_0_column_names = str(
+                pn.state.session_args.get("level_0_column_names")[0].decode()
+            )
+        except Exception:
+            self.level_0_column_names = "nom_com"
+            pass
 
     def lat_widgets(self):
         self.score_controls = pn.Param(
@@ -96,9 +139,7 @@ class MedNumApp(TopIndicators):
                 + [k + "_SCORE" for k in self.selected_indices_level_0]
                 + list(AXES_INDICES.keys())
             )
-            print(vdims)
-            print(self.df_score[vdims])
-            print([v in self.df_score.columns for v in vdims])
+
             self.maps = gv.Polygons(self.df_score, vdims=vdims)
 
             return self.maps.opts(
@@ -115,7 +156,7 @@ class MedNumApp(TopIndicators):
             print(e)
             pass
 
-    @pn.depends("localisation") #, watch=True)
+    @pn.depends("localisation")  # , watch=True)
     def map_view(self):
         return self.tiles * self.update_map_values()
 

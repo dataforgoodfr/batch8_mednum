@@ -33,7 +33,7 @@ opts.defaults(
 
 
 class OverallParameters(param.Parameterized):
-    localisation = param.String(default="", label="")
+    localisation = param.String(default="Jegun", label="")
     score = param.Range(default=(0, 250), bounds=(0, 250),)
 
     tout_axes = param.Boolean(False, label="")
@@ -103,43 +103,8 @@ class OverallParameters(param.Parameterized):
         # Define define_searchable_element
         self.define_searchable_element()
         
-        self.catch_request()
         self.score_calculation()
 
-    def catch_request(self):
-        try:
-            self.localisation = str(
-                pn.state.session_args.get("localisation")[0].decode()
-            )
-        except Exception as e:
-            print(e)
-            try:
-                self.localisation = "Auch"
-            except Exception as e:
-                print(e)
-
-        try:
-            self.level_1_column = str(
-                pn.state.session_args.get("level_1_column")[0].decode()
-            )
-        except Exception:
-            self.level_1_column = "insee_dep"
-
-        try:
-            self.level_0_column = str(
-                pn.state.session_args.get("level_0_column")[0].decode()
-            )
-        except Exception:
-            self.level_0_column = "insee_com"
-            pass
-
-        try:
-            self.level_0_column_names = str(
-                pn.state.session_args.get("level_0_column_names")[0].decode()
-            )
-        except Exception:
-            self.level_0_column_names = "nom_com"
-            pass
 
     def define_paths(self):
         data_path = Path("../data")
