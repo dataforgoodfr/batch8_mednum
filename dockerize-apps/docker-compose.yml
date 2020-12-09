@@ -19,6 +19,6 @@ services:
       - ../data:/data
     environment:
     - PYTHONUNBUFFERED=1
-    - PANEL_APP=./mednumapp.py 
+    - PANEL_APP=./mednumapp.py
     stdin_open: true
     tty: true
