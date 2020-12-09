@@ -5,6 +5,7 @@ from mednum.controlers.overallparameters import OverallParameters
 from mednum.indicators.panels import TopIndicators
 import param
 from cartopy import crs
+from bokeh.models import HoverTool
 
 
 class MedNumApp(TopIndicators):
@@ -15,16 +16,6 @@ class MedNumApp(TopIndicators):
     def __init__(self, **params):
         super(MedNumApp, self).__init__(**params)
         self.catch_request()
-        # try:
-        #     self.localisation = str(
-        #         pn.state.session_args.get("localisation")[0].decode()
-        #     )
-        # except Exception as e:
-        #     print(e)
-        #     try:
-        #         self.localisation = "Auch"
-        #     except Exception as e:
-        #         print(e)
 
     def catch_request(self):
         try:
@@ -33,7 +24,6 @@ class MedNumApp(TopIndicators):
             )
         except Exception as e:
             self.localisation = "Auch"
-
 
         try:
             self.level_1_column = str(
@@ -124,27 +114,45 @@ class MedNumApp(TopIndicators):
         )
         return ordered_panel
 
-    @pn.depends(
-        "localisation", "score", "df_score", watch=True,
-    )
+    # @pn.depends(
+    #     "localisation", "score", "df_score", 
+    # )
+    @pn.depends("score", "localisation", "point_ref", "df_score") #,watch=True)
     def update_map_values(self):
         try:
             # Selection par localisation
             #  http://holoviews.org/user_guide/Plotting_with_Bokeh.html
             # https://docs.bokeh.org/en/latest/docs/user_guide/tools.html#custom-tooltip
             map_info = ["tout_axes", "nom_com"]
-            map_info = []  # "tout_axes", "nom_com"]
+
             vdims = (
                 map_info
                 + [k + "_SCORE" for k in self.selected_indices_level_0]
                 + list(AXES_INDICES.keys())
             )
 
-            self.maps = gv.Polygons(self.df_score, vdims=vdims)
+            tooltips =[("Nom ", "@nom_com")]
+            for k, v in CATEGORIES_INDICES.items():
+                vdim_name = k +'_SCORE'
+                if vdim_name in vdims:
+                    tooltips.append((v, "@"+vdim_name))
+                else:
+                    tooltips.append((v, " - "))
 
+            for k, v in AXES_INDICES.items():
+                display_name = v['nom']
+                vdim_name = k
+                if vdim_name in vdims:
+                    tooltips.append((display_name, "@"+vdim_name))
+                else:
+                    tooltips.append((display_name, " - "))
+            
+            hover_custom = HoverTool(tooltips=tooltips)
+
+            self.maps = gv.Polygons(self.df_score, vdims=vdims)
             return self.maps.opts(
-                tools=["hover"],
-                color="score",
+                tools=[hover_custom],
+                color="tout_axes",
                 colorbar=True,
                 toolbar="above",
                 # xaxis=None,
@@ -158,7 +166,7 @@ class MedNumApp(TopIndicators):
 
     @pn.depends("localisation")  # , watch=True)
     def map_view(self):
-        return self.tiles * self.update_map_values()
+        return self.tiles * gv.DynamicMap(self.update_map_values)
 
     @pn.depends("tout_axes", watch=True)
     def selection_indicateurs(self):
