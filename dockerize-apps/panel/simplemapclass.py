@@ -75,9 +75,6 @@ class Example(param.Parameterized):
 
         # Hovertool
         # https://docs.bokeh.org/en/latest/docs/user_guide/tools.html#hovertool
-        TOOLTIPS = """
-
-        """
 
         # gv.Polygons(d1, vdims=[('pop_est','Population'), ('name', 'Country')]).options(
         #     tools=['hover'], width=800, height=500, projection=crs.Robinson()
@@ -88,7 +85,21 @@ class Example(param.Parameterized):
         if self.some_value > 50:
             tooltips = [("value", "@value"), ("value2", "@value2")]
 
-        hover_custom = HoverTool(tooltips=tooltips)  # , formatters={'image' : custom})
+        TOOLTIPS_HTML = """
+        <div>
+        """
+        for val in ["value", "value2"]:
+            TOOLTIPS_HTML += """<div>
+                <span style="font-size: 17px; font-weight: bold;">{parameter} :</span> <span style="red"> @{parameter}</span>
+            </div>""".format(
+                parameter=val
+            )
+
+        TOOLTIPS_HTML += """
+        </div>
+        """
+
+        hover_custom = HoverTool(tooltips=TOOLTIPS_HTML)
 
         maps = gv.Polygons(poly, vdims=vdims).opts(
             # tools=[hover_custom],

@@ -114,10 +114,7 @@ class MedNumApp(TopIndicators):
         )
         return ordered_panel
 
-    # @pn.depends(
-    #     "localisation", "score", "df_score", 
-    # )
-    @pn.depends("score", "localisation", "point_ref", "df_score") #,watch=True)
+    @pn.depends("score", "localisation", "point_ref", "df_score")
     def update_map_values(self):
         try:
             # Selection par localisation
@@ -131,23 +128,49 @@ class MedNumApp(TopIndicators):
                 + list(AXES_INDICES.keys())
             )
 
-            tooltips =[("Nom ", "@nom_com")]
-            for k, v in CATEGORIES_INDICES.items():
-                vdim_name = k +'_SCORE'
-                if vdim_name in vdims:
-                    tooltips.append((v, "@"+vdim_name))
-                else:
-                    tooltips.append((v, " - "))
-
-            for k, v in AXES_INDICES.items():
-                display_name = v['nom']
+            TOOLTIPS_HTML = """<span style="font-size: 22px; font-weight: bold;"> @nom_com</span>
+            <div>
+            """
+            for k, indicators in AXES_INDICES.items():
+                display_name = indicators["nom"]
                 vdim_name = k
                 if vdim_name in vdims:
-                    tooltips.append((display_name, "@"+vdim_name))
+                    TOOLTIPS_HTML += """<div>
+                    <span style="font-size: 18px; font-weight: bold;">  {display_name} :</span> <span style="red"> @{vdim_name}</span>
+                </div>""".format(
+                        display_name=display_name, vdim_name=vdim_name
+                    )
+
                 else:
-                    tooltips.append((display_name, " - "))
-            
-            hover_custom = HoverTool(tooltips=tooltips)
+                    TOOLTIPS_HTML += """<div>
+                    <span style="font-size: 18px; font-weight: bold;">  {display_name} :</span> <span style="red"> N/A </span>
+                </div>""".format(
+                        display_name=display_name, vdim_name=vdim_name
+                    )
+
+                for indic in indicators:
+                    if indic not in ["desc", "nom"]:
+                        display_name = CATEGORIES_INDICES[indic]
+                        vdim_name = indic + "_SCORE"
+                        if vdim_name in vdims:
+
+                            TOOLTIPS_HTML += """<div>
+                            <span style="font-size: 12px; ">  {display_name} :</span> <span style="red">@{vdim_name}</span>
+                            </div>""".format(
+                                display_name=display_name, vdim_name=vdim_name
+                            )
+                        else:
+                            TOOLTIPS_HTML += """<div>
+                            <span style="font-size: 12px;">  {display_name} :</span> <span style="red">N/A</span>
+                            </div>""".format(
+                                display_name=display_name
+                            )
+
+                TOOLTIPS_HTML += """
+                </div>
+                """
+
+            hover_custom = HoverTool(tooltips=TOOLTIPS_HTML)
 
             self.maps = gv.Polygons(self.df_score, vdims=vdims)
             return self.maps.opts(
@@ -157,14 +180,14 @@ class MedNumApp(TopIndicators):
                 toolbar="above",
                 # xaxis=None,
                 # yaxis=None,
-                fill_alpha=0.5,
+                fill_alpha=0.5
             )
 
         except Exception as e:
             print(e)
             pass
 
-    @pn.depends("localisation")  # , watch=True)
+    @pn.depends("localisation")
     def map_view(self):
         return self.tiles * gv.DynamicMap(self.update_map_values)
 
