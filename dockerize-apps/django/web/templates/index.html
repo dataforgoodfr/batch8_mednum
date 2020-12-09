@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Landing Page - Mednum</title>
+  {% load static %}
+  <!-- Bootstrap core CSS -->
+  <!-- <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">  -->
+ 
+  <!-- Custom fonts for this template -->
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/fontawesome-free/css/all.min.css' %}"> 
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/simple-line-icons/css/simple-line-icons.css' %}"> 
+  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <!-- Custom styles for this template -->
+  
+  <link rel="stylesheet" type="text/css" href="{% static 'css/landing-page.css' %}"> 
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+      <a class="navbar-brand" href="#"><div class="btn btn-light"></div></a>
+      <a class="navbar-brand" href="#"><div class="btn btn-light"></div></a>
+      <a class="navbar-brand" href="#home_vizu"><div class="btn btn-light"><h5>Cartographie</h5></div></a>
+      <a class="navbar-brand" href="#home_ind"><div class="btn btn-light"><h5>Clé de lecture</h5></div></a>
+      <a class="navbar-brand " href="#home_usage"><div class="btn btn-light"><h5>Cas d'usage</h5></div></a>
+    </div>
+  </nav>
+
+  <!-- Masthead -->
+  <header class="masthead  text-center">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-12 mx-auto">
+          <h2 class="mb-5">Connaitre l'indice de fragilité numérique de mon territoire</h2>
+        </div>
+        <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+          <form >
+            <div class="form-row">
+              <div class="col-12 col-md-9 mb-2 mb-md-0">
+                <div class="md-form">
+                  <input type="text" id="lname" class="form-control"><br>
+                  <label for="lname"><h5>Entrez le nom de la ville que vous souhaitez visualiser</h5></label><br>
+                </div>
+              </div>
+              <div class="col-12 col-md-3 mb-2 mb-md-0">
+                <button type="submit" class="btn btn-block btn-lg btn-dark"><i class="fa fa-search"></i>Tester</button>
+              </div>
+              <div class="col-xl-9 mx-auto">
+                <h4 class="mb-5"></h4>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </header>
+  <section class="showcase">
+    <div class="container-fluid p-0">
+      <div class="row no-gutters">
+        <div class="col-lg-6 order-lg-1 my-auto showcase-text">
+          <h2 class="mb-4">Aujourd'hui <span class="bg-warning"> 13 millions de français sont en difficultés avec le numérique.</span></h2>
+          <p class="lead mb-4">Plus que jamais, ce dernier est un <strong>véritable enjeu de cohésion et de competivité pour les territoires.</strong></p>
+          <p class="lead mb-1">A ce propos , connaissez-vous <strong>l'indice de fragilité  numérique de votre territoire ?</strong></p>
+        </div>
+        <div class="col-lg-6 mb-lg-0 text-center order-lg-2" >
+          <img class="img-fluid rounded-circle mb-6" src="/static/img/illu1_1.png" alt="">
+        </div>
+      </div>
+      <div class="row no-gutters">
+        <div class="col-lg-12 mb-lg-0 text-center" >
+          <img class="img-fluid rounded-circle mb-6" src="/static/img/ARROW 1.png" alt="">
+        </div>
+       
+      </div>
+      
+    </div>
+  </section>
+  <section class="showcase bg-light" id="home_ind">
+    <div class="container-fluid p-0">
+      <div class="row no-gutters">
+        <div class="col-lg-6 order-lg-1 my-auto showcase-text">
+          <h2 class="mb-4">Indices de quoi ? </h2>
+          <p class="lead mb-4">L'indice de fragilité numerique revèle la <strong class="bg-warning">probabilité</strong> que sur un territoire donné une partie significative de la population se trouve
+             <strong class="bg-warning"> en situation d'exclusion numérique</strong>.
+          </p>
+          <p class="lead mb-1">Il se base sur des variables susceptibles d'indiquer une fragilité numerique selon 4 axes:</p>
+          <p class="lead mb-2"><button type="button" class="btn btn-link btn-outline-primary">En savoir plus sur la méthode</button></p>
+        </div>
+        <div class="col-lg-1 mb-lg-0 mb-4 my-auto showcase-text order-lg-2 " > </div>
+        <div class="col-lg-4 mb-lg-0 mb-4 order-lg-2 " >
+          <ul class="list-group" style="margin-top: 20%;">
+            <li class="list-group-item list-group-item-info lead mb-3">1. <img class="img-fluid rounded-circle mb-6" src="/static/img/🔑Kley.png" alt="">  <strong>Compétences d'usages des interfaces numériques</strong></li>
+            <li class="list-group-item list-group-item-info lead mb-3">2. <img class="img-fluid  mb-6" src="/static/img/🖥️ord.png" alt="">  <strong>Accès aux interfaces numérques</strong></li>
+            <li class="list-group-item list-group-item-info lead mb-3">3. <img class="img-fluid  mb-6" src="/static/img/📁dos.png" alt="">  <strong>Compétences administratives</strong></li>
+            <li class="list-group-item list-group-item-info lead mb-3">4. <img class="img-fluid  mb-6" src="/static/img/ℹ️i.png" alt="">  <strong>Accès à l'information/Connaissances de services</strong></li>
+          </ul>
+        </div>
+        <div class="col-lg-1 mb-lg-0 text-center order-lg-2 " > </div>
+      </div>
+      <div class="row no-gutters">
+        <div class="col-lg-12 mb-lg-0 text-center" >
+        </div>
+      </div> 
+    </div>
+  </section>
+  <section class="showcase">
+    <div class="container-fluid p-0">
+      <div class="row no-gutters">
+        <div class="col-lg-6 order-lg-1 my-auto showcase-text">
+          <h2 class="mb-4">Une <span class="bg-warning"> cartographie dynamique.</span></h2>
+          <p class="lead mb-4">Les scores de fragilité qui composent cet indice sont projétés sur une carte.</p>
+          <p class="lead mb-1">Celle-ci permet de visualiser rapidement les zones de risque et de comprendre leur nature.</p>
+        </div>
+        <div class="col-lg-6 mb-lg-0 text-center order-lg-2" >
+          <p class="lead mb-2" style="margin-top: 20%;">Plus une zone est foncée, plus elle est susceptible d'abriter les habitants<br> en situation d'exclusion numérique.</p>
+          <img class="img-fluid  mb-4" src="/static/img/image 6.png" alt="">
+        </div>
+      </div>
+      <div class="row no-gutters">
+        <div class="col-lg-12 mb-lg-0 text-center" >
+          
+        </div>
+       
+      </div>
+      
+    </div>
+  </section>
+  <section class="showcase mast " id="home_vizu">
+    <div class="split"></div>
+    <div class="container-fluid p-0">
+      <div class="row no-gutters">
+        <div class="col-lg-6 order-lg-1 my-auto showcase-text">
+          <h1 class="mb-4">Une visualisation par cartégorie graphique.</h1>
+          <h4 class=" mb-3">Situez en un clin d'oeil les zones de fragilité potentielle sur votre térritoire.</h4>
+          <a class="navbar-brand " href="http://localhost:8000/bokeh/"><p class="text-center"><button type="button" class="btn btn-dark"><h4 class="">Accéder à la cartographie</h4></button></p></a>
+        </div>
+        <div class="col-lg-6 mb-lg-0 text-center order-lg-2" >
+      
+        </div>
+      </div>
+      <div class="row no-gutters">
+        <div class="col-lg-12 mb-lg-0 text-center" >
+          
+        </div>
+       
+      </div>
+      
+    </div>
+  </section>
+  <section class="showcase" id="home_usage">
+    <div class="container-fluid p-0">
+      <div class="row no-gutters">
+        <div class="col-lg-3 order-lg-1 my-auto showcase-text">
+          <img class="img-fluid" src="/static/img/image 7.png" alt="">
+        </div>
+        <div class="col-lg-3 order-lg-2 my-auto ">
+          <h2 class="mb-4">Cas d'usage</h2>
+          <h5 class="">Eric, chef de projet numérique pour une agglomération.</h5>
+          <p class="lead mb-1"></p>
+        </div>
+        <div class="col-lg-6 mb-lg-0 text-center order-lg-3" >
+          
+        </div>
+      </div>
+      <div class="row no-gutters">
+        <div class="col-lg-12 mb-lg-0 text-center" >
+          <h5 class="mb-2">"Eric, on a la réunion de planifiacation de <br> la stratégie d'inclusion numérique pour <br> l'année 2021, vendredi prochain.</h5>
+          <h5 class="mb-2">Tu nous prépares tes récos ?"</h5>
+        </div>
+       
+      </div>
+      
+    </div>
+  </section>
+  <section class="showcase bg-light">
+    <div class="container-fluid p-0">
+      <div class="row no-gutters">
+        <div class="col-lg-6 order-lg-1 my-auto showcase-text">
+          <h4 class="mb-4"> <span class="bg-warning">BESOINS</span></h4>
+          <p class="lead mb-2">Connaitre les publics en exclusion numérique: qui, où combien ?</p>
+          <p class="lead mb-2">Avoir le choix dans son niveau de maille d'analyse</p>
+          <p class="lead mb-1">Pouvoir facilement exporter les résultats pour  les diffuser.</p>
+        </div>
+        <div class="col-lg-6 order-lg-2 my-auto showcase-text">
+          <h4 class="mb-4"><span class="bg-warning">FRUSTATION</span></h4>
+          <p class="lead mb-2">Trop de discussions basées sur des ressentis </p>
+          <p class="lead mb-2">Manipulation des données publiques trop complexes sans une aide technique</p>
+          <p class="lead mb-1">Impressions de ne pas aller assez dans la connaissance de son territoire.</p>
+          
+        </div>
+        
+      </div>
+      <div class="row no-gutters">
+        <div class="col-lg-12 mb-lg-0 text-center" >
+          
+        </div>
+       
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Icons Grid -->
+  <!-- <section class="features-icons bg-light text-center" >
+    <div class="container" >
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+            <div class="features-icons-icon d-flex">
+              <i class="icon-screen-desktop m-auto text-primary"></i>
+            </div>
+            <h3>Fully Responsive</h3>
+            <p class="lead mb-0">This theme will look great on any device, no matter the size!</p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+            <div class="features-icons-icon d-flex">
+              <i class="icon-layers m-auto text-primary"></i>
+            </div>
+            <h3>Bootstrap 4 Ready</h3>
+            <p class="lead mb-0">Featuring the latest build of the new Bootstrap 4 framework!</p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="features-icons-item mx-auto mb-0 mb-lg-3">
+            <div class="features-icons-icon d-flex">
+              <i class="icon-check m-auto text-primary"></i>
+            </div>
+            <h3>Easy to Use</h3>
+            <p class="lead mb-0">Ready to use with your own content, or customize the source files!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- Image Showcases -->
+  
+
+  <!-- Testimonials -->
+  <!-- <section class="testimonials text-center bg-light">
+    <div class="container">
+      <h2 class="mb-5">What people are saying...</h2>
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="testimonial-item mx-auto mb-5 mb-lg-0">
+            <img class="img-fluid rounded-circle mb-3" src="img/testimonials-1.jpg" alt="">
+            <h5>Margaret E.</h5>
+            <p class="font-weight-light mb-0">"This is fantastic! Thanks so much guys!"</p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="testimonial-item mx-auto mb-5 mb-lg-0">
+            <img class="img-fluid rounded-circle mb-3" src="img/testimonials-2.jpg" alt="">
+            <h5>Fred S.</h5>
+            <p class="font-weight-light mb-0">"Bootstrap is amazing. I've been using it to create lots of super nice landing pages."</p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="testimonial-item mx-auto mb-5 mb-lg-0">
+            <img class="img-fluid rounded-circle mb-3" src="img/testimonials-3.jpg" alt="">
+            <h5>Sarah W.</h5>
+            <p class="font-weight-light mb-0">"Thanks so much for making these free resources available to us!"</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- Call to Action -->
+  <section class="call-to-action">
+    <div class="overlay"></div>
+    <div class="container-fluid p-0">
+      <div class="row no-gutters">
+        <div class="col-lg-6 order-lg-1 my-auto showcase-text" >
+          <h2 class="mb-1" style="margin-left:100px ;"> Programmer un rappel</h2>
+          <p class="lead mb-2" style="margin-left:100px ;">Vous aimeriez en savoir plus sur l'indice de fragilité numérique <br>et nos possibilités d'accompagnement ?</p>
+          <p class="lead mb-2" style="margin-left:100px ;">Laissez-nous vos coordonnées et un membre de notre équipe <br>vous rappellera.</p>
+        </div>
+        <div class="col-lg-6 order-lg-2 my-auto showcase-text">
+          <a  href="https://lamednum.coop/contact/"><button type="button" class="btn btn-dark mb-5"><h4 class="">J'aimerais ètre rappélé.e</h4></button></a>
+          
+          
+        </div>
+        
+      </div>
+      <!-- <div class="row">
+        <div class="col-xl-9 mx-auto">
+          <h2 class="mb-4">Ready to get started? Sign up now!</h2>
+        </div>
+        <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+          <form>
+            <div class="form-row">
+              <div class="col-12 col-md-9 mb-2 mb-md-0">
+                <input type="email" class="form-control form-control-lg" placeholder="Enter your email...">
+              </div>
+              <div class="col-12 col-md-3">
+                <button type="submit" class="btn btn-block btn-lg btn-primary">Sign up!</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div> -->
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer bg-light">
+    <div class="container-fluid p-0">
+      <div class="row">
+        <div class="col-lg-3 order-lg-1 my-auto showcase-text" >
+          <img class="img-fluid" style="margin-left:30px ;"src="/static/img/image 1.png" alt="">
+        </div>
+        <div class="col-lg-3 order-lg-1 my-auto showcase-text">
+          <img class="img-fluid" src="/static/img/image 3.png" alt="">
+        </div>
+        <div class="col-lg-3 order-lg-1 my-auto showcase-text">
+          <img class="img-fluid" src="/static/img/image 5.png" alt="">
+        </div>
+        <div class="col-lg-3 order-lg-1 my-auto showcase-text">
+          <img class="img-fluid" src="/static/img/image 4.png" alt="">
+        </div>
+        <!-- <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
+          <ul class="list-inline mb-2">
+            <li class="list-inline-item">
+              <a href="#">About</a>
+            </li>
+            <li class="list-inline-item">&sdot;</li>
+            <li class="list-inline-item">
+              <a href="#">Contact</a>
+            </li>
+            <li class="list-inline-item">&sdot;</li>
+            <li class="list-inline-item">
+              <a href="#">Terms of Use</a>
+            </li>
+            <li class="list-inline-item">&sdot;</li>
+            <li class="list-inline-item">
+              <a href="#">Privacy Policy</a>
+            </li>
+          </ul>
+          <p class="text-muted small mb-4 mb-lg-0">&copy; Your Website 2020. All Rights Reserved.</p>
+        </div>
+        <div class="col-lg-6 h-100 text-center text-lg-right my-auto">
+          <ul class="list-inline mb-0">
+            <li class="list-inline-item mr-3">
+              <a href="#">
+                <i class="fab fa-facebook fa-2x fa-fw"></i>
+              </a>
+            </li>
+            <li class="list-inline-item mr-3">
+              <a href="#">
+                <i class="fab fa-twitter-square fa-2x fa-fw"></i>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a href="#">
+                <i class="fab fa-instagram fa-2x fa-fw"></i>
+              </a>
+            </li>
+          </ul>
+        </div> -->
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static 'vendor/jquery/jquery.min.js'%}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+  <script src="{% static 'js/autos.js'%}"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+</body>
+
+</html>
