@@ -2,7 +2,7 @@
 # coding: utf-8
 import os
 from pathlib import Path
-
+import io
 import geoviews as gv
 import panel as pn
 import param
@@ -57,10 +57,11 @@ class OverallParameters(param.Parameterized):
     donnees_infra = param.Action(
         lambda x: x, doc="""Données Infra-Communales""", precedence=0.7
     )
-    export_data = param.Action(
-        lambda x: x.timestamps.append(dt.datetime.utcnow()),
-        doc="""Exporter les résultats""",
-        precedence=0.7,
+
+    file_name = param.String(
+        default="Export_mednum.csv",
+        doc="""
+      The filename to save to.""",
     )
     edit_report = param.Action(
         lambda x: x.timestamps.append(dt.datetime.utcnow()),
@@ -102,9 +103,15 @@ class OverallParameters(param.Parameterized):
 
         # Define define_searchable_element
         self.define_searchable_element()
-        
+
         self.score_calculation()
 
+        # Download
+        self.download = pn.widgets.FileDownload(
+            label="""Exporter les résultats""",
+            filename=self.file_name,
+            callback=self._download_callback,
+        )
 
     def define_paths(self):
         data_path = Path("../data")
@@ -139,6 +146,18 @@ class OverallParameters(param.Parameterized):
             widgets_params = self.create_checkbox_type_widget_params(widget_opts)
 
             self.g_params.append(pn.Param(self.param[k], widgets={k: widgets_params}))
+
+    def _download_callback(self):
+        """
+            A FileDownload callback will return a file-like object which can be serialized
+            and sent to the client.
+            """
+        self.file_name = "Export_%s.csv" % self.point_ref
+        self.download.filename = self.file_name
+        sio = io.StringIO()
+        self.df_score.drop("geometry", axis=1).to_csv(sio, index=False)
+        sio.seek(0)
+        return sio
 
     def get_params(self):
         paramater_names = [par[0] for par in self.get_param_values()]

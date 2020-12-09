@@ -108,12 +108,30 @@
     background: #FFFFFF;
     border: 1px solid #E5E5E5;
     box-sizing: border-box;
-    /* box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.07);
-    border-radius: 11px; */
 }
 
+.bk-root .bk-tabs-header.bk-above .bk-tab {
+    /* Détails Carto */
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #FFFFFF;
+}
 
-/* 
-h1 {font-size: 18px;}
-table {  border-spacing: 15px;}
-.bk>  .gauge-cls > .gauge-tr > tbody >tr.gauge-td {border: 10px solid #ccc; border-width: 0 0 0px 1px;} */
+.bk-tab.bk-active {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    background: #EC5732;
+    border-radius: 40px;
+}

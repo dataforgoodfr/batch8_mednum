@@ -6,7 +6,7 @@ from mednum.indicators.panels import TopIndicators
 import param
 from cartopy import crs
 from bokeh.models import HoverTool
-
+import re
 
 class MedNumApp(TopIndicators):
     score_widget = pn.widgets.IntRangeSlider
@@ -83,7 +83,10 @@ class MedNumApp(TopIndicators):
         # )
 
         export_panel = pn.Column(
-            "## Aller plus loin", self.param.export_data, self.param.edit_report
+            """## Aller plus loin
+[En savoir plus sur la méthode](https://lamednum.coop/actions/indice-de-fragilite-numerique/)
+            """
+            # self.param.export_data,  # self.param.edit_report
         )
 
         localisation_panel = pn.Column(
@@ -180,7 +183,7 @@ class MedNumApp(TopIndicators):
                 toolbar="above",
                 # xaxis=None,
                 # yaxis=None,
-                fill_alpha=0.5
+                fill_alpha=0.5,
             )
 
         except Exception as e:
@@ -220,6 +223,18 @@ class MedNumApp(TopIndicators):
             CATEGORIES_INDICES[name] if name in CATEGORIES_INDICES else name
             for name in df.columns
         ]
+
         html = df.to_html(classes=["mednum-df", "panel-df"])
-        return pn.pane.HTML(html + script, sizing_mode="stretch_width")
+        return pn.Column(
+            self.download, pn.pane.HTML(html + script, sizing_mode="stretch_width")
+        )
+
+    def tabs_view(self):
+        return pn.Tabs(
+            ("Carte", self.map_view),
+            ("Tableau", self.table_view),
+            css_classes=[
+                re.sub(r"(?<!^)(?=[A-Z])", "-", self.get_name() + "Tabs").lower()
+            ],
+        )
 
