@@ -329,15 +329,10 @@ class OverallParameters(param.Parameterized):
             # au niveau level_1_column sur les indice selectionne selected_indices_aggfunc
             
             score_agg_niveau = (
-                df.xs(
-                    info_loc[self.level_2_column],
-                    level=self.level_2_column,
-                    drop_level=False,
-                )
-                .groupby(self.level_1_column)
+                df.groupby(self.level_1_column)
                 .agg(selected_indices_aggfunc)
             )
-
+            
             # Division par l'aggregation sur la zone level_1_column (pondération)
             score_niveau = (
                 df.xs(
@@ -347,16 +342,19 @@ class OverallParameters(param.Parameterized):
                 )[selected_indices].div(score_agg_niveau)
                 * 100
             )
-
+            
             # Dissolution (i.e. agregation geographique) au niveau de découpage souhaité level_0_column
             df = df.xs(
                 info_loc[self.level_2_column],
                 level=self.level_2_column,
                 drop_level=False,
-            ).dissolve(
+            )
+            
+            df = df.dissolve(
                 by=[self.level_0_column, self.level_0_column_names],
                 aggfunc=selected_indices_aggfunc,
             )
+            
             # Score sur les indices merge sur l'index pour récupérer la geometry.
             # _BRUT : initial
             # _SCORE : Score de l'indice sur le découpage level_0_column divisé par la fonction d'aggragation au level_1_column
@@ -365,7 +363,7 @@ class OverallParameters(param.Parameterized):
                 on=[self.level_0_column, self.level_0_column_names],
                 suffixes=("_BRUT", "_SCORE"),
             ).drop_duplicates()  # Drop duplicate pour supprimer les doublons (zone homogène)
-
+            
             # Calcul des scores sur chaque axes et au total
             number_axes = 0
             for axe, indices in AXES_INDICES.items():
@@ -386,9 +384,10 @@ class OverallParameters(param.Parameterized):
             self.df_score = df.merge(
                 scores, on=[self.level_0_column, self.level_0_column_names, "geometry"]
             ).drop_duplicates()  # Suppression des doublons sur les communes découpées en IRIS
-
+            
             
         else:
+            
             df = df.xs(
                 info_loc[self.level_2_column],
                 level=self.level_2_column,
@@ -396,7 +395,7 @@ class OverallParameters(param.Parameterized):
             ).dissolve(
                 by=[self.level_0_column, self.level_0_column_names],
             )
-
+            
             for axe, indices in AXES_INDICES.items():
                 df.loc[:, axe] = 0
             df.loc[:, "tout_axes"] = 0
