@@ -20,7 +20,6 @@ from django.conf.urls import  include, url
 from landing.views import land
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^$', land, name='land'),
-    path("", include('bokehApp.urls')),
+    url(r'^$', land, name='land')
 ]
 
