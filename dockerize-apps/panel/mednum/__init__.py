@@ -7,6 +7,19 @@ import param
 from cartopy import crs
 from bokeh.models import HoverTool
 import re
+from holoviews import opts
+
+opts.defaults(
+    opts.Polygons(
+        width=900,
+        height=900,
+        toolbar="above",
+        colorbar=True,
+        tools=["hover", "tap"],
+        aspect="equal",
+    )
+)
+
 
 class MedNumApp(TopIndicators):
     score_widget = pn.widgets.IntRangeSlider
@@ -117,7 +130,7 @@ class MedNumApp(TopIndicators):
         )
         return ordered_panel
 
-    @pn.depends("score", "localisation", "point_ref", "df_score") #,watch=True)
+    @pn.depends("score", "localisation", "point_ref", "df_score")  # ,watch=True)
     def update_map_values(self):
         try:
             # Selection par localisation
@@ -189,7 +202,6 @@ class MedNumApp(TopIndicators):
         except Exception as e:
             print(e)
             pass
-    
 
     @pn.depends("localisation")  # , watch=True)
     def map_view(self):
@@ -230,6 +242,7 @@ class MedNumApp(TopIndicators):
             self.download, pn.pane.HTML(html + script, sizing_mode="stretch_width")
         )
 
+    @pn.depends("localisation")
     def tabs_view(self):
         return pn.Tabs(
             ("Carte", self.map_view),

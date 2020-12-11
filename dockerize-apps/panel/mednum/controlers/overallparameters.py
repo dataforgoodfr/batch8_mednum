@@ -6,7 +6,6 @@ import io
 import geoviews as gv
 import panel as pn
 import param
-from holoviews import opts
 from panel.widgets import Checkbox
 from mednum.widgets import TreeViewCheckBox
 from holoviews.element.tiles import StamenTerrain
@@ -19,18 +18,6 @@ import mednum as mind
 
 
 gv.extension("bokeh")
-
-opts.defaults(
-    opts.Polygons(
-        width=800,
-        height=600,
-        toolbar="above",
-        colorbar=True,
-        tools=["hover", "tap"],
-        aspect="equal",
-    )
-)
-
 
 class OverallParameters(param.Parameterized):
     localisation = param.String(default="Jegun", label="")

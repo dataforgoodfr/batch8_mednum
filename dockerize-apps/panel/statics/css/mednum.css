@@ -110,8 +110,8 @@
     box-sizing: border-box;
 }
 
-.bk-root .bk-tabs-header .bk-tab {
-    /* Détails Carto */
+
+/* .bk-root .bk-tabs-header .bk-tab {
     border-radius: 40px;
     font-family: Roboto;
     font-style: normal;
@@ -134,7 +134,6 @@
     font-weight: 500;
     font-size: 12px;
     line-height: 14px;
-    /* identical to box height */
     display: flex;
     align-items: center;
     text-align: center;
@@ -156,4 +155,4 @@
 
 .bk-root .bk-tabs-header.bk-above .bk-headers-wrapper {
     border-bottom: unset;
-}
+} */

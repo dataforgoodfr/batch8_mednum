@@ -64,18 +64,15 @@ template = """
 tmpl = pn.Template(template)
 tmpl.add_variable("app_title", "<h1>Custom Template App</h1>")
 
-# Sidebar
-class AutoComplete(param.Parameterized):
-    nom_commune = param.String()
-
-
 mednumapp = mednum.MedNumApp(name="Sélection")
 
 # Top indicator
 tmpl.add_panel("sidebar", mednumapp.lat_widgets)
 tmpl.add_panel("top", pn.Row(mednumapp.top_panel, sizing_mode="stretch_width")),
-tmpl.add_panel("main", mednumapp.map_view)
-
+tmpl.add_panel(
+    "main",
+    mednumapp.tabs_view,
+)
 # tmpl.add_panel("main", mednumapp.table_view)
 
 tmpl.servable()
