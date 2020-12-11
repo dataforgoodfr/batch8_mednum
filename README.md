@@ -41,3 +41,13 @@ python -m mednum.data.process download_geojson
 ```
 panel serve dockerize-apps/panel/mednumapp.py
 ```
+
+# Lancement dockers 
+<img src="https://www.docker.com/sites/default/files/d8/styles/role_icon/public/2019-07/Moby-logo.png?itok=sYH_JEaJ" alt="drawing" width="200"/>
+
+
+```
+cd dockerize-apps
+docker-compose up 
+
+``
