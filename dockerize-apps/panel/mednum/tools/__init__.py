@@ -3,13 +3,23 @@ import numpy as np
 import pandas as pd
 import unicodedata
 from pathlib import Path
-
+import cProfile
 def strip_accents(s):
     if s is None:
         s = ''
     return ''.join(c for c in unicodedata.normalize('NFD', s)
                   if unicodedata.category(c) != 'Mn')
 
+
+def profileit(func):
+    def wrapper(*args, **kwargs):
+        datafn = func.__name__ + ".profile" # Name the data file sensibly
+        prof = cProfile.Profile()
+        retval = prof.runcall(func, *args, **kwargs)
+        prof.dump_stats(datafn)
+        return retval
+
+    return wrapper
 
 def reduce_mem_usage(props, to_cat = 150):
     start_mem_usg = props.memory_usage().sum() / 1024**2 

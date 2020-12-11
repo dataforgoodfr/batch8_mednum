@@ -66,15 +66,15 @@ class TreeViewCheckBox(CompositeWidget, MultiSelect):
     def _update_all(self, event):
         if self.all_selector.value:
             self.selected_options.value = self.select_options
-            self.value = [self.all_selector.name] + self.select_options
         else:
             if len(self.select_options[:-1]) != len(self.selected_options.value):
                 self.selected_options.value = []
-                self.value = []
     
     def _update_selected_options(self, event):
         if len(self.select_options) == len(self.selected_options.value):
-            self.all_selector.value = True
+            # This will trigger an update don't trigger if it's already true
+            if not self.all_selector.value:
+                self.all_selector.value = True
         else:
             self.all_selector.value = False
         self.value = self.selected_options.value
