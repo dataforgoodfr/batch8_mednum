@@ -73,3 +73,8 @@ target/
 .mypy_cache/
 
 geoviews-examples/*
+*.orig
+*BACKUP*
+*BASE*
+*LOCAL*
+*REMOTE*
