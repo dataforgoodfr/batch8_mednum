@@ -30,7 +30,7 @@ class MedNumApp(TopIndicators):
                 pn.state.session_args.get("level_1_column")[0].decode()
             )
         except Exception:
-            self.level_1_column = "insee_dep"
+            self.level_1_column = "EPCI"
 
         try:
             self.level_0_column = str(

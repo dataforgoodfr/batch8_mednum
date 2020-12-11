@@ -1,14 +1,10 @@
 from pathlib import Path
 
 hard_reset = False
-data_path = Path("../data")
-import os
+data_path = Path("../../data")
 
 if not data_path.exists():
     data_path = Path("./data")
-
-if not data_path.exists():
-    data_path = Path("../../data")
 
 interim_data = data_path / "interim/"
 processed_data = data_path / "processed/"
@@ -23,8 +19,8 @@ MAP_COL_WIDGETS = {
         "Région": "insee_reg",
         "Département": "insee_dep",
         "Intercommune": "EPCI",
-        # "Commune": "insee_com",
-        # "Iris": "code_iris",
+        "Commune": "insee_com",
+        "Iris": "code_iris",
     },
 }
 
