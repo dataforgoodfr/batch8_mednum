@@ -187,13 +187,14 @@ class OverallParameters(param.Parameterized):
         )
         self.df_merged.set_index(indexes, inplace=True)
 
-    @pn.depends("localisation", "point_ref", watch=True)
+    @pn.depends("localisation", "point_ref", "niveau_observation", watch=True)
     def set_entity_levels(self):
         """Set the entity levels and point values for this entity.
         """
-        self.level_0_column, self.level_1_column = (
+        self.level_0_column, self.level_1_column, self.level_2_column = (
             MAP_COL_WIDGETS["level_0"]["index"],
             MAP_COL_WIDGETS["level_1"][self.point_ref],
+            MAP_COL_WIDGETS["level_2"][self.niveau_observation]
         )
         self.level_0_column_names = MAP_COL_WIDGETS["level_0"]["names"]
         self.level_0_value = self.localisation
@@ -302,6 +303,7 @@ class OverallParameters(param.Parameterized):
     @pn.depends(
         "localisation",
         "point_ref",
+        "niveau_observation",
         "tout_axes",
         "interfaces_num",
         "infos_num",
@@ -322,39 +324,37 @@ class OverallParameters(param.Parameterized):
             #
             map_info = [self.level_0_column_names]
             vdims = map_info + selected_indices
-
+            
             # Aggregation selon la fonction specifié (mean, median)
             # au niveau level_1_column sur les indice selectionne selected_indices_aggfunc
-
+            
             score_agg_niveau = (
-                df.xs(
-                    info_loc[self.level_1_column],
-                    level=self.level_1_column,
-                    drop_level=False,
-                )
-                .groupby(self.level_1_column)
+                df.groupby(self.level_1_column)
                 .agg(selected_indices_aggfunc)
             )
-
+            
             # Division par l'aggregation sur la zone level_1_column (pondération)
             score_niveau = (
                 df.xs(
-                    info_loc[self.level_1_column],
-                    level=self.level_1_column,
+                    info_loc[self.level_2_column],
+                    level=self.level_2_column,
                     drop_level=False,
                 )[selected_indices].div(score_agg_niveau)
                 * 100
             )
-
+            
             # Dissolution (i.e. agregation geographique) au niveau de découpage souhaité level_0_column
             df = df.xs(
-                info_loc[self.level_1_column],
-                level=self.level_1_column,
+                info_loc[self.level_2_column],
+                level=self.level_2_column,
                 drop_level=False,
-            ).dissolve(
+            )
+            
+            df = df.dissolve(
                 by=[self.level_0_column, self.level_0_column_names],
                 aggfunc=selected_indices_aggfunc,
             )
+            
             # Score sur les indices merge sur l'index pour récupérer la geometry.
             # _BRUT : initial
             # _SCORE : Score de l'indice sur le découpage level_0_column divisé par la fonction d'aggragation au level_1_column
@@ -363,7 +363,7 @@ class OverallParameters(param.Parameterized):
                 on=[self.level_0_column, self.level_0_column_names],
                 suffixes=("_BRUT", "_SCORE"),
             ).drop_duplicates()  # Drop duplicate pour supprimer les doublons (zone homogène)
-
+            
             # Calcul des scores sur chaque axes et au total
             number_axes = 0
             for axe, indices in AXES_INDICES.items():
@@ -381,23 +381,24 @@ class OverallParameters(param.Parameterized):
             if number_axes != 0:
                 scores.loc[:, "tout_axes"] /= number_axes
 
-            #
             self.df_score = df.merge(
                 scores, on=[self.level_0_column, self.level_0_column_names, "geometry"]
             ).drop_duplicates()  # Suppression des doublons sur les communes découpées en IRIS
-
+            
+            
         else:
+            
             df = df.xs(
-                info_loc[self.level_1_column],
-                level=self.level_1_column,
+                info_loc[self.level_2_column],
+                level=self.level_2_column,
                 drop_level=False,
             ).dissolve(
                 by=[self.level_0_column, self.level_0_column_names],
-                # aggfunc='first',
             )
-
+            
             for axe, indices in AXES_INDICES.items():
                 df.loc[:, axe] = 0
             df.loc[:, "tout_axes"] = 0
+
             self.df_score = df
 

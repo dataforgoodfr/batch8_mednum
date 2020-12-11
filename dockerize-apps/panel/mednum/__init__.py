@@ -30,7 +30,7 @@ class MedNumApp(TopIndicators):
                 pn.state.session_args.get("level_1_column")[0].decode()
             )
         except Exception:
-            self.level_1_column = "insee_dep"
+            self.level_1_column = "EPCI"
 
         try:
             self.level_0_column = str(
@@ -67,13 +67,13 @@ class MedNumApp(TopIndicators):
                 self.param.point_ref, widgets={"point_ref": pn.widgets.RadioBoxGroup},
             ),
         )
-        # niveau_observation_panel = pn.Column(
-        #     "## " + self.param.niveau_observation.label,
-        #     pn.Param(
-        #         self.param.niveau_observation,
-        #         widgets={"niveau_observation": pn.widgets.RadioBoxGroup},
-        #     ),
-        # )
+        niveau_observation_panel = pn.Column(
+            "## " + self.param.niveau_observation.label,
+            pn.Param(
+                self.param.niveau_observation,
+                widgets={"niveau_observation": pn.widgets.RadioBoxGroup},
+            ),
+        )
         # niveau_details_panel = pn.Column(
         #     "## " + self.param.niveau_details.label,
         #     pn.Param(
@@ -111,13 +111,13 @@ class MedNumApp(TopIndicators):
             score_panel,
             indicateurs,
             point_ref_panel,
-            # niveau_observation_panel,
+            niveau_observation_panel,
             # niveau_details_panel,
             export_panel,
         )
         return ordered_panel
 
-    @pn.depends("score", "localisation", "point_ref", "df_score")
+    @pn.depends("score", "localisation", "point_ref", "df_score") #,watch=True)
     def update_map_values(self):
         try:
             # Selection par localisation
@@ -189,8 +189,9 @@ class MedNumApp(TopIndicators):
         except Exception as e:
             print(e)
             pass
+    
 
-    @pn.depends("localisation")
+    @pn.depends("localisation")  # , watch=True)
     def map_view(self):
         return self.tiles * gv.DynamicMap(self.update_map_values)
 
