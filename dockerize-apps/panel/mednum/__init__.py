@@ -67,13 +67,13 @@ class MedNumApp(TopIndicators):
                 self.param.point_ref, widgets={"point_ref": pn.widgets.RadioBoxGroup},
             ),
         )
-        # niveau_observation_panel = pn.Column(
-        #     "## " + self.param.niveau_observation.label,
-        #     pn.Param(
-        #         self.param.niveau_observation,
-        #         widgets={"niveau_observation": pn.widgets.RadioBoxGroup},
-        #     ),
-        # )
+        niveau_observation_panel = pn.Column(
+            "## " + self.param.niveau_observation.label,
+            pn.Param(
+                self.param.niveau_observation,
+                widgets={"niveau_observation": pn.widgets.RadioBoxGroup},
+            ),
+        )
         # niveau_details_panel = pn.Column(
         #     "## " + self.param.niveau_details.label,
         #     pn.Param(
@@ -111,7 +111,7 @@ class MedNumApp(TopIndicators):
             score_panel,
             indicateurs,
             point_ref_panel,
-            # niveau_observation_panel,
+            niveau_observation_panel,
             # niveau_details_panel,
             export_panel,
         )

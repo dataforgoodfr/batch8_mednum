@@ -13,8 +13,19 @@ cache_dir = interim_data
 INDICE = "GLOBAL COMPETENCES"
 
 MAP_COL_WIDGETS = {
+    # niveau interet
     "level_0": {"index": "insee_com", "names": "nom_com"},
+    # niveau calcul score
     "level_1": {
+        # "Pays": "",
+        "Région": "insee_reg",
+        "Département": "insee_dep",
+        "Intercommune": "EPCI",
+        # "Commune": "insee_com",
+        # "Iris": "code_iris",
+    },
+    # Niveau observation
+    "level_2": {
         # "Pays": "",
         "Région": "insee_reg",
         "Département": "insee_dep",

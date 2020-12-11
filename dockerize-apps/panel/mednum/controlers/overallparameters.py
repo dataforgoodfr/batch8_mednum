@@ -187,13 +187,14 @@ class OverallParameters(param.Parameterized):
         )
         self.df_merged.set_index(indexes, inplace=True)
 
-    @pn.depends("localisation", "point_ref", watch=True)
+    @pn.depends("localisation", "point_ref", "niveau_observation", watch=True)
     def set_entity_levels(self):
         """Set the entity levels and point values for this entity.
         """
-        self.level_0_column, self.level_1_column = (
+        self.level_0_column, self.level_1_column, self.level_2_column = (
             MAP_COL_WIDGETS["level_0"]["index"],
             MAP_COL_WIDGETS["level_1"][self.point_ref],
+            MAP_COL_WIDGETS["level_2"][self.niveau_observation]
         )
         self.level_0_column_names = MAP_COL_WIDGETS["level_0"]["names"]
         self.level_0_value = self.localisation
@@ -302,6 +303,7 @@ class OverallParameters(param.Parameterized):
     @pn.depends(
         "localisation",
         "point_ref",
+        "niveau_observation",
         "tout_axes",
         "interfaces_num",
         "infos_num",
@@ -322,7 +324,7 @@ class OverallParameters(param.Parameterized):
             #
             map_info = [self.level_0_column_names]
             vdims = map_info + selected_indices
-
+            
             # Aggregation selon la fonction specifié (mean, median)
             # au niveau level_1_column sur les indice selectionne selected_indices_aggfunc
 
@@ -348,8 +350,8 @@ class OverallParameters(param.Parameterized):
 
             # Dissolution (i.e. agregation geographique) au niveau de découpage souhaité level_0_column
             df = df.xs(
-                info_loc[self.level_1_column],
-                level=self.level_1_column,
+                info_loc[self.level_2_column],
+                level=self.level_2_column,
                 drop_level=False,
             ).dissolve(
                 by=[self.level_0_column, self.level_0_column_names],
@@ -382,14 +384,16 @@ class OverallParameters(param.Parameterized):
                 scores.loc[:, "tout_axes"] /= number_axes
 
             #
+            
             self.df_score = df.merge(
                 scores, on=[self.level_0_column, self.level_0_column_names, "geometry"]
             ).drop_duplicates()  # Suppression des doublons sur les communes découpées en IRIS
 
+            
         else:
             df = df.xs(
-                info_loc[self.level_1_column],
-                level=self.level_1_column,
+                info_loc[self.level_2_column],
+                level=self.level_2_column,
                 drop_level=False,
             ).dissolve(
                 by=[self.level_0_column, self.level_0_column_names],
@@ -399,5 +403,6 @@ class OverallParameters(param.Parameterized):
             for axe, indices in AXES_INDICES.items():
                 df.loc[:, axe] = 0
             df.loc[:, "tout_axes"] = 0
+
             self.df_score = df
 
