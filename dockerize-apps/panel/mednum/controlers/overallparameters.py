@@ -327,11 +327,11 @@ class OverallParameters(param.Parameterized):
             
             # Aggregation selon la fonction specifié (mean, median)
             # au niveau level_1_column sur les indice selectionne selected_indices_aggfunc
-
+            
             score_agg_niveau = (
                 df.xs(
-                    info_loc[self.level_1_column],
-                    level=self.level_1_column,
+                    info_loc[self.level_2_column],
+                    level=self.level_2_column,
                     drop_level=False,
                 )
                 .groupby(self.level_1_column)
@@ -341,8 +341,8 @@ class OverallParameters(param.Parameterized):
             # Division par l'aggregation sur la zone level_1_column (pondération)
             score_niveau = (
                 df.xs(
-                    info_loc[self.level_1_column],
-                    level=self.level_1_column,
+                    info_loc[self.level_2_column],
+                    level=self.level_2_column,
                     drop_level=False,
                 )[selected_indices].div(score_agg_niveau)
                 * 100
@@ -383,8 +383,6 @@ class OverallParameters(param.Parameterized):
             if number_axes != 0:
                 scores.loc[:, "tout_axes"] /= number_axes
 
-            #
-            
             self.df_score = df.merge(
                 scores, on=[self.level_0_column, self.level_0_column_names, "geometry"]
             ).drop_duplicates()  # Suppression des doublons sur les communes découpées en IRIS
@@ -397,7 +395,6 @@ class OverallParameters(param.Parameterized):
                 drop_level=False,
             ).dissolve(
                 by=[self.level_0_column, self.level_0_column_names],
-                # aggfunc='first',
             )
 
             for axe, indices in AXES_INDICES.items():
