@@ -16,5 +16,7 @@ dependencies:
   - hvplot
   - notebook
   - python
+  - pip
   - pip:
     - jupyter-server-proxy
+    - -r file:requirements.txt
