@@ -7,6 +7,7 @@ from panel.widgets.select import AutocompleteInput
 import param
 from mednum.config import *
 from mednum.loaders import read_merged_data
+import geoviews as gv
 
 # from mednum.controlers.autocomplete import AppAuto
 from mednum.indicators.panels import TopIndicators, Indicators
@@ -72,12 +73,13 @@ mednumapp = mednum.MedNumApp(name="Sélection")
 
 # Top indicator
 tmpl.add_panel("sidebar", mednumapp.lat_widgets)
+tmpl.add_panel("top", pn.Row(mednumapp.top_panel, sizing_mode="stretch_width")),
 tmpl.add_panel(
-    "top", pn.Row(mednumapp.top_panel, sizing_mode="stretch_width")
-),
-tmpl.add_panel(
-    "main", mednumapp.tabs_view,
+    "main",
+    gv.DynamicMap(mednumapp.update_map_coords)
+    * gv.DynamicMap(mednumapp.update_map_values),
 )
+
 # tmpl.add_panel("main", mednumapp.table_view)
 
 tmpl.servable()
