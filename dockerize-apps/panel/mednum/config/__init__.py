@@ -19,8 +19,8 @@ MAP_COL_WIDGETS = {
         "Région": "insee_reg",
         "Département": "insee_dep",
         "Intercommune": "EPCI",
-        "Commune": "insee_com",
-        "Iris": "code_iris",
+        # "Commune": "insee_com",
+        # "Iris": "code_iris",
     },
 }
 

@@ -117,9 +117,7 @@ class MedNumApp(TopIndicators):
         )
         return ordered_panel
 
-    @pn.depends(
-        "score", "df_score", watch=True,
-    )
+    @pn.depends("score", "localisation", "point_ref", "df_score") #,watch=True)
     def update_map_values(self):
         try:
             # Selection par localisation
@@ -192,16 +190,8 @@ class MedNumApp(TopIndicators):
             print(e)
             pass
     
-    @pn.depends("localisation", watch=True)
-    def update_map_coords(self):
-        if not hasattr(self, "maps"):
-            self.update_map_values()
-        minx, miny, maxx, maxy = self.maps.geom().bounds
 
-        return self.tiles.redim.range(Latitude=(miny, maxy)).redim.range(
-            Longitude=(minx, maxx)
-        )
-
+    @pn.depends("localisation")  # , watch=True)
     def map_view(self):
         return self.tiles * gv.DynamicMap(self.update_map_values)
 

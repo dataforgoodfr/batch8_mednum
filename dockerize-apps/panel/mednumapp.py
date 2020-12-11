@@ -74,11 +74,7 @@ mednumapp = mednum.MedNumApp(name="Sélection")
 # Top indicator
 tmpl.add_panel("sidebar", mednumapp.lat_widgets)
 tmpl.add_panel("top", pn.Row(mednumapp.top_panel, sizing_mode="stretch_width")),
-tmpl.add_panel(
-    "main",
-    gv.DynamicMap(mednumapp.update_map_coords)
-    * gv.DynamicMap(mednumapp.update_map_values),
-)
+tmpl.add_panel("main", mednumapp.map_view)
 
 # tmpl.add_panel("main", mednumapp.table_view)
 
