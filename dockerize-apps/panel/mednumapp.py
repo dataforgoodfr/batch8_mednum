@@ -9,7 +9,7 @@ from mednum.config import *
 from mednum.loaders import read_merged_data
 
 # from mednum.controlers.autocomplete import AppAuto
-from mednum.indicators.panels import TopIndicators, IndicatorsWithGauge
+from mednum.indicators.panels import TopIndicators, Indicators
 from pathlib import Path
 import mednum
 
@@ -24,12 +24,8 @@ js = {
     "DataTable": "https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js",
 }
 
-# pn.config.js_files = js
-# pn.config.css_files = css
-# with open(css_mednum[0], 'r') as fin: raw_css = fin.read()
+pn.extension(css_files=css_mednum)
 
-# pn.config.raw_css = [raw_css]
-pn.extension(css_files=css_mednum)  # raw_css = [raw_css])
 
 template = """
 {% extends base %}
@@ -47,15 +43,14 @@ template = """
 <div class="container-fluid">
 <div class="row">
     <div class="col-sm-2">
-          {{ embed(roots.sidebar) | indent(8) }}
+          {{ embed(roots.sidebar)}}
     </div>
-    
         <div class="col-sm-8 ml-auto">
       <div class="row">
-      {{ embed(roots.top) | indent(8) }}
+      {{ embed(roots.top)}}
       </div>
       <div class="row">
-          {{ embed(roots.main) | indent(8) }}
+          {{ embed(roots.main)}}
       </div>
     </div>
   </div>
@@ -77,10 +72,11 @@ mednumapp = mednum.MedNumApp(name="Sélection")
 
 # Top indicator
 tmpl.add_panel("sidebar", mednumapp.lat_widgets)
-tmpl.add_panel("top", pn.panel(mednumapp.top_panel, height=200)),
 tmpl.add_panel(
-    "main",
-    mednumapp.tabs_view,
+    "top", pn.Row(mednumapp.top_panel, sizing_mode="stretch_width")
+),
+tmpl.add_panel(
+    "main", mednumapp.tabs_view,
 )
 # tmpl.add_panel("main", mednumapp.table_view)
 

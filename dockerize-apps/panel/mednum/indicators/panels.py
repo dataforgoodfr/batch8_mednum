@@ -94,14 +94,13 @@ class PyGauge(param.Parameterized):
         )
 
 
-class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
+class Indicators(PyGauge):  # param.Parameterized):
     indicators = param.List(
         [
             dict(name="indic2", main=True, value=50, max_value=100),
             dict(name="indic2", value=150),
         ]
     )
-    show_gauge = False
     other_indic = []
     css_info_td = """
         font-family: Source Sans Pro;
@@ -119,9 +118,11 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
         margin: auto;
         font-size: 1rem;
     """
+    main_indicators_name = ""
+    with_gauge_true = param.Boolean(False)
 
     def __init__(self, **params) -> None:
-        super(IndicatorsWithGauge, self).__init__(**params)
+        super(Indicators, self).__init__(**params)
         self.set_indicators()
 
     @pn.depends("indicators", watch=True)
@@ -129,7 +130,7 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
 
         for ind in self.indicators:
             if "main" in ind:
-                self.show_gauge = True
+                self.with_gauge_true = True
                 self.max_value = ind["max_value"]
                 self.value = ind["value"]
                 self.main_indicators_name = ind["name"]
@@ -151,9 +152,13 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
         self.create_gauge()
         rowspan = len(self.indicators) - 1
 
-        HTML_MAIN_INDIC = """<table class="gauge-cls" style="border-spacing: 1em">
+        HTML_MAIN_INDIC = """<table class="gauge-cls" style="border-spacing: 1em">"""
+
+        if self.with_gauge_true:
+            HTML_MAIN_INDIC +="""
             <tr class="gauge-tr">
-                <td class="gauge-td" style="{style}">{gauge_header}</td>
+                <td class="gauge-td" style="{style}">{gauge_header}
+                </td>
         """.format(
             rowspan=rowspan,
             gauge_header=self.HTML_GAUGE_HEADER,
@@ -161,14 +166,14 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
             style=self.css_info_td,
         )
 
-        HTML_GAUGE = """
-                <td class="gauge-td" rowspan={rowspan} style="{style}">{gauge_img}</td>
-        """.format(
-            rowspan=rowspan,
-            gauge_header=self.HTML_GAUGE_HEADER,
-            gauge_img=self.HTML_GAUGE_IMG,
-            style=self.css_info_td,
-        )
+            HTML_GAUGE = """
+                    <td class="gauge-td" rowspan={rowspan} style="{style}">{gauge_img}</td>
+            """.format(
+                rowspan=rowspan,
+                gauge_header=self.HTML_GAUGE_HEADER,
+                gauge_img=self.HTML_GAUGE_IMG,
+                style=self.css_info_td,
+            )
 
         HTML_ROWS = [
             """
@@ -185,8 +190,9 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
             )
             for row in self.other_indic
         ]
-        # insert Gauge in second order
-        HTML_ROWS.insert(1, HTML_GAUGE)
+        if self.with_gauge_true:
+            # insert Gauge in second order
+            HTML_ROWS.insert(1, HTML_GAUGE)
 
         HTML = HTML_MAIN_INDIC + "<tr>\n".join(HTML_ROWS) + "\n<tr>\n</table>"
         return pn.panel(
@@ -199,7 +205,7 @@ class IndicatorsWithGauge(PyGauge):  # param.Parameterized):
 indic_w_g_value_1 = {
     "name": "indic1_1",
     "indicators": [
-        dict(name="accès", main=True, value=85, max_value=100),
+        # dict(name="accès", main=True, value=85, max_value=100),
         dict(name="info", value=118),
         dict(name="Interfaces", value=53),
     ],
@@ -207,7 +213,7 @@ indic_w_g_value_1 = {
 
 indic_w_g_value_2 = {
     "indicators": [
-        dict(name="Compétences", main=True, value=135, max_value=180),
+        # dict(name="Compétences", main=True, value=135, max_value=180),
         dict(name="indic3_2", value=115),
         dict(name="indic4", value=155),
     ]
@@ -229,8 +235,8 @@ class TopIndicators(OverallParameters):
         self.score = params.get("score", (0, 250))
         self.localisation = params.get("localisation", "Jegun")
 
-        self.indicator_w_gauge_1 = IndicatorsWithGauge(**self.indicators_value_1)
-        self.indicator_w_gauge_2 = IndicatorsWithGauge(**self.indicators_value_2)
+        self.indicator_w_gauge_1 = Indicators(**self.indicators_value_1)
+        self.indicator_w_gauge_2 = Indicators(**self.indicators_value_2)
 
     @pn.depends("score", watch=True)
     def synthese(self):
@@ -268,7 +274,7 @@ class TopIndicators(OverallParameters):
             ],
         )
 
-    def score_par_axe(self, name):
+    def score_par_axe(self, name, with_axe=False):
         indicator = []
         score_axe_total = 0
 
@@ -286,7 +292,6 @@ class TopIndicators(OverallParameters):
             if axis_categories != {}:
                 axis_name = axis_categories["nom"]
                 if name in axis_name:
-                    # for kIndic, vIndic in axis_categories.items():
                     score_axe = int(local_score[axis_key])
                     max_value = int(global_score[axis_key].max())
                     score_axe_total += score_axe
@@ -299,15 +304,15 @@ class TopIndicators(OverallParameters):
                         )
                     )
                     n += 1
-
-        indicator.append(
-            dict(
-                name=name,
-                main=True,
-                value=score_axe_total // n,
-                max_value=max_value_total // n,
+        if with_axe:
+            indicator.append(
+                dict(
+                    name=name,
+                    main=True,
+                    value=score_axe_total // n,
+                    max_value=max_value_total // n,
+                )
             )
-        )
         return indicator
 
     @pn.depends("score", "localisation", "point_ref", "df_score")
@@ -332,7 +337,7 @@ class TopIndicators(OverallParameters):
             css_classes=[
                 re.sub(r"(?<!^)(?=[A-Z])", "-", self.get_name() + "TopPanel").lower()
             ],
-            min_height=200,
+            # min_height=200,
         )
 
     @pn.depends("score", "localisation")
