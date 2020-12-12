@@ -134,8 +134,6 @@ class MedNumApp(TopIndicators):
     @pn.depends("score", "localisation", "point_ref", "df_score")  # ,watch=True)
     def update_map_values(self):
         try:
-
-
             # Selection par localisation
             #  http://holoviews.org/user_guide/Plotting_with_Bokeh.html
             # https://docs.bokeh.org/en/latest/docs/user_guide/tools.html#custom-tooltip
@@ -242,7 +240,9 @@ class MedNumApp(TopIndicators):
 
         html = df.to_html(classes=["mednum-df", "panel-df"])
         return pn.Column(
-            self.download, pn.pane.HTML(html + script, sizing_mode="stretch_width")
+            self.download,
+            pn.pane.HTML(html + script, sizing_mode="stretch_width"),
+            sizing_mode="stretch_width"
         )
 
     @pn.depends("localisation")
