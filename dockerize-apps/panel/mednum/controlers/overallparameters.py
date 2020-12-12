@@ -18,19 +18,17 @@ import copy
 
 import mednum as mind
 
-
 gv.extension("bokeh")
-
 
 class OverallParameters(param.Parameterized):
     localisation = param.String(default="Jegun", label="")
     score = param.Range(default=(0, 250), bounds=(0, 250),)
 
-    tout_axes = param.Boolean(False, label="")
-    interfaces_num = param.ListSelector(label="")
-    infos_num = param.ListSelector(label="")
-    comp_admin = param.ListSelector(label="")
-    comp_usage_num = param.ListSelector(label="")
+    tout_axes = param.Boolean(True, label="")
+    interfaces_num = param.ListSelector(label="", default=list(CATEGORIES_INT_NUM_REV.keys()))
+    infos_num = param.ListSelector(label="", default=list(CATEGORIES_X_INFOS_REV))
+    comp_admin = param.ListSelector(label="", default=list(CATEGORIES_X_COMP_ADMIN_REV.keys()))
+    comp_usage_num = param.ListSelector(label="", default=list(CATEGORIES_X_COMP_USAGE_REV.keys()))
 
     point_ref = param.Selector(
         default=SELECT[2], objects=SELECT, label="Point de référence",
@@ -93,9 +91,7 @@ class OverallParameters(param.Parameterized):
 
         # Define define_searchable_element
         self.define_searchable_element()
-
-        # self.score_calculation()
- 
+         
         # Download
         self.download = pn.widgets.FileDownload(
             label="""Exporter les résultats""",

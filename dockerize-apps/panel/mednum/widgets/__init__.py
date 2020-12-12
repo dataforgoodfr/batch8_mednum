@@ -38,11 +38,11 @@ class TreeViewCheckBox(CompositeWidget, MultiSelect):
 
         TreeViewCheckBox.box_size = max([len(word) for word in self.select_options]+ [len(self.select_all), TreeViewCheckBox.box_size]) * 10
         
-        self.all_selector = Checkbox(name=self.select_all)
+        self.all_selector = Checkbox(name=self.select_all, value=True)
         self.all_selector.param.watch(self._update_all, 'value')
 
         self.selected_options = CheckBoxGroup(
-            name='Checkbox Group', value=[], options=self.select_options,
+            name='Checkbox Group', value=self.select_options, options=self.select_options,
         )
         self.selected_options.param.watch(self._update_selected_options, 'value')
 
