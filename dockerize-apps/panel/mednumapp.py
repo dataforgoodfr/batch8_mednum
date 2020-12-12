@@ -73,6 +73,5 @@ tmpl.add_panel(
     "main",
     mednumapp.tabs_view,
 )
-# tmpl.add_panel("main", mednumapp.table_view)
 
 tmpl.servable()

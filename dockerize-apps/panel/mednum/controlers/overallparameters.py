@@ -326,7 +326,7 @@ class OverallParameters(param.Parameterized):
                 drop_level=False,
             )
             # Division par l'aggregation sur la zone level_1_column (pondération)
-            score_niveau = df_level_2[selected_indices].div(score_agg_niveau) * 100
+            score_niveau = df_level_2[selected_indices].floordiv(score_agg_niveau) * 100
 
             # Dissolution (i.e. agregation geographique) au niveau de découpage souhaité level_0_column
             df = df_level_2.dissolve(
@@ -350,7 +350,7 @@ class OverallParameters(param.Parameterized):
                     k + "_SCORE" for k in indices.keys() if k in selected_indices
                 ]
                 if selected_in_axes != []:
-                    scores.loc[:, axe] = scores[selected_in_axes].mean(axis=1)
+                    scores.loc[:, axe] = scores[selected_in_axes].mean(axis=1).astype(int)
                     number_axes += 1
                 else:
                     scores.loc[:, axe] = 0
@@ -358,7 +358,7 @@ class OverallParameters(param.Parameterized):
             # Score total
             scores.loc[:, "tout_axes"] = scores[list(AXES_INDICES.keys())].sum(axis=1)
             if number_axes != 0:
-                scores.loc[:, "tout_axes"] /= number_axes
+                scores.loc[:, "tout_axes"] //= number_axes
 
             self.df_score = df.merge(
                 scores, on=[self.level_0_column, self.level_0_column_names, "geometry"]

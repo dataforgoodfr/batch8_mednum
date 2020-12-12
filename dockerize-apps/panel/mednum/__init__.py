@@ -145,7 +145,7 @@ class MedNumApp(TopIndicators):
                 + list(AXES_INDICES.keys())
             )
 
-            TOOLTIPS_HTML = """<span style="font-size: 22px; font-weight: bold;"> @nom_com</span>
+            TOOLTIPS_HTML = """<span style="font-size: 22px; font-weight: bold;"> @nom_com : @tout_axes</span>
             <div>
             """
             for k, indicators in AXES_INDICES.items():
