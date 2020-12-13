@@ -1,21 +1,30 @@
-{% from macros import embed %}
+{% extends base %}
 
-<!DOCTYPE html>
-<html lang="en">
-{% block head %}
+<!-- goes in body -->
+{% block contents %}
+<nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+        <a class="btn btn-secondary btn-sm" href="#">Cartographie</a>
+        <a class="btn btn-secondary btn-sm" href="#">Clé de lecture</a>
+        <a class="btn btn-secondary btn-sm" href="#">Nos accompagnements</a>
+    </div>
+</nav>
+<br>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2">
+            {{ embed(roots.sidebar)}}
+        </div>
+        <div class="col-sm-8 ml-auto">
+            <div class="row">
+                {{ embed(roots.top)}}
+            </div>
+            <div class="row">
+                {{ embed(roots.main)}}
+            </div>
+        </div>
+    </div>
+</div>
 
-<head>
-    {% block inner_head %}
-    <meta charset="utf-8">
-    <title>{% block title %}{{ title | e if title else "Panel App" }}{% endblock %}</title>
-    {% block preamble %}{% endblock %} {% block resources %} {% block css_resources %} {{ bokeh_css | indent(8) if bokeh_css }} {% endblock %} {% block js_resources %} {{ bokeh_js | indent(8) if bokeh_js }} {% endblock %} {% endblock %} {% block postamble
-    %}{% endblock %} {% endblock %}
-</head>
-{% endblock %} {% block body %}
 
-<body>
-    {% block inner_body %} {% block contents %} {% for doc in docs %} {{ embed(doc) if doc.elementid }} {% for root in doc.roots %} {{ embed(root) | indent(10) }} {% endfor %} {% endfor %} {% endblock %} {{ plot_script | indent(8) }} {% endblock %}
-</body>
 {% endblock %}
-
-</html>
