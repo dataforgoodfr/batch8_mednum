@@ -24,9 +24,10 @@
     width: 125px;
 }
 
-.bk-root {
+
+/* .bk-root {
     font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif
-}
+} */
 
 .chck-custom>.bk>.bk>input {
     -webkit-appearance: none;
@@ -97,10 +98,9 @@
 .bk.med-num-app-top-panel {
     background: #FFFFFF;
     border: 1px solid #E5E5E5;
-    box-sizing: border-box;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.07);
     border-radius: 11px;
-    width: inherit;
+    width: 900px;
     height: inherit;
 }
 
