@@ -22,3 +22,5 @@ services:
     - PANEL_APP=./mednumapp.py
     stdin_open: true
     tty: true
+
+
