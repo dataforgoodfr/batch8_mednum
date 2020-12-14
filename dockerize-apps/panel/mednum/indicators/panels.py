@@ -242,9 +242,8 @@ class TopIndicators(OverallParameters):
     def synthese(self):
         HTML = """
         <b>Scores par axe de fragilité</b>
-        Un score de 100 correspond à la moyenne de référence pour un territoire sur un axe de fragilité.
+        Un score supérieur à 100 indique une fragilité. Plus le score est élevé, plus le risque d'exclusion numérique est important.
         """
-
         return pn.pane.HTML(
             HTML,
             css_classes=[
@@ -330,7 +329,7 @@ class TopIndicators(OverallParameters):
         self.indicator_w_gauge_2.indicators = indicator_2
 
         return pn.Row(
-            pn.Column(HTML, self.glob_stats()), 
+            pn.Column(HTML) #, self.glob_stats()), 
             pn.Column(self.synthese()),  
             pn.Column(self.indicator_w_gauge_1.view), 
             pn.Column(self.indicator_w_gauge_2.view), 

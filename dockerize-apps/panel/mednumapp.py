@@ -7,8 +7,8 @@ import mednum
 
 css_mednum = [
     str(Path(__file__).parent / "statics" / "css" / "mednum.css"),
-    str(Path(__file__).parent / "statics" / "css" / "landing-page.min.css")
-    ]
+    str(Path(__file__).parent / "statics" / "css" / "landing-page.min.css"),
+]
 
 css = [
     "https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css",

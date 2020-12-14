@@ -195,8 +195,8 @@ class MedNumApp(TopIndicators):
                 color="tout_axes",
                 colorbar=True,
                 toolbar="above",
-                # xaxis=None,
-                # yaxis=None,
+                xaxis=None,
+                yaxis=None,
                 fill_alpha=0.5,
             )
 
