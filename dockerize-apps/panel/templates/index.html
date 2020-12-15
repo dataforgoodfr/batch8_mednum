@@ -1,0 +1,399 @@
+{% extends base %}
+
+{% block preamble %}
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" />
+    <!--[if lt IE 9]>
+<script src="../statics/js/html5.js"></script>
+<![endif]-->
+{% endblock %}
+<body>
+    {% block inner_body %}
+    <div id="wrapper">
+        <header id="header">
+            <div class="headerTop">
+                <div class="top clr">
+                    <div class="blclogo">
+                        {# <span class="slogan">(Version Bêta) <br>Portail de la fragilité numerique un outil de : </span> #}
+                        <a class="logo" href="#" title="Portail de la fragilité numérique un outils de MED NUM"><img src="https://lamednum.coop/wp-content/uploads/2019/12/logo-MEDNUM.svg" alt="MED NUM" /></a>
+                    </div>
+                    <nav class="menu">
+                        <ul>
+                            <li><a class="scroll" href="cartographie" title="Carthographie">Cartographie </a></li>
+                            <li><a href="#" title="Clés de lecture">Clés de lecture</a> </li>
+                            <li><a class="scroll" href="CasUsage" title="Cas d'usage">Cas d'usage</a> </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="wrapMenuMobile">
+                    <div class="menuMobile">
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="banner">
+            {% block banner %}
+                <div class="txt-banner wow fadeIn" data-wow-delay="800ms">
+                    <h1>Connaître l’indice de fragilité numérique de mon territoire</h1>
+                    
+                    <div class="blc-search">
+                        <div class="blc-chp">
+                            <button class="search"></button>
+                            <input type="text" name="" class="chp" placeholder="Entrez le nom de la ville que vous souhaitez visualiser">
+                        </div>
+                        <input type="submit" name="" class="btn btn-submit" value="Tester">
+                    </div>
+                    
+                </div>
+            </div>
+            {% endblock %}
+            
+        </header>
+        <main id="homepage">
+        {% block contents %}
+            <section>
+                <div class="Apropos">
+                    <div class="wrapper">
+                        <div class="row clr">
+                            <div class="col">
+                                <div class="text wow fadeIn" data-wow-delay="800ms">
+                                    <h2>Aujourd’hui, 13 millions <br>de Français sont en difficulté avec le numérique.</h2>
+                                    <p>Plus que jamais, l’inclusion numérique est un enjeu de cohésion sociale et territoriale qui concerne tout le monde : entreprises, associations, administrations, collectivités et particuliers.</p>
+                                    <p>À ce propos, connaissez-vous l’indice de fragilité numérique de votre territoire ?</p>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="img wow fadeIn" data-wow-delay="800ms">
+                                    <img src="../statics/images/img1.png" alt="image">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="indice">
+                    <div class="wrapper">
+                        <div class="row clr">
+                            <div class="col">
+                                <div class="text wow fadeInLeft" data-wow-delay="800ms">
+                                    <h2>Indice de quoi ?</h2>
+                                    <p> L’indice de fragilité numérique révèle la probabilité que sur un territoire donné, une partie significative de la population se trouve en situation d’exclusion numérique.</p>
+                                    <p>Le modèle statistique de l’indice de fragilité numérique se base sur des variables qui dans la littérature scientifique, apparaissent renforcer les risques d’être en fragilité numérique. Il comporte 4 axes.</p>
+                                    <a href="#" title="En savoir plus sur la méthode" class="link2"> > En savoir plus sur la méthode</a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="lst-indice wow fadeInRight" data-wow-delay="800ms">
+                                    <div class="item">
+                                        <div class="content">
+                                            <span class="ico"><img src="../statics/images/ico1.svg"></span>
+                                            <p>Compétences d’usage des interfaces numériques</p>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="content">
+                                            <span class="ico"><img src="../statics/images/ico2.svg"></span>
+                                            <p>Accès aux interfaces numériques</p>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="content">
+                                            <span class="ico"><img src="../statics/images/ico3.svg"></span>
+                                            <p>Compétences administratives</p>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="content">
+                                            <span class="ico"><img src="../statics/images/ico4.svg"></span>
+                                            <p>Accès à l’information, <br>Connaissance des services</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="cartographie" id="cartographie">
+                    <div class="wrapper">
+                        <div class="row clr">
+                            <div class="col">
+                                <div class="text wow fadeInLeft" data-wow-delay="800ms">
+                                    <h2>Une cartographie <br> dynamique</h2>
+                                    <p>Les scores de fragilité qui composent cet indice sont projetés sur une carte.</p>
+                                    <p>Celle-ci permet de visualiser rapidement les zones de risques et de comprendre leur nature.</p>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="text-r wow fadeInRight" data-wow-delay="800ms">
+                                    <p>Plus une zone est foncée, plus elle est susceptible d’abriter des habitants en situation d’exclusion numérique.</p>
+                                    <ul>
+                                        <li><span><img src="../statics/images/Rectangle1.svg"></span></li>
+                                        <li><span><img src="../statics/images/Rectangle2.svg"></span></li>
+                                        <li><span><img src="../statics/images/Rectangle3.svg"></span></li>
+                                        <li><span><img src="../statics/images/Rectangle4.svg"></span></li>
+                                        <li><span><img src="../statics/images/Rectangle5.svg"></span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="carte">
+                    <div class="wrapper">
+                        <div class="row">
+                            <div class="col">
+                                <div class="text wow fadeIn" data-wow-delay="800ms">
+                                    <h2>Une visualisation <br>par cartographie dynamique</h2>
+                                    <p>Situez en un clin d’oeil les zones de fragilité potentielle sur votre territoire.</p>
+                                    <a href="#" class="link" title="Accéder à la cartographie">Accéder à la cartographie</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="blc-usage" id="CasUsage">
+                    <div class="wrapper">
+                        <div class="text">
+                            <h2>Cas d’usage</h2>
+                            <p>Prenons trois exemples d’utilisation</p>
+                        </div>
+                        <div class="lst-utilisations ">
+                            <div class="item clr wow fadeIn" data-wow-delay="800ms">
+                                <div class="col">
+                                    <div class="content prof clr">
+                                        <div class="inner ">
+                                            <div class="profil clr">
+                                                <div class="img">
+                                                    <img src="../statics/images/profil1.png">
+                                                </div>
+                                                <h3><span>Eric</span> Chef de projet numérique <br>pour une agglomération
+                                                </h3>
+                                            </div>
+                                            <div class="contenu">
+                                                <p>“Eric, On a la réunion de planification de la stratégie d’inclusion numérique pour l’année 2021, <br>vendredi prochain.<br>Tu nous prépares tes reco ?”</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="cont-right">
+                                        <div class="inner">
+                                            <span class="icon close"></span>
+                                            <h3>Frustrations</h3>
+                                            <ul>
+                                                <li>• Trop de discussions basées sur des ressentis.</li>
+                                                <li>• Manipulation des données publiques trop complexe sans une aide technique. Impression de ne pas aller assez loin dans la connaissance de son territoire. </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="cont-right">
+                                        <div class="inner">
+                                            <span class="icon check"></span>
+                                            <h3>Besoins</h3>
+                                            <ul>
+                                                <li>• Connaître les publics en exclusion numérique : qui, où, combien ?</li>
+                                                <li>• Avoir le choix dans son niveau de maille d’analyse.</li>
+                                                <li>• Pouvoir facilement exporter les résultats pour les diffuser. </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item clr wow fadeIn" data-wow-delay="800ms">
+                                <div class="col">
+                                    <div class="content prof clr">
+                                        <div class="inner ">
+                                            <div class="profil clr">
+                                                <div class="img">
+                                                    <img src="../statics/images/profil2.png">
+                                                </div>
+                                                <h3><span>Julie</span>Chargée de partenariat pour une grande entreprise mutualiste
+                                                </h3>
+                                            </div>
+                                            <div class="contenu">
+                                                <p>“Julie, ça fait deux ans que les référents départementaux mènent des actions pour l’inclusion numérique de nos clients qui n’arrivent pas à utiliser leur espace personnel en ligne. Comment fait on pour que
+                                                    les actions au niveau régional soient mises en cohérence dans le nouveau plan stratégique ?”</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="cont-right">
+                                        <div class="inner">
+                                            <span class="icon close"></span>
+                                            <h3>Frustrations</h3>
+                                            <ul>
+                                                <li>• Emiettement des ressources investies
+                                                </li>
+                                                <li>• Pas de temps pour poser à plat une vision normée des besoins d’accompagnement des clients au niveau des différents départements </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="cont-right">
+                                        <div class="inner">
+                                            <span class="icon check"></span>
+                                            <h3>Besoins</h3>
+                                            <ul>
+                                                <li>• Savoir où sont les publics pour pouvoir les toucher </li>
+                                                <li>• Disposer d’une vision régionale des besoins d’accompagnement</li>
+                                                <li>• Pouvoir repositionner et mettre en cohérence les actions de médiation numérique sur différents territoires</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item clr wow fadeIn" data-wow-delay="800ms">
+                                <div class="col">
+                                    <div class="content prof clr">
+                                        <div class="inner ">
+                                            <div class="profil clr">
+                                                <div class="img">
+                                                    <img src="../statics/images/profil3.png">
+                                                </div>
+                                                <h3><span>Jérôme</span> Directeur d’une association de médiation numérique du département des Grands Lacs
+                                                </h3>
+                                            </div>
+                                            <div class="contenu">
+                                                <p>“Jérôme, on a été contacté par l’agglomération Grands-Lacs-du-Sud pour mener des actions itinérantes de médiation numérique, qu’est-ce qu’on pourrait leur proposer sur les ateliers ?”</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="cont-right">
+                                        <div class="inner">
+                                            <span class="icon close"></span>
+                                            <h3>Frustrations</h3>
+                                            <ul>
+                                                <li>• Pouvoir apporter une vision des ateliers de médiation numérique « clef en mains » à ses interlocuteurs et commanditaires
+
+                                                </li>
+                                                <li>• Pouvoir développer de nouveaux partenariats sur de nouveaux territoires</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="cont-right">
+                                        <div class="inner">
+                                            <span class="icon check"></span>
+                                            <h3>Besoins</h3>
+                                            <ul>
+                                                <li>• Avoir une vision des besoins potentiels de médiation numérique sur un territoire sur lequel il n’existe pas encore d’action
+
+                                                </li>
+                                                <li>• Pouvoir apporter une connaissance aux partenaires avec lesquels il pourrait y avoir une collaboration</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="plusInfo">
+                    <div class="wrapper">
+                        <div class="row clr">
+                            <div class="col">
+                                <div class="text wow fadeIn" data-wow-delay="800ms">
+                                    <h2>En savoir plus</h2>
+                                    <p>Vous aimeriez en savoir plus ou échanger avec nous sur l'indice de fragilité numérique et la manière de l'utiliser dans votre organisation ? </p>
+                                    <p>Complétez le formulaire d'intérêt sur le site de MedNum et un membre de notre équipe vous contactera.</p>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="btn wow fadeIn" data-wow-delay="800ms">
+                                    <a href="#" class="link">Je suis intéressé.e</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="partenaire">
+                    <div class="wrapper">
+                        <h2>Ils ont aidé à créer l'Indice de Fragilité Numérique</h2>
+                    </div>
+                    <div class="lst-part wow fadeIn" data-wow-delay="800ms" id="slidepart">
+                        <div class="item">
+                            <div class="img">
+                                <img src="../statics/images/part1.JPG" alt="partenaire">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="img">
+                                <img src="../statics/images/part2.JPG" alt="partenaire">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="img">
+                                <img src="../statics/images/part3.JPG" alt="partenaire">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="img">
+                                <img src="../statics/images/part4.JPG" alt="partenaire">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="img">
+                                <img src="../statics/images/part5.JPG" alt="partenaire">
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class="img">
+                                <img src="../statics/images/part7.JPG" alt="partenaire">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        {% endblock %}
+        </main>
+        
+        <footer>
+            <div class="footer">
+                <div class="wrapper">
+                    <div class="txt-ftr">
+                        <ul>
+                            <li><span> © 2020 MEDNUM. Tous droits réservés </span> </li>
+                            <li><a href="#" title="Plan du site">Plan du site</a></li>
+                            <li><a href="#" title="Mentions légales">Mentions légales</a></li>
+                            <li><a href="#" title="Nos statuts">Nos statuts</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    
+    {{ plot_script | indent(8) }}
+    {% endblock %}
+
+    <script type="text/javascript" src="../statics/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../statics/js/slick.min.js"></script>
+    <script type="text/javascript" src="../statics/js/easing.js"></script>
+    <script type="text/javascript" src="../statics/js/wow.js"></script>
+    <script type="text/javascript" src="../statics/js/custom.js"></script>
+    <script type="text/javascript">
+        /* wow animation */
+        new WOW({
+            mobile: false,
+        }).init()
+    </script>
+</body>
+
+</html>
+
