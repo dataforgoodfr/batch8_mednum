@@ -152,15 +152,15 @@ class MedNumApp(TopIndicators):
                 display_name = indicators["nom"]
                 vdim_name = k
                 if vdim_name in vdims:
-                    TOOLTIPS_HTML += """<div>
-                    <span style="font-size: 18px; font-weight: bold;">  {display_name} :</span> <span style="red"> @{vdim_name}</span>
+                    TOOLTIPS_HTML += """<div class="mednum-hover">
+                    <span style="font-size: 18px; font-weight: bold;">  {display_name} :</span> <span style=""> @{vdim_name}</span>
                 </div>""".format(
                         display_name=display_name, vdim_name=vdim_name
                     )
 
                 else:
-                    TOOLTIPS_HTML += """<div>
-                    <span style="font-size: 18px; font-weight: bold;">  {display_name} :</span> <span style="red"> N/A </span>
+                    TOOLTIPS_HTML += """<div class="mednum-hover">
+                    <span style="font-size: 18px; font-weight: bold;">  {display_name} :</span> <span style="color:orange"> N/A </span>
                 </div>""".format(
                         display_name=display_name, vdim_name=vdim_name
                     )
@@ -171,14 +171,14 @@ class MedNumApp(TopIndicators):
                         vdim_name = indic + "_SCORE"
                         if vdim_name in vdims:
 
-                            TOOLTIPS_HTML += """<div>
-                            <span style="font-size: 12px; ">  {display_name} :</span> <span style="red">@{vdim_name}</span>
+                            TOOLTIPS_HTML += """<div class="mednum-hover">
+                            <span style="font-size: 12px; ">  {display_name} :</span> <span style="">@{vdim_name}</span>
                             </div>""".format(
                                 display_name=display_name, vdim_name=vdim_name
                             )
                         else:
-                            TOOLTIPS_HTML += """<div>
-                            <span style="font-size: 12px;">  {display_name} :</span> <span style="red">N/A</span>
+                            TOOLTIPS_HTML += """<div class="mednum-hover">
+                            <span style="font-size: 12px;">  {display_name} :</span> <span style="color:orange">N/A</span>
                             </div>""".format(
                                 display_name=display_name
                             )
