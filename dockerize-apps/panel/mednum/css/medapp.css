@@ -90,7 +90,7 @@
     border-radius: 15px;
 }
 
-.bk.med-num-app-top-panel {
+.med-num-app-top-panel {
     background: #FFFFFF;
     border: 1px solid #E5E5E5;
     box-sizing: border-box;
@@ -110,25 +110,8 @@
     box-sizing: border-box;
 }
 
-
-/* .bk-root .bk-tabs-header .bk-tab {
-    border-radius: 40px;
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 14px;
-    color: #EC5732;
-}
-
 .bk-root .bk-tabs-header.bk-above .bk-tab {
-    border-width: unset;
-    border-radius: 40px;
-}
-
-.bk-root .bk-tabs-header .bk-tab.bk-active {
-    background: #EC5732;
-    border-radius: 40px;
+    /* Détails Carto */
     font-family: Roboto;
     font-style: normal;
     font-weight: 500;
@@ -141,7 +124,6 @@
 }
 
 .bk-tab.bk-active {
-    background: #EC5732;
     font-family: Roboto;
     font-style: normal;
     font-weight: 500;
@@ -150,9 +132,6 @@
     display: flex;
     align-items: center;
     text-align: center;
-    color: #ffffff;
+    background: #EC5732;
+    border-radius: 40px;
 }
-
-.bk-root .bk-tabs-header.bk-above .bk-headers-wrapper {
-    border-bottom: unset;
-} */
