@@ -1,0 +1,255 @@
+/* IMPORT FONTS */
+@font-face {
+    font-family: 'roboto';
+    src: url("/static/fonts/roboto-regular.eot") ;
+    src: url("/static/fonts/roboto-regular.eot?#iefix") format('embedded-opentype'),
+         url("/static/fonts/roboto-regular.woff")format('woff'),
+         url("/static/fonts/roboto-regular.ttf") format('truetype'),
+         url("/static/fonts/roboto-regular.svg#regular") format('svg');
+}
+@font-face { font-family: 'roboto-b'; 
+  src: url("/static/fonts/roboto-bold-webfont.eot"); 
+  src: url("/static/fonts/roboto-bold-webfont.eot?#iefix")format('embedded-opentype'), 
+  url("/static/fonts/roboto-bold-webfont.woff") format('woff'), 
+  url("/static/fonts/roboto-bold-webfont.ttf") format('truetype'), 
+  url('../fonts/roboto-bold-webfont.svg#robotobold')format('svg'); 
+  font-weight: normal; 
+  font-style: normal; }
+
+
+/* RESET */
+body, ul, li, ol, form, h1, h2, h3, h4, h5, h6, div, span, p { padding:0; margin:0; border:0; -webkit-text-size-adjust:none; -moz-text-size-adjust:none; text-size-adjust:none;}
+article, aside, dialog ,figcaption, figure, footer, header, hgroup, main, nav, section { display:block;}  
+input, textarea												{ -webkit-appearance:none; -ms-appearance:none; appearance:none; -moz-appearance:none; -o-appearance:none; border-radius:0;}
+*															        { outline:none !important;}
+strong, b													    { font-weight:normal; font-family:roboto;}
+ul															      { list-style-type:none;}
+body														      { font:normal 14px/24px roboto; color:#1E2C78}
+a															        { text-decoration:none; color:#1E2C78; outline:none;}
+img															      { border:none;}
+#wrapper													    { min-width:320px;}
+#wrapper *													  { box-sizing:border-box; outline:0}
+
+/* CLASS */
+.clear							          				{ clear:both; float:none !important; width:100% !important; padding:0 !important; margin:0 !important; display:block;}
+.left								          				{ float:left;}
+.right 							          				{ float:right;}
+.link 								        				{ width:auto; height:60px; display:inline-block; position:relative; text-decoration:none !important; padding:0 30px;}
+.clr:after 						        				{ content:''; display:table; width:100%; clear:both}
+.wrapper              		    				{ max-width: 1280px; width: 100%; padding-left: 40px; padding-right: 40px; margin: 0 auto; }
+/* HEADER */
+#header							        					{ width:100%; position:relative; height: 526px; background-color: #FFF6F6}
+.headerTop                            { padding: 20px 60px 50px}
+.blclogo                              { position: absolute;left: 33px; top: 30px; z-index: 20; max-width: 165px }
+.slogan                               { font-size: 13px; display: block; text-align: center; line-height: 15px; margin-bottom: 10px}
+.logo                                 { display: block; margin: 0 auto;width: 88px;}
+
+/* MENU */
+.menu									     				  { height:auto; display:block;}	
+.menu>ul								     				{ width:100%; display:block; position:relative; text-align:center;  font-size:0; line-height:0; }	
+.menu li								     				{ display:inline-block; position:relative; margin:0 65px}
+.menu li:last-child					 				{ margin-right:0;}	
+.menu a								    					{ width:auto; font:normal 22px/25px roboto-b;display:block; padding:12px 0px 23px; position:relative;color: #1E2C78}
+.menu>ul>li.active>a			     		  { color:#529f44;}
+
+/* BANNER */
+.banner                             { margin-top: 75px;}
+.txt-banner h1                      { text-align: center; font-size: 40px; line-height: 46px; display: block; text-align: center; font-family:roboto-b; margin-bottom: 44px  }
+.blc-search                         { max-width: 660px; margin: 0 auto; position: relative; }
+.blc-search .blc-chp .chp           { border:none; font-size: 13px; font-family:roboto; color:#1E2C78; width: 100%; height: 54px; border-radius: 30px; box-shadow: 0px 1px 15px -3px rgba(230,89,36,0.2);
+-webkit-box-shadow: 0px 1px 15px -3px rgba(230,89,36,0.2);
+-moz-box-shadow: 0px 1px 15px -3px rgba(230,89,36,0.2) ; padding-left: 60px }
+.blc-search .blc-chp .search        { border:none; width:60px; height: 54px; display: block; position: absolute; left: 0; top: 0; background:url(../images/search.svg) no-repeat center; cursor: pointer   }
+.blc-search  .blc-chp               { position: relative; padding-right: 200px}
+.blc-search  .btn-submit            { background-color: #E65924; height: 54px; border-radius: 30px; color: #fff; font-size: 22px; font-family:roboto-b; border:none; padding: 0 57px; cursor: pointer; position: absolute; right: 0; top: 0  }
+
+.Apropos                            { padding:35px 0}
+.Apropos .row .col                  { float: left; width: 50% }
+.Apropos  h2                        { font-size: 38px; line-height: 43px; font-family:roboto-b ; margin-bottom: 24px; letter-spacing: 2px; position: relative; }
+.Apropos  h2:before                 { content: ''; display: block; position: absolute; left: -21px; top: 9px; border-left: #E65924 solid 8px; height: 113px } 
+.Apropos p                          { font-size: 22px; line-height: 25px; margin-bottom: 24px }
+.Apropos .img img                   { display: block;width: 100% }
+
+.indice                             { background-color: rgba(255, 247, 247, 0.7); padding: 60px 0 }
+.indice  .row .col                  { float: left; width: 50% }
+.indice h2                          { font-size: 38px; line-height: 43px; font-family:roboto-b ; margin-bottom: 19px; letter-spacing: 2px; position: relative; color: #E65924 }
+.indice .text p                     { font-size: 22px; line-height: 25px; margin-bottom: 24px; color: #E65924}
+.indice .link2                       { font-size: 22px; font-family:roboto-b ; padding: 0; letter-spacing: 1.5px}
+
+.lst-indice .item                   { float: left; width: 50%; margin-bottom: 40px }
+.lst-indice .item .content          { max-width: 247px; margin: 0 auto;box-shadow: 0px 1px 15px -3px rgba(230,89,36,0.2);
+-webkit-box-shadow: 0px 1px 15px -3px rgba(230,89,36,0.2);
+-moz-box-shadow: 0px 1px 15px -3px rgba(230,89,36,0.2) ; border-radius: 20px; padding: 20px 10px; height: 134px}
+.lst-indice .item .content .ico       { width: 29px; height: 29px; border-radius: 50px;box-shadow: 0px 1px 15px -3px rgba(0,0,0,0.4);
+-webkit-box-shadow: 0px 1px 15px -3px rgba(0,0,0,0.4);
+-moz-box-shadow: 0px 1px 15px -3px rgba(0,0,0,0.4); margin: 0 auto 12px; display: block; position: relative; }
+.lst-indice .item .content .ico img     { position: absolute; left: 0; right: 0; top: 0; bottom: 0; margin: auto }
+.lst-indice .item .content p            { text-align: center; font-size: 18px; line-height: 21px; font-weight: 500 }
+
+.cartographie                            { padding:35px 0}
+.cartographie .row .col                  { float: left; width: 50% }
+.cartographie  h2                        { font-size: 38px; line-height: 43px; font-family:roboto-b ; margin-bottom: 24px; letter-spacing: 2px; position: relative; }
+.cartographie  h2:before                 { content: ''; display: block; position: absolute; left: -21px; top: 9px; border-left: #E65924 solid 8px; height: 77px } 
+.cartographie p                          { font-size: 22px; line-height: 25px; margin-bottom: 24px }
+
+.text-r p                                { font-size: 22px; line-height: 29px; text-align: center; max-width: 375px } 
+.text-r                                  { display: flex; align-items: center; justify-content: center;height: 200px; flex-direction: column;}
+.text-r ul li                            { display: inline-block; margin: 0-2px;}
+
+.carte                                   { background:url("/static/img/Carto.jpg") no-repeat center; background-size:cover; padding: 140px 0; position: relative; }
+.carte:before                            { content: ''; background-color: rgba(255,255,255,0.6); position: absolute; left: 0; top: 0; width: 50%; height: 100%; display: block; }
+.carte  .wrapper                         { position: relative; z-index: 20 }
+.carte .text                             { max-width: 500px; }
+.carte .col                              { width: 50%;}
+.carte .text h2                          { font-size: 38px ; line-height: 43px; margin-bottom: 23px; font-family:roboto-b;}
+.carte .text p                           { font-size: 22px; line-height: 25px; margin-bottom: 30px }
+.carte .text .link                       {  background-color: #E65924; height: 54px; border-radius: 30px; color: #fff; font-size: 22px; font-family:roboto-b; border:none; padding: 15px 57px }
+.link                                    {  background-color: #E65924; height: 54px; border-radius: 30px; color: #fff; font-size: 22px; font-family:roboto-b; border:none; padding: 15px 57px }
+
+.blc-usage                               { padding: 30px 0}
+.blc-usage .text                         { margin-bottom: 52px }
+.blc-usage .text h2                      { font-size: 38px ; line-height: 43px;font-family:roboto-b; letter-spacing: 3px; margin-bottom: 22px }
+.blc-usage .text p                       { font-size: 22px; line-height: 25px;letter-spacing: 1.7px;}
+
+.lst-utilisations .col                              { float: left; width: 50% }
+.lst-utilisations .item                             { margin-bottom: 50px }
+.lst-utilisations .item .content                    { border-radius: 20px; padding: 20px 35px; box-shadow: 0px 3px 22px -7px rgba(0,0,0,0.2);-webkit-box-shadow: 0px 3px 22px -7px rgba(0,0,0,0.2);-moz-box-shadow: 0px 3px 22px -7px rgba(0,0,0,0.2); min-height: 400px; position: relative; }
+.lst-utilisations .item .content .profil  .img      { float: left; margin-right: 20px }
+.lst-utilisations .item .content .profil  h3 span   { font-size: 18px;font-family:roboto-b; display: block  }
+.lst-utilisations .item .content .profil  h3        { font-size: 13px; line-height: 18px ;font-family:roboto; font-weight: 400; padding-top: 12px}
+.lst-utilisations .item .content .profil            { margin-bottom: 72px;}
+.lst-utilisations .item .content .contenu           { text-align: center; color: #E65924  }
+.lst-utilisations .item .content .contenu p         { font-size: 14px; line-height: 20px; max-width: 393px; margin: 0 auto }
+.lst-utilisations .item .content.prof:after         { content: '"'; font-size: 70px;font-family:roboto-b;color: #E65924; position: absolute; right: 14px; bottom: 9px; display: block; width: auto;   }  
+.lst-utilisations                                   { max-width: 930px ;margin: 0 auto; }
+.lst-utilisations .item .col                        { float: left; width: 50%; padding: 0 10px }
+
+.lst-utilisations .item .cont-right                 { position: relative;; border-radius: 20px; padding: 20px 35px; box-shadow: 0px 3px 22px -7px rgba(0,0,0,0.2);-webkit-box-shadow: 0px 3px 22px -7px rgba(0,0,0,0.2);-moz-box-shadow: 0px 3px 22px -7px rgba(0,0,0,0.2); min-height: 190px; position: relative; margin-bottom: 18px }
+.lst-utilisations .item .cont-right h3              { text-align: center; display: block; margin-bottom: 15px }
+.lst-utilisations .item .cont-right ul li           { font-size: 14px; line-height: 20px; text-align: center; }
+.lst-utilisations .item .cont-right .icon           { width: 29px; height: 29px; border-radius: 50px; box-shadow: 0px 1px 22px -6px rgba(0,0,0,0.4); -webkit-box-shadow: 0px 1px 22px -6px rgba(0,0,0,0.4); -moz-box-shadow: 0px 1px 22px -6px rgba(0,0,0,0.4); margin: 0 auto 12px; display: block;position: absolute; top: 15px; left: 15px;}
+.lst-utilisations .item .cont-right .icon.close     { background: url("/static/img/close.svg") no-repeat center; }
+.lst-utilisations .item .cont-right .icon.check     { background: url("/static/img/check.svg") no-repeat center; }
+
+.plusInfo                                           { background-color: rgba(255, 247, 247, 0.7); padding: 90px 0 }
+.plusInfo .text h2                                  { font-size: 38px ; line-height: 43px;font-family:roboto-b; letter-spacing: 3px; margin-bottom: 18px; color: #E65924; }
+.plusInfo .text p                                   { font-size: 22px; line-height: 25px;letter-spacing: 1.7px; margin-bottom: 20px;  color: #E65924;  }
+.plusInfo .col                                      { float: left; width: 50% }
+.plusInfo .col .btn                                 { display: flex; align-items: center;justify-content: center;height: 200px;}
+
+.partenaire                                         { padding: 50px 0 100px}
+.partenaire h2                                      { font-size: 30px ; line-height: 43px;font-family:roboto-b; letter-spacing: 1.7px; margin-bottom: 58px; }
+.lst-part                                           { max-width: 1600px; margin: 0 auto }
+.lst-part .img img                                  { display: block; margin: 0 auto;}
+
+.footer                                             { padding: 62px 0  }
+.txt-ftr                                            { text-align: center; }
+.txt-ftr ul li                                      { display: inline-block; }
+.txt-ftr ul li span, .txt-ftr ul li a               { font-size: 22px; }
+.txt-ftr ul li a:before                             { content: '-' ;font-size:22px; margin: 0 5px }
+.lst-part                                                 { padding: 0 40px }
+
+@media (min-width:1201px)             {
+.wrapMenuMobile, .menu .vueMobile	    				{ display:none;}
+body a span, body a, span:before, span:after, a:after, a:before, .blc-search  .btn-submit { -webkit-transition:all 400ms ease-in-out; -moz-transition:all 400ms ease-in-out; -ms-transition:all 400ms ease-in-out; transition:all 400ms ease-in-out;}
+.blc-search  .btn-submit:hover { background-color: #D6541F } 
+.carte .text .link:hover { background-color: #D6541F } 
+.link:hover { background-color: #D6541F } 
+.txt-ftr ul li a:hover { color: #E65924 }
+.menu a:hover { color: #E65924 }
+}
+
+/* RESPONSIVE */
+
+
+@media (max-width:1024px) {
+.wrapMenuMobile                                             { width:auto; height:45px; display:block; z-index:80; transition:all 400ms ease-in-out;  cursor:pointer;  text-transform:uppercase; position:absolute; right:40px; top:40px;}
+.menuMobile                                                 { width:45px; display:block; height:45px; cursor:pointer; position:relative; line-height:20px;border:1px solid #1E2C78;}
+.menuMobile>div                                             { width:25px; height:2px; background:#1E2C78; position:absolute; left:0;right:0;margin:auto; top:50%; margin-top:-1px;}
+.menuMobile>div:before                                      { width:100%; height:2px; background:#1E2C78; position:absolute; right:0; top:8px; content:"";}
+.menuMobile>div:after                                       { width:100%; height:2px; background:#1E2C78; position:absolute; right:0; top:-8px; content:"";}
+.menuMobile.active>div                                      { height:0px;}
+.menuMobile.active > div::before                            { top: 0;transform: rotate(45deg);}
+.menuMobile.active > div::after                             { top: 0;transform: rotate(-45deg);}
+.menu                                                       { max-width:100%;right:0; float: none; }
+
+.menu>ul                                                    { width:100%; height:auto; position:absolute; left:0; top:85px; padding:0; background:#FFF6F6; display:none; z-index:999;}
+.menu ul li                                                 { width:100%; margin:0 auto; display:block; float:none; padding:0;}
+.menu li a                                                  { height:53px; line-height:47px; border:0; padding:0 40px; margin:0; text-align:left; border-bottom:1px solid #cecece;color: #1E2C78}
+.menu>ul:after                                              { content: ""; width: 100%; height: 9999px; background: rgba(0,0,0,.6); position: absolute; left: 0; bottom: -9999px; z-index: -1;}
+
+.banner                                                     { margin-top: 115px;}
+.txt-banner                                                 { padding: 0 40px;}
+.carte .text .link                                          { padding: 15px 20px }
+.Apropos .row .col ,
+.indice .row .col ,
+.cartographie .row .col ,
+.plusInfo .col                                              { float: none; width: 100%;}
+.lst-indice                                                 { margin-top: 40px;}
+.carte .col                                                 { width: 100%;}
+.carte                                                      { padding: 80px 0 }
+.carte::before                                              { width: 100% }
+.plusInfo                                                   { padding: 60px 0;}
+.plusInfo .col .btn                                         { height: auto }
+.partenaire                                                 { padding: 50px 0;}
+.Apropos .img img                                           { max-width: 560px; margin: 0 auto }
+    
+}
+@media (max-width:767px) { 
+  .blc-search .blc-chp                                      { padding-right: 0; text-align: center;}
+  .blc-search .blc-chp .chp                                 { text-overflow: ellipsis; }
+  .blc-search .btn-submit                                   { position: static; margin: 10px 0; display: inherit; margin: 10px auto; text-align: center;}
+  .lst-utilisations .item .col                              { float: none; width: 100%; padding: 0 10px; margin-bottom: 20px}
+  .lst-utilisations .item .cont-right                       { float: left; width: 50% }
+  .lst-utilisations .item .content                          { padding: 20px; min-height: inherit; margin-bottom: 20px }
+  .lst-utilisations .item .content .profil                  { margin-bottom: 40px;}
+  .lst-utilisations .item                                   { margin-bottom: 20px;}
+  .indice                                                   { padding: 40px 0;} 
+  .plusInfo                                                 {  padding: 0 0 40px;}
+  .footer                                                   { padding: 20px 0;}
+  .carte                                                    { padding: 40px 0;}
+  .partenaire                                               { padding: 20px 0;}
+}
+@media (max-width:600px) {
+.wrapper                                                    { padding: 0 20px }
+.wrapMenuMobile                                             { right: 20px }
+.menu li a                                                  { padding:0 20px;}
+.menu > ul                                                  { top: 85px }
+.txt-banner                                                 { padding: 0 20px;}
+
+#header                                                     { height: auto; padding-bottom: 20px }
+.txt-banner h1                                              { font-size: 35px; line-height: 40px; margin-bottom: 25px }
+.blclogo                                                    { left: 20px }
+.Apropos h2                                                 { font-size: 32px; line-height: 40px; margin-bottom: 50px }
+.Apropos h2:before                                          { top: auto; border-left: none; height: auto; bottom: -17px; width: 100px; border-bottom: #E65924 solid 8px;left: 0;}
+.Apropos p                                                  { font-size: 20px }
+.indice h2                                                  { font-size: 32px; line-height: 40px }
+.indice .text p                                             { font-size: 20px }
+.indice .link2                                              { font-size: 20px }
+.lst-indice .item                                           { float: none; width: 100%; margin-bottom: 20px;}
+.cartographie                                               { padding: 0 0 35px;}
+.cartographie h2                                            { font-size: 32px; line-height: 40px ; margin-bottom: 50px}
+.cartographie  h2:before                                    { top: auto; border-left: none; height: auto; bottom: -17px; width: 100px; border-bottom: #E65924 solid 8px;left: 0;}
+.cartographie p                                             { font-size: 20px }
+.carte .text h2                                             { font-size: 32px; line-height: 40px;}
+.carte .text p                                              { font-size: 20px }
+.carte .text .link ,.link                                   { font-size: 18px; }
+.blc-usage .text h2                                         { font-size: 32px;line-height: 40px;}
+.blc-usage .text p                                          { font-size: 20px;}
+.lst-utilisations .item .col                                { float: none; width: 100%; padding: 0;}
+.lst-utilisations .item .cont-right                         { float: none; width: 100% }
+.lst-utilisations .item .cont-right                         { padding: 20px }
+.plusInfo .text h2                                          { font-size: 32px; line-height: 40px }
+.plusInfo .text p                                           { font-size: 20px }
+.lst-part .img img                                          { display: block; margin: 0 auto; text-align: center;}
+.lst-part                                                   { padding: 0 20px }
+.txt-ftr ul li                                              { display: block;}
+.txt-ftr ul li a::before                                    { display: none; }
+.lst-part .img                                              { margin: 0 auto; display: block; text-align: center;}
+
+
+
+
+}
+
+
