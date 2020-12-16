@@ -328,7 +328,7 @@ class OverallParameters(param.Parameterized):
                     drop_level=False,
                 )[selected_indices].div(score_agg_niveau)
                 * 100
-            )
+            ).astype(int)
             
             # Dissolution (i.e. agregation geographique) au niveau de découpage souhaité level_0_column
             df = df.xs(
