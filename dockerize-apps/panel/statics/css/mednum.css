@@ -24,6 +24,11 @@
     width: 125px;
 }
 
+
+/* .bk-root {
+    font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif
+} */
+
 .chck-custom>.bk>.bk>input {
     -webkit-appearance: none;
     background-color: #fff;
@@ -56,7 +61,7 @@
 
 .chck-custom>.bk>.bk>input:checked:after {
     content: "\203A";
-    font-family: "Font Awesome 5 Free";
+    /* font-family: "Font Awesome 5 Free"; */
     display: inline-block;
     font-style: normal;
     font-weight: normal;

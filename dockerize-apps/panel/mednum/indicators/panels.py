@@ -97,20 +97,15 @@ class PyGauge(param.Parameterized):
 class Indicators(PyGauge):  # param.Parameterized):
     indicators = param.List(
         [
-            dict(name="indic2", main=True, value=50, max_value=100),
+            dict(name="indic2", main=True, value=50, max_value=100, img_path=''),
             dict(name="indic2", value=150),
         ]
     )
     other_indic = []
     css_info_td = """
-        font-family: Source Sans Pro;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 11px;
         align-items: center;
         text-transform: capitalize;
-        color: #989898;
-        border-left: 1px solid #E5E5E5;
+        border-left: #E65924 solid 8px;
         padding: 8px;
         line-height: 14px;
     """
@@ -155,16 +150,16 @@ class Indicators(PyGauge):  # param.Parameterized):
         HTML_MAIN_INDIC = """<table class="gauge-cls" style="border-spacing: 1em">"""
 
         if self.with_gauge_true:
-            HTML_MAIN_INDIC +="""
+            HTML_MAIN_INDIC += """
             <tr class="gauge-tr">
                 <td class="gauge-td" style="{style}">{gauge_header}
                 </td>
         """.format(
-            rowspan=rowspan,
-            gauge_header=self.HTML_GAUGE_HEADER,
-            gauge_img=self.HTML_GAUGE_IMG,
-            style=self.css_info_td,
-        )
+                rowspan=rowspan,
+                gauge_header=self.HTML_GAUGE_HEADER,
+                gauge_img=self.HTML_GAUGE_IMG,
+                style=self.css_info_td,
+            )
 
             HTML_GAUGE = """
                     <td class="gauge-td" rowspan={rowspan} style="{style}">{gauge_img}</td>
@@ -174,11 +169,14 @@ class Indicators(PyGauge):  # param.Parameterized):
                 gauge_img=self.HTML_GAUGE_IMG,
                 style=self.css_info_td,
             )
-
-        HTML_ROWS = [
+        HTML_ROWS = []
+        for row in self.other_indic:
+            if 'img_path' not in row:
+                row['img_path'] = ''
+            HTML_ROWS.append(
             """
             <td class="gauge-td" style="{style}">
-            <h3 style="{style_h3}">{title}</h3>
+            <h3 style="{style_h3}"><img src="{filepath}" width="{width}px" />{title}</h3>
                 {value}
             </td>
             </tr>
@@ -187,9 +185,10 @@ class Indicators(PyGauge):  # param.Parameterized):
                 value=row["value"],
                 style=self.css_info_td,
                 style_h3=self.css_info_h3,
+                filepath=row['img_path'],
+                width=0
             )
-            for row in self.other_indic
-        ]
+        )
         if self.with_gauge_true:
             # insert Gauge in second order
             HTML_ROWS.insert(1, HTML_GAUGE)
@@ -241,10 +240,10 @@ class TopIndicators(OverallParameters):
     @pn.depends("score", watch=True)
     def synthese(self):
         HTML = """
-        <b>Scores par axe de fragilité</b>
-        Un score de 100 correspond à la moyenne de référence pour un territoire sur un axe de fragilité.
+        <h3>Scores par axe de fragilité</h3>
+        
+        Un score supérieur à 100 indique une fragilité. Plus le score est élevé, plus le risque d'exclusion numérique est important.
         """
-
         return pn.pane.HTML(
             HTML,
             css_classes=[
@@ -330,14 +329,17 @@ class TopIndicators(OverallParameters):
         self.indicator_w_gauge_2.indicators = indicator_2
 
         return pn.Row(
-            pn.Column(HTML, self.glob_stats()), 
-            pn.Column(self.synthese()),  
-            pn.Column(self.indicator_w_gauge_1.view), 
-            pn.Column(self.indicator_w_gauge_2.view), 
+            pn.Column(
+                HTML, self.synthese(), min_width=20 * 12
+            ),  # , self.glob_stats()),
+            # pn.Column(self.synthese()),
+            pn.Column(self.indicator_w_gauge_1.view),
+            pn.Column(self.indicator_w_gauge_2.view),
             css_classes=[
                 re.sub(r"(?<!^)(?=[A-Z])", "-", self.get_name() + "TopPanel").lower()
             ],
             # min_height=200,
+            min_width=900,
         )
 
     @pn.depends("score", "localisation")
