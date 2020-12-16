@@ -97,9 +97,12 @@ class MedNumApp(TopIndicators):
         # )
 
         export_panel = pn.Column(
-            """## Aller plus loin
-[En savoir plus sur la méthode](https://lamednum.coop/actions/indice-de-fragilite-numerique/)
-            """
+            """## Aller plus loin""",
+            pn.pane.HTML(
+                """
+         <a href="https://lamednum.coop/actions/indice-de-fragilite-numerique/" title="En savoir plus sur la méthode" class="link2"> &gt; En savoir plus sur la méthode</a>
+         """
+            )
             # self.param.export_data,  # self.param.edit_report
         )
 
@@ -115,7 +118,7 @@ class MedNumApp(TopIndicators):
                         "case_sensitive": False,
                     }
                 },
-            ),
+            ), css_classes=['blc-search']
         )
 
         indicateurs = pn.Column("## Indicateurs", *self.g_params)
@@ -195,8 +198,8 @@ class MedNumApp(TopIndicators):
                 color="tout_axes",
                 colorbar=True,
                 toolbar="above",
-                # xaxis=None,
-                # yaxis=None,
+                xaxis=None,
+                yaxis=None,
                 fill_alpha=0.5,
             )
 
