@@ -44,11 +44,11 @@ CATEGORIES_INT_NUM = {
         "desc": """Proportion des ménages dont les revenus sont inférieurs à 60% du revenu médian""",
         "aggfunc": "median",
     },
-    "COUVERTURE_MOBILE": {
-        "nom": "Couverture mobile",
-        "desc": """Proportion du territoire d'où l'on peut accéder à un réseau de téléphonie mobile""",
-        "aggfunc": "mean",
-    },
+    # "COUVERTURE_MOBILE": {
+    #     "nom": "Couverture mobile",
+    #     "desc": """Proportion du territoire d'où l'on peut accéder à un réseau de téléphonie mobile""",
+    #     "aggfunc": "mean",
+    # },
     "TAUX_COUVERTURE_THD": {
         "nom": "Taux de couverture HD / THD",
         "desc": """Proportion des bâtiments reliés à internet Haut Débit ou Très Haut Débit""",
@@ -80,11 +80,11 @@ CATEGORIES_X_INFOS = {
         "desc": "Proportion des personnes vivant seules avec enfants parmi l'ensemble des ménages",
         "aggfunc": "median",
     },
-    "ACCES_SERVICE_PUBLIC": {
-        "nom": "Accès à un point physique de service public",
-        "desc": "Nombre de lieux d'accueil et d'information de services publics ou parapublics pour 1000 habitants (liste des mediathèques)",
-        "aggfunc": "mean",
-    },
+    # "ACCES_SERVICE_PUBLIC": {
+    #     "nom": "Accès à un point physique de service public",
+    #     "desc": "Nombre de lieux d'accueil et d'information de services publics ou parapublics pour 1000 habitants (liste des mediathèques)",
+    #     "aggfunc": "mean",
+    # },
 }
 
 
